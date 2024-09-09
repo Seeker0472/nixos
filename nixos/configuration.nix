@@ -8,7 +8,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  
+
   # Set your time zone.
   time.timeZone = "Asia/Hong_Kong";
 
@@ -49,7 +49,7 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       kdePackages.kate
-    #  thunderbird
+      #  thunderbird
     ];
   };
   nixpkgs.config.permittedInsecurePackages = [
@@ -57,20 +57,20 @@
   ];
 
 
-#   ## Added-User
-#   users.users.seekerRemote = {
-#     isNormalUser = true;
-#     description = "ryan";
-#     extraGroups = [ "networkmanager" "wheel" ];
-# #     openssh.authorizedKeys.keys = [
-# #         # replace with your own public key
-# #         "ssh-ed25519 <some-public-key> ryan@ryan-pc"
-# #     ];
-#     packages = with pkgs; [
-#       firefox
-#     #  thunderbird
-#     ];
-#   };
+  #   ## Added-User
+  #   users.users.seekerRemote = {
+  #     isNormalUser = true;
+  #     description = "ryan";
+  #     extraGroups = [ "networkmanager" "wheel" ];
+  # #     openssh.authorizedKeys.keys = [
+  # #         # replace with your own public key
+  # #         "ssh-ed25519 <some-public-key> ryan@ryan-pc"
+  # #     ];
+  #     packages = with pkgs; [
+  #       firefox
+  #     #  thunderbird
+  #     ];
+  #   };
 
   # 将默认编辑器设置为 vim
   environment.variables.EDITOR = "vim";

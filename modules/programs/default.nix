@@ -1,6 +1,6 @@
-{pkgs, ...}:{
-    imports = [
-        ./programs.nix
-    ];
+{ pkgs, nur, ... }: {
+  imports = [
+    ./programs.nix
+  ];
 }
 

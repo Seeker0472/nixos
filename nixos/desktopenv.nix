@@ -20,13 +20,13 @@
   services.xserver.dpi = 120; # 根据实际情况调整数值
 
   # Hyperland
-#   programs.hyprland = {
-#     enable = true;
-#     xwayland.enable = true;
-#   };
-#   environment.systemPackages = with pkgs; [
-#     kitty
-#   ];
+  #   programs.hyprland = {
+  #     enable = true;
+  #     xwayland.enable = true;
+  #   };
+  #   environment.systemPackages = with pkgs; [
+  #     kitty
+  #   ];
 
 
 
