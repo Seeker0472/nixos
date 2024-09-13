@@ -17,8 +17,14 @@
     nix-ld
     direnv
     v2raya
-    nur.repos.linyinfeng.wemeet
+    exfat
+    # nur.repos.linyinfeng.wemeet
   ];
+  #seems Fingerprint didn't work
+  #   services.fprintd.enable = true;
+  # services.fprintd.tod.enable = true;
+  # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix; #(If the vfs0090 Driver does not work, use the following driver)
+
   #自启动v2rayA
   systemd.services.v2rayA = {
     description = "AutoStart V2rayA";
@@ -36,6 +42,7 @@
   #   silent = true;
   #   direnvrcExtra = "";
   # };
+
   # Install firefox.
   programs.firefox.enable = true;
 
@@ -52,6 +59,7 @@
     openFirewall = true;
   };
 
+  #input method
   i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
@@ -61,20 +69,8 @@
       fcitx5-chinese-addons
     ];
   };
-  # nixpkgs.config = {
-  #   # Allow unfree packages
-  #   allowUnfree = true;
-  #   # Install NUR Repo
-  #   packageOverrides = pkgs:{
-  #     nur = import (builtins.fetchTarball{ 
-  #       url="https://github.com/nix-community/NUR/archive/master.tar.gz";
-  #       sha256 = "1s9xhfbvqzyg70bywkibhmrv552xl6yhb6i50c2nrpq3kmjf0han";
-
-  #       }) {
-  #       inherit pkgs;
-  #     };
-  #   };
-  # };
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "seeker" ];
 }
 
 

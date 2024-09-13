@@ -36,7 +36,6 @@
         # TODO: nixpkgs/flake.nix 中找到 nixpkgs.lib.nixosSystem 的定义，跟踪它的源码，研究其实现方式。
         modules = [
           ./nixos
-          # nur.nixosModules.nur
           {
             nixpkgs.config.allowUnfree = true;
             nixpkgs.overlays = [ nur.overlay ];
@@ -51,7 +50,7 @@
             # Optionally, use home-manager.extraSpecialArgs to pass
             # arguments to home.nix
             home-manager.extraSpecialArgs = inputs;
-            # home-manager.backupFileExtension = "backup";
+            # home-manager.backupFileExtension = "backup";  
           }
         ];
       };

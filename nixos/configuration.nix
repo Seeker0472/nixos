@@ -5,11 +5,33 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot";
+    };
+    grub = {
 
-  # Set your time zone.
+      devices = [ "nodev" ];
+      efiSupport = true;
+      enable = true;
+      # Win10 Disk
+      extraEntries = ''
+        menuentry "Windows 10" {
+          insmod part_gpt
+          insmod fat
+          insmod search_fs_uuid
+          insmod chain
+          search --fs-uuid --set=root F260-6DA1 
+          chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+        }
+      '';
+      version = 2;
+    };
+  };
+  time.hardwareClockInLocalTime = true;
+
+  # time zone.
   time.timeZone = "Asia/Hong_Kong";
 
   # Select internationalisation properties.
@@ -21,7 +43,7 @@
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
 
-  #bluetooth and others
+  #mirror and allfirmware
   hardware.enableAllFirmware = true;
   nix.settings.substituters = [ "https://mirrors.ustc.edu.cn/nix-channels/store" ];
 
