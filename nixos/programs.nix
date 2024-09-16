@@ -18,6 +18,7 @@
     direnv
     v2raya
     exfat
+    # freetype
     # nur.repos.linyinfeng.wemeet
   ];
   #seems Fingerprint didn't work

@@ -18,6 +18,8 @@
     axel
     pkgs.nur.repos.linyinfeng.wemeet
     pkgs.nur.repos.lschuermann.vivado-2022_2
+    # pkgs.nur.repos.rewine.wps
+    # pkgs.nur.repos.rewine.ttf-wps-fonts
     gparted
 
     ciscoPacketTracer8

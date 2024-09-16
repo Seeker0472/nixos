@@ -10,8 +10,10 @@
     home.homeDirectory = "/home/seeker";
 
     imports =[
+      # pkgs.anyrun.homeManagerModules.default  
       ../../modules/programs
       ../../modules/shell
+      ../../modules/gui
       # ../../modules/input
       ./basepkgs.nix
     ];

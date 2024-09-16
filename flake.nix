@@ -11,6 +11,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
     nur.url = "github:nix-community/NUR";
+    anyrun.url = "github:anyrun-org/anyrun";
+    anyrun.inputs.nixpkgs.follows = "nixpkgs";
 
     # Home Manager
     home-manager = {
@@ -22,7 +24,7 @@
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur,anyrun , ... }@inputs:
     let
       system = "x86_64-linux";
       # 添加NUR
