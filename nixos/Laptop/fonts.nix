@@ -1,6 +1,7 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
+  nixpkgs.config.joypixels.acceptLicense = true;
   fonts = {
     packages = with pkgs; [
       noto-fonts
@@ -12,6 +13,11 @@
       source-code-pro
       hack-font
       jetbrains-mono
+
+      nerdfonts
+      material-design-icons
+      joypixels
+      wqy_microhei
     ];
   };
 

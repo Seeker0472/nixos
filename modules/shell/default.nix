@@ -3,5 +3,6 @@
     ./tools.nix
     ./bash.nix
     ./tmux
+    ./neovim
   ];
 }

@@ -19,6 +19,9 @@
     v2raya
     exfat
     # freetype
+    gcc
+    pulseaudioFull
+
     # nur.repos.linyinfeng.wemeet
   ];
   #seems Fingerprint didn't work

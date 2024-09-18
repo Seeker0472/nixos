@@ -40,25 +40,27 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+ hardware.pulseaudio.enable = true;
+# sound.enable = true;
+ hardware.pulseaudio.package = pkgs.pulseaudioFull;
 
   #mirror and allfirmware
   hardware.enableAllFirmware = true;
   nix.settings.substituters = [ "https://mirrors.ustc.edu.cn/nix-channels/store" ];
 
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+ services.pipewire = {
+   enable = false;
+   alsa.enable = true;
+   alsa.support32Bit = true;
+   pulse.enable = true;
+   # If you want to use JACK applications, uncomment this
+   #jack.enable = true;
 
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
+   # use the example session manager (no others are packaged yet so this is enabled by default,
+   # no need to redefine it in your config for now)
+   #media-session.enable = true;
+ };
 
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
@@ -67,7 +69,7 @@
   users.users.seeker = {
     isNormalUser = true;
     description = "seeker";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "audio"];
     packages = with pkgs; [
       kdePackages.kate
       #  thunderbird

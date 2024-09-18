@@ -5,6 +5,7 @@
     # TODO 在这里添加你的自定义 bashrc 内容
     bashrcExtra = ''
       eval "$(direnv hook bash)"
+      export DWM=/home/seeker/Develop/dwm
     '';
 
     # TODO 设置一些别名方便使用，你可以根据自己的需要进行增删
@@ -39,8 +40,7 @@
     theme = "Catppuccin-Mocha";
     font = {
       name = "JetBrainsMono Nerd Font";
-      # use different font size on macOS
-      size = 12;
+      size = 22;
     };
 
   };

@@ -22,6 +22,8 @@
     # pkgs.nur.repos.rewine.ttf-wps-fonts
     gparted
 
+    rocmPackages_5.llvm.clang-tools-extra #clangd
+
     ciscoPacketTracer8
     # virtualbox
     # wineWowPackages.stable
@@ -29,6 +31,7 @@
     # wine
     # nur.repos.linyinfeng.wemeet
 
+    networkmanagerapplet
   ];
 
 }

@@ -13,6 +13,8 @@
     nur.url = "github:nix-community/NUR";
     anyrun.url = "github:anyrun-org/anyrun";
     anyrun.inputs.nixpkgs.follows = "nixpkgs";
+    dwm.url = "github:Seeker0472/dwm/develop";
+    dwm.inputs.nixpkgs.follows = "nixpkgs";
 
     # Home Manager
     home-manager = {
@@ -24,7 +26,7 @@
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur,anyrun , ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, anyrun, dwm, ... }@inputs:
     let
       system = "x86_64-linux";
       # 添加NUR
@@ -40,7 +42,10 @@
           ./nixos
           {
             nixpkgs.config.allowUnfree = true;
-            nixpkgs.overlays = [ nur.overlay ];
+            nixpkgs.overlays = [
+              nur.overlay
+              dwm.overlays.default
+            ];
           }
           # home-manager 配置为 nixos 的一个module, 在 nixos-rebuild switch 时，home-manager 配置也会被自动部署
           home-manager.nixosModules.home-manager
