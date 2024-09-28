@@ -59,5 +59,16 @@
     ltrace # library call monitoring
     lsof # list open files
 
+  #NVIM
+    nodejs_22
+    cargo
+    zulu17
+
+
+    nixd
+    coursier
+    jdt-language-server
+    ocamlPackages.junit#ai class
+
   ];
 }

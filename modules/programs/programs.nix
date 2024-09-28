@@ -32,6 +32,7 @@
     # nur.repos.linyinfeng.wemeet
 
     networkmanagerapplet
+    obs-studio
   ];
 
 }

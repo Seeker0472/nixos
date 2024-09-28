@@ -24,9 +24,14 @@
         layout = "us";
         variant = "";
       };
+      displayManager = {
+        lightdm.enable = true;
+        defaultSession = "none+dwm";
+      };
     };
-    displayManager.sddm.enable = true;
-    displayManager.sddm.wayland.enable = true;
+    # displayManager.sddm.enable = true;
+    # displayManager.sddm.wayland.enable = true;
+
   };
 
   # services.desktopManager.plasma6.enable = true;
@@ -34,6 +39,7 @@
   environment.variables = {
     GDK_SCALE = "2";
     GDK_DPI_SCALE = "0.5";
+    # QT_SCALE_FACTOR = "2";
     _JAVA_OPTIONS = "-Dsun.java2d.uiScale=2";
     XCURSOR_SIZE = "144";
   };
