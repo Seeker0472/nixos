@@ -11,6 +11,7 @@
       ./hardware-configuration.nix
       ./programs.nix
       ./fonts.nix
+      ./disk.nix
     ];
 
 }

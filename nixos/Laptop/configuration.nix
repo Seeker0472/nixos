@@ -5,29 +5,7 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  boot.loader = {
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot";
-    };
-    grub = {
-
-      devices = [ "nodev" ];
-      efiSupport = true;
-      enable = true;
-      # Win10 Disk
-      extraEntries = ''
-        menuentry "Windows 10" {
-          insmod part_gpt
-          insmod fat
-          insmod search_fs_uuid
-          insmod chain
-          search --fs-uuid --set=root F260-6DA1 
-          chainloader /EFI/Microsoft/Boot/bootmgfw.efi
-        }
-      '';
-    };
-  };
+  #Make Windows Happy
   time.hardwareClockInLocalTime = true;
 
   # time zone.
@@ -43,6 +21,9 @@
   hardware.pulseaudio.enable = false;
   # sound.enable = true;
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
+
+  #i2c need user in group?
+  hardware.i2c.enable = true;
 
   #mirror and allfirmware
   hardware.enableAllFirmware = true;
@@ -69,11 +50,7 @@
   users.users.seeker = {
     isNormalUser = true;
     description = "seeker";
-    extraGroups = [ "networkmanager" "wheel" "audio" ];
-    packages = with pkgs; [
-      kdePackages.kate
-      #  thunderbird
-    ];
+    extraGroups = [ "networkmanager" "wheel" "audio" "i2c" ];
   };
   nixpkgs.config.permittedInsecurePackages = [
     "openssl-1.1.1w"

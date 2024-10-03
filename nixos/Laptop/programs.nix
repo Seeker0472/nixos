@@ -18,26 +18,32 @@
     direnv
     v2raya
     exfat
-    # freetype
     gcc
     pulseaudioFull
-
-    # nur.repos.linyinfeng.wemeet
+    firefox
   ];
-  #seems Fingerprint didn't work
-  #   services.fprintd.enable = true;
-  # services.fprintd.tod.enable = true;
-  # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix; #(If the vfs0090 Driver does not work, use the following driver)
 
   #自启动v2rayA
-  systemd.services.v2rayA = {
-    description = "AutoStart V2rayA";
+  # systemd.services.v2rayA = {
+  #   description = "AutoStart V2rayA";
+  #   wantedBy = [ "multi-user.target" ];
+  #   after = [ "network.target" ];
+  #   serviceConfig = {
+  #     Type = "simple";
+  #     User = "root";
+  #     ExecStart = "${pkgs.v2raya}/bin/v2rayA --lite";
+  #     Restart = "on-failure";
+  #   };
+  # };
+
+  systemd.services.clashverges = {
+    description = "AutoStart ClashVergeService";
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
     serviceConfig = {
       Type = "simple";
       User = "root";
-      ExecStart = "${pkgs.v2raya}/bin/v2rayA --lite";
+      ExecStart = "${pkgs.clash-verge-rev}/bin/clash-verge-service";
       Restart = "on-failure";
     };
   };
@@ -47,11 +53,6 @@
   #   direnvrcExtra = "";
   # };
 
-  # Install firefox.
-  programs.firefox.enable = true;
-
-  # Allow unfree packages
-  # nixpkgs.config.allowUnfree = true;
   # 启用 OpenSSH 后台服务
   services.openssh = {
     enable = true;

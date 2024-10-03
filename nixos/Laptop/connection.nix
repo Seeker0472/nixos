@@ -9,8 +9,9 @@
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   # Configure network proxy if necessary
-  networking.proxy.default = "http://localhost:7890";
-  networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  # networking.proxy.default = "http://localhost:7890";
+  # networking.proxy.default = "http://192.168.1.6:7890";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];

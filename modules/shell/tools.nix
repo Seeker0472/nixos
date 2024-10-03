@@ -59,16 +59,18 @@
     ltrace # library call monitoring
     lsof # list open files
 
-  #NVIM
+    #make NVIM happy
     nodejs_22
     cargo
     zulu17
-
+    nixpkgs-fmt
 
     nixd
     coursier
     jdt-language-server
     ocamlPackages.junit#ai class
+
+    ddcutil#brightness
 
   ];
 }

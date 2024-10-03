@@ -10,7 +10,6 @@
     xserver = {
       enable = true;
       windowManager.dwm.enable = true;
-      libinput.enable = true;
       dpi = 144; # DPI,
       upscaleDefaultCursor = true;
       displayManager.sessionCommands =
@@ -24,11 +23,12 @@
         layout = "us";
         variant = "";
       };
-      displayManager = {
-        lightdm.enable = true;
+      displayManager.lightdm.enable = true;
+    };
+    displayManager = {
+        # lightdm.enable = true;
         defaultSession = "none+dwm";
       };
-    };
     # displayManager.sddm.enable = true;
     # displayManager.sddm.wayland.enable = true;
 
