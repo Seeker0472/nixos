@@ -71,6 +71,7 @@
     ocamlPackages.junit#ai class
 
     ddcutil#brightness
+    ranger#fileExpo
 
   ];
 }

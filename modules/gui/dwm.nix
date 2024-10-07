@@ -26,6 +26,10 @@
     
     networkmanager
 
+    brightnessctl
+
+    aider-chat ##ai
+
   ];
 
 }

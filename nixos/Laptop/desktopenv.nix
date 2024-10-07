@@ -15,9 +15,10 @@
       displayManager.sessionCommands =
         ''
           ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1  --scale 1x1  \
-                                              --output DP-1 --auto  --scale 1.5x1.5   \
-                                              --output DP-2 --auto --scale 1.5x1.5   
+                                              --output DP-1 --auto  --scale 1.5x1.5 --right-of eDP-1   \
+                                              --output DP-2 --auto --scale 1.5x1.5 --right-of eDP-1  
         '';
+      #xrandr --output eDP-1  --scale 1x1 --output DP-1 --auto  --scale 1.5x1.5 --right-of eDP-1 -output DP-2 --auto --scale 1.5x1.5 --right-of eDP-1
       # Configure keymap in X11
       xkb = {
         layout = "us";

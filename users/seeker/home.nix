@@ -15,6 +15,7 @@
       ../../modules/shell
       ../../modules/gui
       # ../../modules/input
+      ../../modules/input
       ./basepkgs.nix
     ];
 

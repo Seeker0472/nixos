@@ -12,6 +12,7 @@
       ./programs.nix
       ./fonts.nix
       ./disk.nix
+      # ../../modules/input
     ];
 
 }
