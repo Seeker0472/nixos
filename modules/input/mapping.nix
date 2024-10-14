@@ -25,6 +25,5 @@ in
   home.file =
     mkHomeFile ./rime ".local/share/fcitx5/rime" //
     mkHomeFile ./fcitx5-nord/Nord-Dark ".local/share/fcitx5/themes/Nord-Dark" //
-    mkHomeFile ./fcitx5-nord/Nord-Light ".local/share/fcitx5/themes/Nord-Light" //
-    mkHomeFile ./conf ".config/fcitx5/conf";
+    mkHomeFile ./fcitx5-nord/Nord-Light ".local/share/fcitx5/themes/Nord-Light" ;
 }

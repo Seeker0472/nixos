@@ -14,9 +14,13 @@
     # communication
     qq
     wechat-uos
+    #broswer
+    google-chrome
+    microsoft-edge
     # productivity
     wpsoffice-cn
     pkgs.nur.repos.linyinfeng.wemeet
+    obsidian
 
     # video
     obs-studio

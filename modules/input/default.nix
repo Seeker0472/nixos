@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   imports = [
-    # ./fcitx5
+    ./conf
     ./mapping.nix
   ];
 }

@@ -23,6 +23,7 @@
       '';
     };
   };
+  boot.supportedFilesystems = [ "ntfs" ];
   # mount data part
   fileSystems."/Data" =
     { device = "/dev/disk/by-label/Data";

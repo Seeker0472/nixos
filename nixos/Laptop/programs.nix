@@ -74,6 +74,21 @@
     ];
   };
   virtualisation.virtualbox.host.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    rootless.setSocketVariable = true;
+    daemon.settings = {
+      data-root = "/etc/docker";
+    };
+  };
+  virtualisation.oci-containers = {
+  backend = "docker";
+  containers = {
+    # foo = {
+    #   # ...
+    # };
+  };
+};
   users.extraGroups.vboxusers.members = [ "seeker" ];
 }
 
