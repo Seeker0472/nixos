@@ -51,6 +51,12 @@
               dwm.overlays.default
             ];
           }
+            # {
+            #   environment.systemPackages = [
+            #     winapps.packages.${system}.winapps
+            #     winapps.packages.${system}.winapps-launcher # optional
+            #   ];
+            # }
           # home-manager 配置为 nixos 的一个module, 在 nixos-rebuild switch 时，home-manager 配置也会被自动部署
           home-manager.nixosModules.home-manager
           {

@@ -5,4 +5,5 @@
     winapps.packages.${system}.winapps
     winapps.packages.${system}.winapps-launcher # optional
   ];
+  home.file.".local/bin/winapps".source = "${winapps}/bin/winapps";
 }
