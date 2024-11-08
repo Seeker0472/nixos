@@ -1,10 +1,10 @@
 { pkgs, nur, ... }: {
   home.packages = with pkgs;[
     # programming/ysyx/learning
-    vscode
+    
     jetbrains.idea-ultimate
-    jetbrains.clion
-    jetbrains.pycharm-professional
+    # jetbrains.clion
+    # jetbrains.pycharm-professional
     fish
     kitty 
     gtkwave
@@ -20,7 +20,12 @@
     # productivity
     wpsoffice-cn
     pkgs.nur.repos.linyinfeng.wemeet
+    feishu
     obsidian
+    drawio
+    # pandoc
+    # tectonic
+    chromium
 
     # video
     obs-studio

@@ -21,7 +21,7 @@
     # program
     mpc-cli
     pavucontrol #audio control
-    # aider-chat ##ai
+    aider-chat ##ai
     brightnessctl
     networkmanager
     flameshot #screenshoot
