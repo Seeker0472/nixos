@@ -14,6 +14,7 @@
     anyrun.url = "github:anyrun-org/anyrun";
     anyrun.inputs.nixpkgs.follows = "nixpkgs";
     dwm.url = "github:Seeker0472/dwm/develop";
+    # dwm.url = "/home/seeker/Develop/dwm/";
     picom.url = "github:Seeker0472/picom";
     picom.inputs.nixpkgs.follows = "nixpkgs";
     dwm.inputs.nixpkgs.follows = "nixpkgs";

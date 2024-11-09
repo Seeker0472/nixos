@@ -19,7 +19,7 @@
     libnotify
 
     # program
-    mpc-cli
+    # mpc-cli
     pavucontrol #audio control
     aider-chat ##ai
     brightnessctl
@@ -30,5 +30,6 @@
     xfce.xfce4-power-manager #power-seeting
 
   ];
+  home.file.".xinitrc".text = "exec dwm";
 
 }

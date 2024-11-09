@@ -106,6 +106,9 @@
     };
   };
 
+  systemd.extraConfig = ''
+    DefaultTimeoutStopSec=10s
+  '';
 
   #   ## Added-User
   #   users.users.seekerRemote = {
