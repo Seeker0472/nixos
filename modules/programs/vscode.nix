@@ -70,6 +70,7 @@ in
       "markdown.marp.enableHtml" = true;
       "markdown.marp.exportType" = "html";
       "markdown-pdf.executablePath" = "chromium";
+      "workbench.colorTheme"= "Night Owl";
     };
     # extensions
     extensions = with pkgs.vscode-extensions; [
@@ -78,7 +79,7 @@ in
       mads-hartmann.bash-ide-vscode
       llvm-vs-code-extensions.vscode-clangd
       mkhl.direnv
-      yzane.markdown-pdf
+      # yzane.markdown-pdf
       yzhang.markdown-all-in-one
       marp-team.marp-vscode
       jnoortheen.nix-ide
