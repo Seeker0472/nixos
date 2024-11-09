@@ -57,7 +57,10 @@ in
     # settings
     userSettings = {
       "files.autoSave" = "onFocusChange";
+      # git
+      "git.suggestSmartCommit" = false;
       "git.autofetch" = true;
+      
       "files.watcherExclude" = {
         "**/.bloop" = true;
         "**/.metals" = true;
@@ -66,37 +69,45 @@ in
       "C_Cpp.intelliSenseEngine" = "disabled";
       "digital-ide.welcome.show" = false;
       "metals.inlayHints.hintsInPatternMatch.enable" = true;
-      "git.suggestSmartCommit" = false;
+      # markdown
       "markdown.marp.enableHtml" = true;
       "markdown.marp.exportType" = "html";
       "markdown-pdf.executablePath" = "chromium";
-      "workbench.colorTheme"= "Night Owl";
-    };
-    # extensions
-    extensions = with pkgs.vscode-extensions; [
-      scalameta.metals
-      vscodevim.vim
-      mads-hartmann.bash-ide-vscode
-      llvm-vs-code-extensions.vscode-clangd
-      mkhl.direnv
-      # yzane.markdown-pdf
-      yzhang.markdown-all-in-one
-      marp-team.marp-vscode
-      jnoortheen.nix-ide
-      mhutchie.git-graph
-      # formulahendry.code-runner
-      # dracula-theme.theme-dracula
-      # yzhang.markdown-all-in-one
-    ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-      code-runner
-      c_cpp-pack
-      remote-dev
-      docker
-      python
-      makefile
-      verilog-support
-      linkerscript
-    ];
-  };
 
-}
+      "workbench.colorTheme" = "Night Owl";
+      # vims
+      "vim.autoSwitchInputMethod.enable" = true;
+      "vim.autoSwitchInputMethod.defaultIM" = "2";
+      "vim.autoSwitchInputMethod.obtainIMCmd" = "fcitx5-remote";
+      "vim.autoSwitchInputMethod.switchIMCmd" = "fcitx5-remote -t 2";
+      "vim.useSystemClipboard"= true;
+
+      };
+      # extensions
+      extensions = with pkgs.vscode-extensions; [
+        scalameta.metals
+        vscodevim.vim
+        mads-hartmann.bash-ide-vscode
+        llvm-vs-code-extensions.vscode-clangd
+        mkhl.direnv
+        # yzane.markdown-pdf
+        yzhang.markdown-all-in-one
+        marp-team.marp-vscode
+        jnoortheen.nix-ide
+        mhutchie.git-graph
+        # formulahendry.code-runner
+        # dracula-theme.theme-dracula
+        # yzhang.markdown-all-in-one
+      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        code-runner
+        c_cpp-pack
+        remote-dev
+        docker
+        python
+        makefile
+        verilog-support
+        linkerscript
+      ];
+    };
+
+  }
