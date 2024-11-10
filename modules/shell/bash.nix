@@ -5,7 +5,7 @@
     # TODO 在这里添加你的自定义 bashrc 内容
     bashrcExtra = ''
       eval "$(direnv hook bash)"
-      export DWM=/home/seeker/Develop/dwm
+      export YSYX_HOME=/home/seeker/Develop/ysyx-workbench/
     '';
 
     # TODO 设置一些别名方便使用，你可以根据自己的需要进行增删
@@ -27,7 +27,7 @@
       command_timeout = 2000;
       nix_shell = {
         format = "via [$state (\($name\))]($style)";
-        symbol = "❄️";
+        symbol = "❄️8";
       };
     };
   };
