@@ -25,11 +25,17 @@
         variant = "";
       };
       displayManager.lightdm.enable = true;
-    };
-    displayManager = {
-        # lightdm.enable = true;
-        defaultSession = "none+dwm";
+      displayManager.lightdm.greeters.gtk.cursorTheme = {
+        package = pkgs.kdePackages.breeze;
+        name = "Breeze";
+        size = 144;
       };
+    };
+
+    displayManager = {
+      # lightdm.enable = true;
+      defaultSession = "none+dwm";
+    };
     # displayManager.sddm.enable = true;
     # displayManager.sddm.wayland.enable = true;
 
