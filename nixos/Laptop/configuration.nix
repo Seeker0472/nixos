@@ -22,6 +22,12 @@
   environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
   hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux; [ intel-vaapi-driver ];
 
+  # nix.settings.system-features = [ "nixos-test" "benchmark" "big-parallel" "kvm" "gccarch-tigerlake" ];
+  # nixpkgs.hostPlatform = {
+  #   cpu.arch = "tigerlake";
+  #   gcc.tune = "tigerlake";
+  #   system = "x86_64-linux";
+  # };
   services.logind.extraConfig = ''
     # don't shutdown when power button is short-pressed
     HandlePowerKey=ignore
