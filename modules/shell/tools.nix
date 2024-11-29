@@ -1,4 +1,10 @@
 { pkgs, ... }: {
+ programs.direnv={
+  enable=true;
+  # enableBashIntegration =true;
+  # enableFishIntegration = true;
+  nix-direnv.enable = true;
+  };
   # 通过 home.packages 安装一些常用的软件
   # 这些软件将仅在当前用户下可用，不会影响系统级别的配置
   # 所有 GUI 软件，以及与 OS 关系不大的 CLI 软件，都通过 home.packages 安装

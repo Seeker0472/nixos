@@ -15,13 +15,25 @@
     curl
     python3
     nix-ld
-    direnv
-    v2raya
+    # direnv
+    fish
+    # v2raya
     exfat
-    gcc
+    # gcc
+    # gdb
     pulseaudioFull
     firefox
   ];
+  # From https://nixos.wiki/wiki/Fish
+  programs.bash = {
+  interactiveShellInit = ''
+    if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
+    then
+      shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+      exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+    fi
+  '';
+};
 
   #自启动v2rayA
   # systemd.services.v2rayA = {
