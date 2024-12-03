@@ -42,7 +42,9 @@ in
       hack-font
       jetbrains-mono
 
-      nerdfonts
+      nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.symbols-only
       # material-design-icons
       materal-disign-icons-locked
       joypixels

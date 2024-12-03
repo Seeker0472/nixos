@@ -10,9 +10,8 @@
     gnumake
     lazygit
 
-    # fish
-    # kitty 
     gtkwave
+    surfer # better wave
     rocmPackages_5.llvm.clang-tools-extra #clangd
     # pkgs.nur.repos.lschuermann.vivado-2022_2
     ciscoPacketTracer8
@@ -28,11 +27,13 @@
 
     # productivity
     wpsoffice-cn
-    pkgs.nur.repos.linyinfeng.wemeet
-    feishu
+    pkgs.nur.repos.linyinfeng.wemeet #腾讯会议
+    feishu 
     obsidian
-    drawio
-    gimp
+    drawio # 流程图
+    gimp # 图片处理
+    ffmpeg
+    pandoc #文档
 
     # video
     obs-studio
@@ -40,7 +41,7 @@
     vlc
     
     #utils
-    xfce.thunar
+    xfce.thunar # file manager
     gparted
     clash-verge-rev
     axel #Console app for parallel connection

@@ -6,6 +6,7 @@ programs.fish = {
       set fish_greeting # Disable greeting
       set theme_color_scheme zenburn
       set theme_date_format +"%b/%e|%a %H:%M.%S"
+      function fish_greeting; end
     '';
     # plugins = [
     #   # Enable a plugin (here grc for colorized command output) from nixpkgs
