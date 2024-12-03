@@ -28,7 +28,7 @@
       displayManager.lightdm.greeters.gtk.cursorTheme = {
         package = pkgs.kdePackages.breeze;
         name = "Breeze";
-        size = 144;
+        size = 44;
       };
     };
 
@@ -40,7 +40,8 @@
     # displayManager.sddm.wayland.enable = true;
 
   };
-
+  # dconf is a low-level configuration system and settings management tool
+  programs.dconf.enable=true;
   # services.desktopManager.plasma6.enable = true;
 
   environment.variables = {
@@ -48,7 +49,8 @@
     GDK_DPI_SCALE = "0.5";
     # QT_SCALE_FACTOR = "2";
     _JAVA_OPTIONS = "-Dsun.java2d.uiScale=2";
-    XCURSOR_SIZE = "144";
+    XCURSOR_SIZE = "44";
+    XCURSOR_THEME ="Breeze";
   };
 
   # Hyperland

@@ -1,9 +1,9 @@
 { pkgs, nur, ... }: {
-# 这里是目前我的DWM桌面的配套软件，将来等稳定以后把配置文件，shell移入
+  # 这里是目前我的DWM桌面的配套软件，将来等稳定以后把配置文件，shell移入
   home.packages = with pkgs;[
     # basic
     libinput # input driver
-    xorg.xinit 
+    xorg.xinit
     dwm
     picom #animation
     i3lock-color #screen lock
@@ -26,10 +26,16 @@
     networkmanager
     flameshot #screenshoot
     feh #Light-weight image viewer
-    rofi 
+    rofi
     xfce.xfce4-power-manager #power-seeting
 
   ];
   home.file.".xinitrc".text = "exec dwm";
-
+  gtk = {
+    enable = true;
+    theme = {
+      package = pkgs.kdePackages.breeze;
+      name = "Breeze";
+    };
+  };
 }
