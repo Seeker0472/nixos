@@ -13,7 +13,7 @@
     gtkwave
     surfer # better wave
     rocmPackages_5.llvm.clang-tools-extra #clangd
-    # pkgs.nur.repos.lschuermann.vivado-2022_2
+    pkgs.nur.repos.lschuermann.vivado-2022_2
     ciscoPacketTracer8
 
     # communication

@@ -1,4 +1,4 @@
-{ pkgs,nixpkgs-stable, nur,winapps, ... }: {
+{ pkgs, nixpkgs-stable, nur, winapps, ... }: {
   home.packages = with pkgs;[
     # dialog
     # freerdp3

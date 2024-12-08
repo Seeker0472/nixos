@@ -1,4 +1,4 @@
-{ pkgs, nur,winapps, ... }: {
+{ pkgs, nur, winapps, ... }: {
   imports = [
     ./anyrun.nix
     ./dwm.nix

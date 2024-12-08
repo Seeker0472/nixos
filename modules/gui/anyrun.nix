@@ -1,4 +1,4 @@
-{ pkgs,   anyrun, ... }: {
+{ pkgs, anyrun, ... }: {
   # imports = [
   #    anyrun.homeManagerModules.anyrun # Import the anyrun home-manager module
   # ];

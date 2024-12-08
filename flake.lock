@@ -30,11 +30,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1733214495,
-        "narHash": "sha256-SlOY3k2IfxrbtUzcce3wHBbF12MvV+kAofrR0SkCwws=",
+        "lastModified": 1733646074,
+        "narHash": "sha256-o0aGseq8VdVtPVPAxIL2+ojS6vtKug/Tms8H0SyJIOA=",
         "ref": "refs/heads/develop",
-        "rev": "6d847e3daf3d6816f4cb5e30f915ed71b8f39e1a",
-        "revCount": 297,
+        "rev": "5467361ced6a91a2d3e392a0c6a5fb31999c47e6",
+        "revCount": 301,
         "type": "git",
         "url": "file:///home/seeker/Develop/dwm"
       },
@@ -186,11 +186,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1733213901,
-        "narHash": "sha256-AapreufI3bMglomcuIWiqXx21qAyWUUufwFehRSZ1Kk=",
+        "lastModified": 1733215745,
+        "narHash": "sha256-RIlhnKlObJ1sEdzBP6Nuy4jLUiQnmWWXVsRHRbv6SzY=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "73f5fdd3058c9bb2be71d9ca3b21a2d0a0abe9b4",
+        "rev": "251d756a74e67bda25d89327b01a3da19dddabae",
         "type": "github"
       },
       "original": {

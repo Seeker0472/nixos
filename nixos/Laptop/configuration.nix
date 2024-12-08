@@ -19,9 +19,21 @@
       libvdpau-va-gl
     ];
   };
+
   environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
   hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux; [ intel-vaapi-driver ];
-
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+      # ... # your Open GL, Vulkan and VAAPI drivers
+      vulkan-tools
+      libva
+      intel-vaapi-driver
+      vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable
+      # onevpl-intel-gpu  # for newer GPUs on NixOS <= 24.05
+      # intel-media-sdk   # for older GPUs
+    ];
+  };
   # nix.settings.system-features = [ "nixos-test" "benchmark" "big-parallel" "kvm" "gccarch-tigerlake" ];
   # nixpkgs.hostPlatform = {
   #   cpu.arch = "tigerlake";
@@ -78,7 +90,7 @@
   users.users.seeker = {
     isNormalUser = true;
     description = "seeker";
-    extraGroups = [ "networkmanager" "wheel" "audio" "i2c" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "audio" "i2c" "docker" "dialout" ];
   };
   nixpkgs.config.permittedInsecurePackages = [
     "openssl-1.1.1w"

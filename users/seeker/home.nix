@@ -1,23 +1,23 @@
-{pkgs, ...}:{
-    ####################################################
-    #
-    #   All Seeker's Home Manager Conf.
-    #
-    ####################################################
+{ pkgs, ... }: {
+  ####################################################
+  #
+  #   All Seeker's Home Manager Conf.
+  #
+  ####################################################
 
-    # 用户名与用户目录
-    home.username = "seeker";
-    home.homeDirectory = "/home/seeker";
+  # 用户名与用户目录
+  home.username = "seeker";
+  home.homeDirectory = "/home/seeker";
 
-    imports =[
-      # pkgs.anyrun.homeManagerModules.default  
-      ../../modules/programs
-      ../../modules/shell
-      ../../modules/gui
-      # ../../modules/input
-      ../../modules/input
-      ./basepkgs.nix
-    ];
+  imports = [
+    # pkgs.anyrun.homeManagerModules.default  
+    ../../modules/programs
+    ../../modules/shell
+    ../../modules/gui
+    # ../../modules/input
+    ../../modules/input
+    ./basepkgs.nix
+  ];
 
   # git 相关配置
   programs.git = {
