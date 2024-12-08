@@ -1,7 +1,10 @@
 { pkgs, nur, ... }: {
   imports = [
-    ./programs.nix
-    ./vscode.nix
+    ./basic.nix
+    ./broswer.nix
+    ./develop.nix
+    ./multimedia.nix
+    ./productity.nix
   ];
 }
 

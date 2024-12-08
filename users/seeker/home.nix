@@ -17,6 +17,7 @@
     # ../../modules/input
     ../../modules/input
     ./basepkgs.nix
+    ./xdg_default.nix
   ];
 
   # git 相关配置

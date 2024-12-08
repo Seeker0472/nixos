@@ -17,23 +17,14 @@
       intel-media-driver # LIBVA_DRIVER_NAME=iHD
       intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
       libvdpau-va-gl
+      vulkan-tools
+      libva
+      vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable;
     ];
   };
 
   environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
   hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux; [ intel-vaapi-driver ];
-  hardware.opengl = {
-    enable = true;
-    extraPackages = with pkgs; [
-      # ... # your Open GL, Vulkan and VAAPI drivers
-      vulkan-tools
-      libva
-      intel-vaapi-driver
-      vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable
-      # onevpl-intel-gpu  # for newer GPUs on NixOS <= 24.05
-      # intel-media-sdk   # for older GPUs
-    ];
-  };
   # nix.settings.system-features = [ "nixos-test" "benchmark" "big-parallel" "kvm" "gccarch-tigerlake" ];
   # nixpkgs.hostPlatform = {
   #   cpu.arch = "tigerlake";
