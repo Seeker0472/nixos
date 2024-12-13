@@ -6,11 +6,10 @@
   inputs = {
     # 定义了 nixpkgs 这一个依赖项，使用的是 flake 中最常见的引用方式，即github:owner/name/reference，这里的 reference 可以是分支名、commit-id 或 tag。
 
-    # NixOS 官方软件源，这里使用 nixos-unstable 分支
-    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
-    nur.url = "github:nix-community/NUR";
+    # lock nur
+    nur.url = "github:nix-community/NUR/7093ba2ffda3283744417f72e1ad6462f748da4d";
     anyrun.url = "github:anyrun-org/anyrun";
     anyrun.inputs.nixpkgs.follows = "nixpkgs";
     # dwm.url = "github:Seeker0472/dwm/develop";
@@ -36,26 +35,26 @@
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, anyrun, dwm, winapps, picom, ... }@inputs:
     let
       system = "x86_64-linux";
-      # 添加NUR
-      # TODO:HomeManager
-      pkgs = import nixpkgs { inherit system; overlays = [ nur.overlay ]; };
+      sharedConfig = import ./sharedConfig.nix;
+      pkgs = import nixpkgs { inherit system; overlays = [ nur.overlays.default ]; };
     in
     {
       inherit system;
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs =  {inherit sharedConfig;};
         # TODO: nixpkgs/flake.nix 中找到 nixpkgs.lib.nixosSystem 的定义，跟踪它的源码，研究其实现方式。
         modules = [
           ./nixos
           {
             nixpkgs.config.allowUnfree = true;
             nixpkgs.overlays = [
-              nur.overlay
+              nur.overlays.default
               dwm.overlays.default
               picom.overlays.default
             ];
           }
-          # home-manager 配置为 nixos 的一个module, 在 nixos-rebuild switch 时，home-manager 配置也会被自动部署
+          # home-manager as nixos module
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -64,7 +63,7 @@
 
             # Optionally, use home-manager.extraSpecialArgs to pass
             # arguments to home.nix
-            home-manager.extraSpecialArgs = inputs;
+            home-manager.extraSpecialArgs = { inherit (inputs) winapps ; inherit sharedConfig; };
             home-manager.backupFileExtension = "backup";
           }
         ];

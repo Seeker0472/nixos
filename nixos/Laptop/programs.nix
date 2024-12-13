@@ -23,6 +23,7 @@
     # gdb
     pulseaudioFull
     firefox
+    tailscale
   ];
   # From https://nixos.wiki/wiki/Fish
   programs.bash = {
@@ -93,14 +94,6 @@
       data-root = "/etc/docker";
     };
   };
-  # virtualisation.oci-containers = {
-  # backend = "docker";
-  # containers = {
-  #   # foo = {
-  #   #   # ...
-  #   # };
-  # };
-  # };
   users.extraGroups.vboxusers.members = [ "seeker" ];
 }
 

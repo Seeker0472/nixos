@@ -2,7 +2,7 @@
 #  desktop environment configuration
 ###################################################################
 
-{ config, lib, pkgs, modulesPath, ... }:
+{ lib, pkgs, modulesPath, ... }:
 
 {
 

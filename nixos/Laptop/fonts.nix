@@ -1,5 +1,6 @@
 { config, lib, pkgs, modulesPath, ... }:
 let
+# TODO: Necessary?
   materal-disign-icons-locked = (pkgs.material-design-icons.overrideAttrs (oldAttrs: rec {
     version = "7.4.47";
 
