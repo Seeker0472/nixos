@@ -35,37 +35,51 @@
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, anyrun, dwm, winapps, picom, ... }@inputs:
     let
       system = "x86_64-linux";
-      sharedConfig = import ./sharedConfig.nix;
+      config_miLaptop = import ./config/sharedConfig_miLaptop.nix;
+      config_LTG = import ./config/sharedConfig_LTG.nix
       pkgs = import nixpkgs { inherit system; overlays = [ nur.overlays.default ]; };
+      pkgsConfig = {
+        nixpkgs.config.allowUnfree = true;
+        nixpkgs.overlays = [
+          nur.overlays.default
+          dwm.overlays.default
+          picom.overlays.default
+        ];
+      };
+      home_managerConfig = {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          users.seeker = import users/seeker/home.nix;
+          backupFileExtension = "backup";
+        };
+      };
     in
     {
       inherit system;
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      # configuration for Laptop
+      nixosConfigurations.miLaptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs =  {inherit sharedConfig;};
+        specialArgs = { inherit (config_miLaptop) sharedConfig; };
         # TODO: nixpkgs/flake.nix 中找到 nixpkgs.lib.nixosSystem 的定义，跟踪它的源码，研究其实现方式。
         modules = [
           ./nixos
-          {
-            nixpkgs.config.allowUnfree = true;
-            nixpkgs.overlays = [
-              nur.overlays.default
-              dwm.overlays.default
-              picom.overlays.default
-            ];
-          }
+          pkgsConfig
           # home-manager as nixos module
           home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.seeker = import users/seeker/home.nix;
-
-            # Optionally, use home-manager.extraSpecialArgs to pass
-            # arguments to home.nix
-            home-manager.extraSpecialArgs = { inherit (inputs) winapps ; inherit sharedConfig; };
-            home-manager.backupFileExtension = "backup";
-          }
+          home-manager.extraSpecialArgs = { inherit (inputs) winapps; inherit (config_miLaptop) sharedConfig; };
+          home_managerConfig
+        ];
+      };
+      nixosConfigurations.LTG = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit (config_miLaptop) sharedConfig; };
+        modules = [
+          ./nixos
+          pkgsConfig
+          home-manager.nixosModules.home-manager
+          home-manager.extraSpecialArgs = { inherit (config_miLaptop) sharedConfig; };
+          home_managerConfig
         ];
       };
     };

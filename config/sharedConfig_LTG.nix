@@ -1,6 +1,6 @@
 ##########################################################
 #
-#  The global config for all .nix files
+#  The global config for all .nix files for LTG
 #  (passed to specialArgs in nixosSystem)
 #  specialArgs = {inherit sharedConfig;}
 #
@@ -10,7 +10,7 @@
 #
 ##########################################################
 {
-  # sharedConfig = {
-    desktop_environment = "dwm";
-  # };
+  sharedConfig = {
+    # desktop_environment = "dwm";
+  };
 }
