@@ -11,6 +11,7 @@
 ##########################################################
 {
   sharedConfig = {
+    machine = "miLaptop";
     desktop_environment = "dwm";
     software_package = "full";
   };

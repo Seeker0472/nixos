@@ -68,20 +68,20 @@
           # home-manager as nixos module
           home-manager.nixosModules.home-manager
           {
-          home-manager.extraSpecialArgs = { inherit (inputs) winapps; inherit (config_miLaptop) sharedConfig; };
+            home-manager.extraSpecialArgs = { inherit (inputs) winapps; inherit (config_miLaptop) sharedConfig; };
           }
           home_managerConfig
         ];
       };
       nixosConfigurations.LTG = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit (config_miLaptop) sharedConfig; };
+        specialArgs = { inherit (config_LTG) sharedConfig; };
         modules = [
           ./nixos
           pkgsConfig
           home-manager.nixosModules.home-manager
           {
-          home-manager.extraSpecialArgs = { inherit (config_miLaptop) sharedConfig; };
+            home-manager.extraSpecialArgs = { inherit (config_LTG) sharedConfig; };
           }
           home_managerConfig
         ];

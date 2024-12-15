@@ -11,6 +11,7 @@
 ##########################################################
 {
   sharedConfig = {
+    machine = "LTG";
     desktop_environment = "kde";
     software_package = "lite";
   };

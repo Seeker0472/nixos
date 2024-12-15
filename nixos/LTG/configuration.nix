@@ -5,33 +5,6 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  #HardWare AccelerationConfig
-  #https://nixos.wiki/wiki/Accelerated_Video_Playback
-  nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
-  };
-  hardware.graphics = {
-    # hardware.graphics on unstable
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      libvdpau-va-gl
-      vulkan-tools
-      libva
-      vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable;
-    ];
-  };
-
-  environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
-  hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux; [ intel-vaapi-driver ];
-  # nix.settings.system-features = [ "nixos-test" "benchmark" "big-parallel" "kvm" "gccarch-tigerlake" ];
-  # nixpkgs.hostPlatform = {
-  #   cpu.arch = "tigerlake";
-  #   gcc.tune = "tigerlake";
-  #   system = "x86_64-linux";
-  # };
-
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -40,6 +13,7 @@
 
   #i2c need user in group?
   hardware.i2c.enable = true;
+
 
   security.rtkit.enable = true;
   services.pipewire = {
@@ -68,26 +42,6 @@
     "openssl-1.1.1w"
   ];
 
-  #   services.tlp = {
-  #       enable = true;
-  #       settings = {
-  #         CPU_SCALING_GOVERNOR_ON_AC = "performance";
-  #         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-
-  #         CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-  #         CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-
-  #         CPU_MIN_PERF_ON_AC = 0;
-  #         CPU_MAX_PERF_ON_AC = 100;
-  #         CPU_MIN_PERF_ON_BAT = 0;
-  #         CPU_MAX_PERF_ON_BAT = 20;
-
-  #        #Optional helps save long term battery health
-  #        START_CHARGE_THRESH_BAT0 = 50; # 40 and bellow it starts to charge
-  #        STOP_CHARGE_THRESH_BAT0 = 90; # 80 and above it stops charging
-
-  #       };
-  # };
   services.auto-cpufreq.enable = true;
   services.auto-cpufreq.settings = {
     battery = {
@@ -104,20 +58,6 @@
     DefaultTimeoutStopSec=10s
   '';
 
-  #   ## Added-User
-  #   users.users.seekerRemote = {
-  #     isNormalUser = true;
-  #     description = "ryan";
-  #     extraGroups = [ "networkmanager" "wheel" ];
-  # #     openssh.authorizedKeys.keys = [
-  # #         # replace with your own public key
-  # #         "ssh-ed25519 <some-public-key> ryan@ryan-pc"
-  # #     ];
-  #     packages = with pkgs; [
-  #       firefox
-  #     #  thunderbird
-  #     ];
-  #   };
 
   # 将默认编辑器设置为 vim
   environment.variables.EDITOR = "vim";
