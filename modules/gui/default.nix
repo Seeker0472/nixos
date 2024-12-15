@@ -3,9 +3,10 @@
 {
   imports = [
     ./anyrun.nix
-    ./winapps.nix
   ]++(if sharedConfig.desktop_environment == "dwm" then [
     ./dwm.nix
     ./rofi.nix
-  ] else []);
+  ] else [])
+  ++(if sharedConfig.software_package == "full" then 
+  [./winapps.nix] else []);
 }

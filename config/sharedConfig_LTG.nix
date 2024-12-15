@@ -11,6 +11,7 @@
 ##########################################################
 {
   sharedConfig = {
-    # desktop_environment = "dwm";
+    desktop_environment = "kde";
+    software_package = "lite";
   };
 }

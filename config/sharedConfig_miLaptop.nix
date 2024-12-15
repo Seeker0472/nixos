@@ -12,5 +12,6 @@
 {
   sharedConfig = {
     desktop_environment = "dwm";
+    software_package = "full";
   };
 }

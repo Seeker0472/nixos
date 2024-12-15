@@ -36,7 +36,7 @@
     let
       system = "x86_64-linux";
       config_miLaptop = import ./config/sharedConfig_miLaptop.nix;
-      config_LTG = import ./config/sharedConfig_LTG.nix
+      config_LTG = import ./config/sharedConfig_LTG.nix;
       pkgs = import nixpkgs { inherit system; overlays = [ nur.overlays.default ]; };
       pkgsConfig = {
         nixpkgs.config.allowUnfree = true;
@@ -67,7 +67,9 @@
           pkgsConfig
           # home-manager as nixos module
           home-manager.nixosModules.home-manager
+          {
           home-manager.extraSpecialArgs = { inherit (inputs) winapps; inherit (config_miLaptop) sharedConfig; };
+          }
           home_managerConfig
         ];
       };
@@ -78,7 +80,9 @@
           ./nixos
           pkgsConfig
           home-manager.nixosModules.home-manager
+          {
           home-manager.extraSpecialArgs = { inherit (config_miLaptop) sharedConfig; };
+          }
           home_managerConfig
         ];
       };
