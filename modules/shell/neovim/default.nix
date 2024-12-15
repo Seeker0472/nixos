@@ -1,5 +1,6 @@
 { pkgs, ... }: {
   imports = [
-    ./nvim.nix
+    # ./nvim.nix
   ];
+  programs.neovim.enable=true;
 }
