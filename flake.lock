@@ -32,15 +32,16 @@
       "locked": {
         "lastModified": 1733646074,
         "narHash": "sha256-o0aGseq8VdVtPVPAxIL2+ojS6vtKug/Tms8H0SyJIOA=",
-        "ref": "refs/heads/develop",
+        "owner": "Seeker0472",
+        "repo": "dwm",
         "rev": "5467361ced6a91a2d3e392a0c6a5fb31999c47e6",
-        "revCount": 301,
-        "type": "git",
-        "url": "file:///home/seeker/Develop/dwm"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/seeker/Develop/dwm"
+        "owner": "Seeker0472",
+        "ref": "develop",
+        "repo": "dwm",
+        "type": "github"
       }
     },
     "flake-compat": {

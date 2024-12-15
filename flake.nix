@@ -12,8 +12,8 @@
     nur.url = "github:nix-community/NUR/7093ba2ffda3283744417f72e1ad6462f748da4d";
     anyrun.url = "github:anyrun-org/anyrun";
     anyrun.inputs.nixpkgs.follows = "nixpkgs";
-    # dwm.url = "github:Seeker0472/dwm/develop";
-    dwm.url = "/home/seeker/Develop/dwm/";
+    dwm.url = "github:Seeker0472/dwm/develop";
+    # dwm.url = "/home/seeker/Develop/dwm/";
     picom.url = "github:Seeker0472/picom";
     picom.inputs.nixpkgs.follows = "nixpkgs";
     dwm.inputs.nixpkgs.follows = "nixpkgs";

@@ -25,7 +25,6 @@
   services.tailscale.enable = true;
   # fix dns issue https://github.com/tailscale/tailscale/issues/4254
   services.resolved.enable = true;
-  # services.tailscale.useRoutingFeatures="both";
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.

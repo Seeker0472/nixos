@@ -6,6 +6,10 @@
 
 {
 
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
   # sound.enable = true;
@@ -42,17 +46,17 @@
     "openssl-1.1.1w"
   ];
 
-  services.auto-cpufreq.enable = true;
-  services.auto-cpufreq.settings = {
-    battery = {
-      governor = "powersave";
-      turbo = "never";
-    };
-    charger = {
-      governor = "performance";
-      turbo = "auto";
-    };
-  };
+  # services.auto-cpufreq.enable = true;
+  # services.auto-cpufreq.settings = {
+  #   battery = {
+  #     governor = "powersave";
+  #     turbo = "never";
+  #   };
+  #   charger = {
+  #     governor = "performance";
+  #     turbo = "auto";
+  #   };
+  # };
 
   systemd.extraConfig = ''
     DefaultTimeoutStopSec=10s

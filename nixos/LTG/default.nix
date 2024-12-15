@@ -4,6 +4,7 @@
 
   # TODO
   imports = [
+    ./hardware-configuration.nix
     ./configuration.nix
     # ./de_kde.nix
     ./connection.nix
