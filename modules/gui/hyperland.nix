@@ -35,7 +35,7 @@ in
   home.file = 
     mkHomeFile ./hypr ".config/hypr" //
     mkHomeFile ./waybar ".config/waybar" //
+    mkHomeFile ./wofi ".config/wofi" //
     mkHomeFile ./wallpaper "Pictures/wallpaper/default" ;
-  # TODO:wofi
 
 }

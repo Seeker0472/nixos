@@ -5,11 +5,11 @@ call_menu() {
 }
 
 call_power(){
-    case $(echo -e ' 关机\n  重启\n 󰒲 休眠\n  锁定' | wofi --show dmenu -window-title power) in
-    " 关机") poweroff ;;
-    " 重启") reboot ;;
-    "󰒲 休眠") systemctl hibernate ;;
-    " 锁定") notify-send "TODO" ;;
+    case $(echo -e '  Shutdown\n  Reboot\n 󰒲 Hibernate\n  Lock\n' | wofi --show dmenu) in
+    "  Shutdown") poweroff ;;
+    "  Reboot") reboot ;;
+    " 󰒲 Hibernate") systemctl hibernate ;;
+    "  Lock") hyprlock ;;
     esac
 }
 
