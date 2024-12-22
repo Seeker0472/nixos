@@ -6,9 +6,12 @@
     gnumake
     lazygit
 
+    # coursier
+
     gtkwave
     surfer # better wave
     clang-tools
+    # clang
     # rocmPackages_5.llvm.clang-tools-extra #clangd
   ];
 }

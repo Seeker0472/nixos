@@ -12,7 +12,7 @@
 {
   sharedConfig = {
     machine = "miLaptop";
-    desktop_environment = "dwm";
+    desktop_environment = "hyperland";
     software_package = "full";
   };
 }

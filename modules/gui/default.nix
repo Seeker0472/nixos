@@ -7,6 +7,9 @@
     ./dwm.nix
     ./rofi.nix
   ] else [])
+  ++(if sharedConfig.desktop_environment == "hyperland" then [
+    ./hyperland.nix 
+  ] else [])
   ++(if sharedConfig.software_package == "full" then 
   [./winapps.nix] else []);
 }

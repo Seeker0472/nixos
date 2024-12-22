@@ -8,7 +8,7 @@
     themeFile = "Catppuccin-Mocha";
     font = {
       name = "JetBrainsMono Nerd Font";
-      size = 22;
+      size = 18;
     };
     settings = {
       mouse_hide_wait = "-1.0";

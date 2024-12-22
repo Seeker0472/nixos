@@ -1,0 +1,60 @@
+/*
+* wofi style. Colors are from authors below.
+* Base16 Gruvbox dark, medium
+* Author: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
+*
+*/
+
+@define-color base00 #73a9e8;
+@define-color input_back #4886ce;
+@define-color input_font #e38178;
+
+window {
+    opacity: 0.9;
+    border:  0px;
+    border-radius: 10px;
+    font-family: monospace;
+    font-size: 18px;
+}
+
+#input {
+	border-radius: 10px 10px 0px 0px;
+    border:  0px;
+    padding: 10px;
+    margin: 0px;
+    font-size: 28px;
+	color: @input_font;
+	background-color: @input_back;
+}
+
+#inner-box {
+	margin: 0px;
+	color: @base06;
+	background-color: @base00;
+}
+
+#outer-box {
+	margin: 0px;
+	background-color: @base00;
+    border-radius: 10px;
+}
+
+#selected {
+	background-color: #608787;
+}
+
+#entry {
+	padding: 0px;
+    margin: 0px;
+	background-color: @base00;
+}
+
+#scroll {
+	margin: 5px;
+	background-color: @base00;
+}
+
+#text {
+	margin: 0px;
+	padding: 2px 2px 2px 10px;
+}

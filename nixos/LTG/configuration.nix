@@ -40,7 +40,7 @@
   users.users.seeker = {
     isNormalUser = true;
     description = "seeker";
-    extraGroups = [ "networkmanager" "wheel" "audio" "i2c" "docker" "dialout" "disk" ];
+    extraGroups = [ "networkmanager" "wheel" "audio" "i2c" "docker" "dialout" "disk" "input"];
   };
   nixpkgs.config.permittedInsecurePackages = [
     "openssl-1.1.1w"
