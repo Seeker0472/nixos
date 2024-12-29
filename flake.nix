@@ -8,12 +8,19 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nix-on-droid = {
+      url = "github:nix-community/nix-on-droid/release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # lock nur
     nur.url = "github:nix-community/NUR/7093ba2ffda3283744417f72e1ad6462f748da4d";
     anyrun.url = "github:anyrun-org/anyrun";
     anyrun.inputs.nixpkgs.follows = "nixpkgs";
+
+
+    hyprland-qtutils.url = "github:hyprwm/hyprland-qtutils";
+
     dwm.url = "github:Seeker0472/dwm/develop";
-    # dwm.url = "/home/seeker/Develop/dwm/";
     picom.url = "github:Seeker0472/picom";
     picom.inputs.nixpkgs.follows = "nixpkgs";
     dwm.inputs.nixpkgs.follows = "nixpkgs";
@@ -32,11 +39,12 @@
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, anyrun, dwm, winapps, picom, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, anyrun, dwm, winapps, picom, nix-on-droid, hyprland-qtutils, ... }@inputs:
     let
       system = "x86_64-linux";
       config_miLaptop = import ./config/sharedConfig_miLaptop.nix;
       config_LTG = import ./config/sharedConfig_LTG.nix;
+      config_miPad = import ./config/sharedConfig_miPad.nix;
       pkgs = import nixpkgs { inherit system; overlays = [ nur.overlays.default ]; };
       pkgsConfig = {
         nixpkgs.config.allowUnfree = true;
@@ -44,6 +52,7 @@
           nur.overlays.default
           dwm.overlays.default
           picom.overlays.default
+          hyprland-qtutils.overlays.default
         ];
       };
       home_managerConfig = {
@@ -85,6 +94,19 @@
           }
           home_managerConfig
         ];
+      };
+      nixOnDroidConfigurations.miPad = nix-on-droid.lib.nixOnDroidConfiguration {
+        specialArgs = { inherit (config_miPad) sharedConfig; };
+        modules = [
+          ./nixos
+          pkgsConfig
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.extraSpecialArgs = { inherit (config_miPad) sharedConfig; };
+          }
+          home_managerConfig
+        ];
+
       };
     };
 }

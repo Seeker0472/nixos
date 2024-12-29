@@ -20,7 +20,8 @@ let
       (copyDirRecursively fromDir toDir);
 in
 {
-  home.packages = with pkgs;[ 
+  home.packages = with pkgs;[
+    hyprland-qtutils
     hyprpaper
     hyprlock
     wofi

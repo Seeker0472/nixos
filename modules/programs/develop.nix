@@ -3,8 +3,9 @@
     jetbrains.idea-ultimate
     # jetbrains.clion
     # jetbrains.pycharm-professional
+    vscode
 
-    pkgs.nur.repos.lschuermann.vivado-2022_2
+    # pkgs.nur.repos.lschuermann.vivado-2022_2
     # ciscoPacketTracer8
   ];
 }

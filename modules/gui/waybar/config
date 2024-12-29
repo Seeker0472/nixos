@@ -44,7 +44,7 @@
         "format-linked": "{ifname} (No IP) 󰛵 ",
         "format-disconnected": "Disconnected  ",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
-        "on-click": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG nmtui-connect",
+        "on-click": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&& nmcli device wifi rescan &&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG nmtui-connect",
         },
     "cpu": {
         "format": "{usage}%  ",

@@ -1,8 +1,9 @@
-{ pkgs, nur, ... }: {
+{ pkgs, nur, sharedConfig, ... }: {
   imports = [
     ./basic_program.nix
     ./develop_basic.nix
     ./productity_basic.nix
-    ./vscode.nix
-  ];
+  ] ++ (if sharedConfig.software_package == "cli" then [ ] else [
+    # ./vscode.nix
+  ]);
 }

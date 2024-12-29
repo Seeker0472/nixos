@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./anyrun.nix
+    # ./anyrun.nix
   ]++(if sharedConfig.desktop_environment == "dwm" then [
     ./dwm.nix
     ./rofi.nix
