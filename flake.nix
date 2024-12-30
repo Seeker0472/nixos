@@ -95,7 +95,7 @@
           home_managerConfig
         ];
       };
-      nixOnDroidConfigurations.miPad = nix-on-droid.lib.nixOnDroidConfiguration {
+      nixOnDroidConfigurations.default = nix-on-droid.lib.nixOnDroidConfiguration {
         specialArgs = { inherit (config_miPad) sharedConfig; };
         modules = [
           ./nixos
