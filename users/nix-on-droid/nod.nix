@@ -12,6 +12,9 @@ imports = [
     userName = "seeker";
     userEmail = "gmx472@qq.com";
   };
+  programs.bash.bashrcExtra= ''
+    exec fish
+  '';
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
   # when a new Home Manager release introduces backwards

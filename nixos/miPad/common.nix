@@ -18,6 +18,9 @@
   '';
 
   # terminal.font = ${pkgs.terminus_font_ttf}/share/fonts/truetype/TerminusTTF.ttf;
-  user.shell= "${pkgs.fish}/bin/fish";
+  # user.shell= "${pkgs.fish}/bin/fish";
+
+  
+
   time.timeZone = "Asia/Hong_Kong";
 }
