@@ -97,9 +97,9 @@
       };
       nixOnDroidConfigurations.default = nix-on-droid.lib.nixOnDroidConfiguration {
         pkgs = import nixpkgs { system = "aarch64-linux"; };
-        specialArgs = { inherit (config_miPad) sharedConfig; };
+        # specialArgs = { inherit (config_miPad) sharedConfig; };
         modules = [
-          ./nixos
+          ./nixos/miPad
           pkgsConfig
           home-manager.nixosModules.home-manager
           {
