@@ -6,6 +6,7 @@
   "modules-center": ["hyprland/window"],
   "modules-right": [
         "pulseaudio",
+        "bluetooth",
         "network",
         "cpu",
         "memory",
@@ -44,17 +45,17 @@
         "format-linked": "{ifname} (No IP) 󰛵 ",
         "format-disconnected": "Disconnected  ",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
-        "on-click": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&& nmcli device wifi rescan &&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG nmtui-connect",
+        "on-click-right": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&& nmcli device wifi rescan &&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG nmtui-connect",
         },
     "cpu": {
         "format": "{usage}%  ",
         "tooltip": false,
-        "on-click": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG btop",
+        "on-click-right": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG btop",
     },
     "memory": {
         "format": "{}%  ",
         "tooltip-format": "{used:0.1f}/{total:0.1f}GiB Mem \n{swapUsed:0.1f}/{swapTotal:0.1f}GiB Swap",
-        "on-click": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG btop",
+        "on-click-right": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG btop",
     },
     "temperature": {
         // "thermal-zone": 2,
@@ -86,11 +87,23 @@
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "format-alt": "{:%Y-%m-%d}",
-        "on-click" : "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14  -o confirm_os_window_close=0 --class RTG nvim ~/.todo.md"
+        "on-click-right" : "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14  -o confirm_os_window_close=0 --class RTG nvim ~/.todo.md"
     },
     "tray": {
         //"icon-size": 21,
         "spacing": 4
-    }
+    },
+    "bluetooth": {
+  	"format": " {status}",
+  	"format-connected": " {num_connections}",
+    "format-alt": " {device_alias}",
+  	// "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+  	// "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
+  	"tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+  	"tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+  	"tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+  	"tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+    "on-click-right" : "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14  -o confirm_os_window_close=0 --class RTG bluetuith"
+    } 
 
 }

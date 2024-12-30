@@ -10,6 +10,6 @@
   ++(if sharedConfig.desktop_environment == "hyperland" then [
     ./hyperland.nix 
   ] else [])
-  ++(if sharedConfig.software_package == "full" then 
+  ++(if builtins.elem "tools_full" sharedConfig.software_package then 
   [./winapps.nix] else []);
 }

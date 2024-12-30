@@ -3,9 +3,7 @@
     axel #Console app for parallel connection
 
     # networkmanagerapplet
-
-  ] ++ (if sharedConfig.software_package == "cli" then [ ] else [
-
+  ] ++ (if builtins.elem "gui" sharedConfig.software_package then [
     # communication
     qq
     wechat-uos
@@ -17,8 +15,14 @@
     xfce.thunar # file manager
     gparted
     clash-verge-rev
-
-  ]);
+    ncdu
+    # games
+    hmcl
+  ] else [ ])
+  ++ (if builtins.elem "tools_full" sharedConfig.software_package then [
+    obs-studio
+    libsForQt5.kdenlive
+  ] else [ ]);
   # home.packages = with pkgs; [
   # (pkgs.myApp.overrideAttrs (oldAttrs: {
   #   postInstall = ''

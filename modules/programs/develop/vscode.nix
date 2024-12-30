@@ -1,10 +1,10 @@
 { pkgs, ... }:
 let
-plugins = import ./vscode_plugin.nix;
+  plugins = import ./vscode_plugin.nix;
 in
 {
   #jq for script
-  home.packages = with pkgs;[jq];
+  home.packages = with pkgs;[ jq ];
   # home.packages = with pkgs;[vscode];
   programs.vscode = {
     enable = true;
@@ -17,7 +17,7 @@ in
       # git
       "git.suggestSmartCommit" = false;
       "git.autofetch" = true;
-      
+
       "files.watcherExclude" = {
         "**/.bloop" = true;
         "**/.metals" = true;
@@ -39,8 +39,8 @@ in
       # "vim.autoSwitchInputMethod.switchIMCmd" = "fcitx5-remote -t 2";
       # "vim.useSystemClipboard"= true;
 
-      };
-    extensions = pkgs.vscode-utils.extensionsFromVscodeMarketplace plugins.extensions;    
     };
+    extensions = pkgs.vscode-utils.extensionsFromVscodeMarketplace plugins.extensions;
+  };
 
-  }
+}

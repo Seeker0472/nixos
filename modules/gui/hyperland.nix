@@ -24,6 +24,7 @@ in
     hyprland-qtutils
     hyprpaper
     hyprlock
+    bluetuith
     wofi
     mako
     pavucontrol

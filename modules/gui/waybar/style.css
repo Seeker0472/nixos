@@ -110,6 +110,7 @@ button:hover {
 #idle_inhibitor,
 #scratchpad,
 #power-profiles-daemon,
+#bluetooth,
 #mpd {
     padding: 0 10px;
     color: #ffffff;
@@ -343,3 +344,21 @@ label:focus {
 #privacy-item.audio-out {
     background-color: #0069d4;
 }
+
+#bluetooth.disabled,
+#bluetooth.off {
+    background-color: #1f2426;
+}
+#bluetooth.on,
+#bluetooth.discoverable,
+#bluetooth.discovering,
+#bluetooth.pairable {
+    background-color: #60d2ff;
+}
+#bluetooth.connected {
+    background-color: #b400d4;
+}
+
+#bluetooth.no-controller {
+    background-color: #ff0000;
+} 
