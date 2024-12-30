@@ -4,8 +4,6 @@ imports = [
     ../../modules/programs
     ../../modules/shell
     ../../modules/gui
-    # ../../modules/input
-    ../../modules/input
   ];
 
   # git 相关配置
