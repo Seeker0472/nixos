@@ -2,6 +2,8 @@
   environment.packages = with pkgs;[
     vim
     git
+    curl
+    unixtools.column #dep for omf
   ];
   # Backup etc files instead of failing to activate generation if a file already exists in /etc
   environment.etcBackupExtension = ".bak";
@@ -15,6 +17,6 @@
   '';
 
   # terminal.font = ${pkgs.terminus_font_ttf}/share/fonts/truetype/TerminusTTF.ttf;
-  user.shell= ${pkgs.fish}/bin/fish;
+  user.shell= "${pkgs.fish}/bin/fish";
   time.timeZone = "Asia/Hong_Kong";
 }
