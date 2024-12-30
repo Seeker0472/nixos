@@ -10,6 +10,7 @@
 
     # multimedia
     vlc
+    mpv
 
     #utils
     xfce.thunar # file manager
