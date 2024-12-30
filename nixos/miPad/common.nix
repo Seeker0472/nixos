@@ -1,8 +1,8 @@
-{ pkgs, ... }:{
- environment.packages =  with pkgs;[
+{ pkgs, ... }: {
+  environment.packages = with pkgs;[
     vim
     git
- ];
+  ];
   # Backup etc files instead of failing to activate generation if a file already exists in /etc
   environment.etcBackupExtension = ".bak";
 
@@ -12,6 +12,6 @@
   # Set up nix for flakes
   nix.extraOptions = ''
     experimental-features = nix-command flakes
-  ''; 
-  time.timeZone = "Asia/Hong_Kong"
+  '';
+  time.timeZone = "Asia/Hong_Kong";
 }
