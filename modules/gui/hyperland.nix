@@ -34,6 +34,7 @@ in
     pavucontrol
     networkmanager # tui network
     libnotify # notify-send
+    acpi # battery
     brightnessctl
     grim
     slurp
