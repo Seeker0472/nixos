@@ -6,10 +6,14 @@
       efiSysMountPoint = "/boot";
     };
     grub = {
-
       devices = [ "nodev" ];
       efiSupport = true;
       enable = true;
+      theme = pkgs.sleek-grub-theme.override {
+            # withStyle = "dark";
+            withBanner = "Welcome!";
+          };
+                configurationLimit = 10;
       # Win10 Disk
       extraEntries = ''
         menuentry "Windows 10" {
