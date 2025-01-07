@@ -12,7 +12,7 @@
     # clang
     # rocmPackages_5.llvm.clang-tools-extra #clang
   ] ++ (if builtins.elem "develop_full" sharedConfig.software_package then [
-    jetbrains.idea-ultimate
+    # jetbrains.idea-ultimate
     # jetbrains.clion
     # jetbrains.pycharm-professional
     vscode
