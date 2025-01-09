@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   imports = [
     # ./nvim.nix
+	./map.nix
   ];
   programs.neovim.enable = true;
   home.packages = with pkgs;[
