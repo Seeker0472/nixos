@@ -13,7 +13,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # lock nur
-    nur.url = "github:nix-community/NUR/7093ba2ffda3283744417f72e1ad6462f748da4d";
+    # nur.url = "github:nix-community/NUR/7093ba2ffda3283744417f72e1ad6462f748da4d";
+    nur.url = "github:nix-community/NUR";
     anyrun.url = "github:anyrun-org/anyrun";
     anyrun.inputs.nixpkgs.follows = "nixpkgs";
 
