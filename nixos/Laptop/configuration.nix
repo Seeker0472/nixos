@@ -34,9 +34,9 @@
 
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   # sound.enable = true;
-  hardware.pulseaudio.package = pkgs.pulseaudioFull;
+  services.pulseaudio.package = pkgs.pulseaudioFull;
 
   #i2c need user in group?
   hardware.i2c.enable = true;
