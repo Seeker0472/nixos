@@ -287,13 +287,13 @@ tmux_conf_theme_pairing_bg="none"
 tmux_conf_theme_pairing_attr="none"
 
 # prefix indicator
-tmux_conf_theme_prefix="⌨"                  # U+2328
+tmux_conf_theme_prefix=""                  # U+2328
 tmux_conf_theme_prefix_fg="none"
 tmux_conf_theme_prefix_bg="none"
 tmux_conf_theme_prefix_attr="none"
 
 # mouse indicator
-tmux_conf_theme_mouse="↗"                   # U+2197
+tmux_conf_theme_mouse="󰍽"                   # U+2197
 tmux_conf_theme_mouse_fg="none"
 tmux_conf_theme_mouse_bg="none"
 tmux_conf_theme_mouse_attr="none"
@@ -376,6 +376,10 @@ tmux_conf_urlscan_options="--compact --dedupe"
 
 # increase history size
 set -g history-limit 60000
+
+# starting window-index from 1
+set -g base-index 1
+setw -g pane-base-index 1
 
 # start with mouse mode enabled
 set -g mouse on
