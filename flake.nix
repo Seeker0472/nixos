@@ -19,7 +19,7 @@
     anyrun.inputs.nixpkgs.follows = "nixpkgs";
 
 
-    hyprland-qtutils.url = "github:hyprwm/hyprland-qtutils";
+    # hyprland-qtutils.url = "github:hyprwm/hyprland-qtutils";
 
     dwm.url = "github:Seeker0472/dwm/develop";
     picom.url = "github:Seeker0472/picom";
@@ -40,7 +40,7 @@
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, anyrun, dwm, winapps, picom, nix-on-droid, hyprland-qtutils, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, anyrun, dwm, winapps, picom, nix-on-droid,  ... }@inputs:
     let
       system = "x86_64-linux";
       config_miLaptop = import ./config/sharedConfig_miLaptop.nix;
@@ -53,7 +53,6 @@
           nur.overlays.default
           dwm.overlays.default
           picom.overlays.default
-          hyprland-qtutils.overlays.default
         ];
       };
       home_managerConfig = {

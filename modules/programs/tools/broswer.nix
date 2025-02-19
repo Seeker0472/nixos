@@ -3,7 +3,7 @@
   ] ++ (if builtins.elem "gui" sharedConfig.software_package then [
     #broswer
     google-chrome
-    microsoft-edge
+#    microsoft-edge
     chromium
   ] else [ ]);
 }

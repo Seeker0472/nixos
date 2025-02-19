@@ -12,7 +12,8 @@
     };
     settings = {
       mouse_hide_wait = "-1.0";
-          remember_window_size = "no";
+      remember_window_size = "no";
+      cursor_trail = "3";
     initial_window_width="90c";
     initial_window_height="26c";
     };
