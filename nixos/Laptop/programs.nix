@@ -77,6 +77,18 @@
     openFirewall = true;
   };
 
+#  services.mysql = {
+#   enable = true;
+#   package = pkgs.mariadb;
+#  ensureUsers = [{
+#    name = "seeker";
+#    ensurePermissions = {
+#      "seeker.*" = "ALL PRIVILEGES";
+#      "mysql.*" = "ALL PRIVILEGES";
+#    };
+#   }];
+#  };
+
   #input method
   i18n.inputMethod = {
     enable = true;
