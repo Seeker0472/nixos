@@ -8,7 +8,7 @@ return {
 		},
 		config = function()
 			require("mason-null-ls").setup({
-				ensure_installed = { "stylua", "jq", "black","clang-format","nixpkgs-fmt" },
+				ensure_installed = { "stylua", "jq", "black", "clang-format", "nixpkgs-fmt" },
 			})
 		end,
 	},

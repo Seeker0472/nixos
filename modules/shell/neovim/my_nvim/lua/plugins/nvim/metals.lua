@@ -15,18 +15,18 @@ return {
 		metals_config.settings = {
 			showImplicitArguments = true,
 			excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-      millScript = 'mill'
+			millScript = "mill",
 		}
 
-    -- notify by fidget
+		-- notify by fidget
 		metals_config.init_options.statusBarProvider = "off"
 
 		-- Example if you are using cmp how to make sure the correct capabilities for snippets are set
 		metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 		metals_config.on_attach = function(client, bufnr)
-      -- vim.keymap.set("n", "gD", vim.lsp.buf.definition)
-    end
+			-- vim.keymap.set("n", "gD", vim.lsp.buf.definition)
+		end
 
 		return metals_config
 	end,

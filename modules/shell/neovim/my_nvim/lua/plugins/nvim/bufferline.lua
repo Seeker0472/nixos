@@ -17,9 +17,9 @@ return {
 						text_align = "left",
 					},
 				},
-        separator_style = "slant",
-        always_show_bufferline = true,
-				highlights = require("catppuccin.groups.integrations.bufferline").get(),
+				separator_style = "slant",
+				always_show_bufferline = true,
+				-- highlights = require("catppuccin.groups.integrations.bufferline").get(),
 			},
 		})
 	end,

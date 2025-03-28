@@ -19,7 +19,7 @@
 
   #mirror and allfirmware
   hardware.enableAllFirmware = true;
-  nix.settings.substituters = [ "https://mirrors.ustc.edu.cn/nix-channels/store" ];
+  nix.settings.substituters = [ "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store" "https://mirrors.ustc.edu.cn/nix-channels/store" ];
 
   # do garbage collection weekly to keep disk usage low
   nix.gc = {

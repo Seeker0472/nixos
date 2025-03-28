@@ -3,14 +3,14 @@ return {
 	url = "git@github.com:lewis6991/gitsigns.nvim.git",
 	config = function()
 		require("gitsigns").setup({
-      -- TODO: Configure
+			-- TODO: Configure
 			signs = {
 				add = { text = "+" },
 				change = { text = "C" },
 				delete = { text = "D" },
 				topdelete = { text = "TD" },
 				changedelete = { text = "CD" },
-        untracked = { text = "U"},
+				untracked = { text = "U" },
 			},
 		})
 	end,
