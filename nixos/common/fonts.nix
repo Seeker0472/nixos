@@ -1,34 +1,4 @@
 { config, lib, pkgs, modulesPath, ... }:
-let
-  # TODO: Necessary?
-  materal-disign-icons-locked = (pkgs.material-design-icons.overrideAttrs (oldAttrs: rec {
-    version = "7.4.47";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "Templarian";
-      repo = "MaterialDesign-Webfont";
-      rev = "v${version}";
-      hash = "sha256-7t3i3nPJZ/tRslLBfY+9kXH8TR145GC2hPFYJeMHRL8=";
-      sparseCheckout = [ "fonts" ];
-    };
-
-    installPhase = ''
-      runHook preInstall
-
-      mkdir -p "$out/share/fonts/"{eot,truetype,woff,woff2}
-      cp fonts/*.eot "$out/share/fonts/eot/"
-      cp fonts/*.ttf "$out/share/fonts/truetype/"
-      cp fonts/*.woff "$out/share/fonts/woff/"
-      cp fonts/*.woff2 "$out/share/fonts/woff2/"
-
-      runHook postInstall
-    '';
-
-    passthru.updateScript = pkgs.nix-update-script { };
-
-    patches = [ ]; # 禁用所有补丁
-  }));
-in
 {
   nixpkgs.config.joypixels.acceptLicense = true;
   fonts = {
@@ -37,20 +7,24 @@ in
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
       wqy_microhei
-      wqy_zenhei
       sarasa-gothic #更纱黑体
-      source-code-pro
-      hack-font
-      jetbrains-mono
+      # jetbrains-mono
+      maple-mono.NF-CN
 
-      nerd-fonts.fira-code
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.symbols-only
-      # material-design-icons
-      materal-disign-icons-locked
+      # nerd-fonts.fira-code
+      # nerd-fonts.jetbrains-mono
+      # nerd-fonts.symbols-only
       joypixels
-      wqy_microhei
     ];
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        sansSerif = [ "Noto Sans CJK SC" ];
+        serif = [ "Noto Serif CJK SC" ];
+        monospace = [ "Maple Mono NF CN" ];
+        emoji = [ "JoyPixels" ];
+      };
+    };
   };
 
 }

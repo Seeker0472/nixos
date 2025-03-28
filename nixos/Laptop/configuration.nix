@@ -15,9 +15,9 @@
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+      # intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
       libvdpau-va-gl
-      vulkan-tools
+      # vulkan-tools
       libva
       vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable;
     ];
@@ -68,17 +68,18 @@
     "openssl-1.1.1w"
   ];
 
-  services.auto-cpufreq.enable = true;
-  services.auto-cpufreq.settings = {
-    battery = {
-      governor = "powersave";
-      turbo = "never";
-    };
-    charger = {
-      governor = "performance";
-      turbo = "auto";
-    };
-  };
+# TODO
+#  services.auto-cpufreq.enable = true;
+#  services.auto-cpufreq.settings = {
+#    battery = {
+#      governor = "powersave";
+#      turbo = "never";
+#    };
+#    charger = {
+#      governor = "performance";
+#      turbo = "auto";
+#    };
+#  };
   services.sunshine = {
     enable = true;
     autoStart = true;

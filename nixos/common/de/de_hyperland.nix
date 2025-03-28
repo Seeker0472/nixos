@@ -13,7 +13,7 @@
   environment.systemPackages = with pkgs;[
     (pkgs.catppuccin-sddm.override {
       flavor = "mocha";
-      font = "JetBrainsMono Nerd Font";
+      font = "Maple Mono NF CN";
       # ClockEnabled
       fontSize = "24";
       # background = "${./wallpaper.png}";
