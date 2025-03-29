@@ -4,8 +4,6 @@
 {
   # inputs 中的每一项依赖有许多类型与定义方式，可以是另一个 flake，也可以是一个普通的 Git 仓库，又或者一个本地路径。
   inputs = {
-    # 定义了 nixpkgs 这一个依赖项，使用的是 flake 中最常见的引用方式，即github:owner/name/reference，这里的 reference 可以是分支名、commit-id 或 tag。
-
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
     nix-on-droid = {
@@ -13,13 +11,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # lock nur
-    # nur.url = "github:nix-community/NUR/7093ba2ffda3283744417f72e1ad6462f748da4d";
     nur.url = "github:nix-community/NUR";
-    anyrun.url = "github:anyrun-org/anyrun";
-    anyrun.inputs.nixpkgs.follows = "nixpkgs";
-
-
-    # hyprland-qtutils.url = "github:hyprwm/hyprland-qtutils";
 
     dwm.url = "github:Seeker0472/dwm/develop";
     picom.url = "github:Seeker0472/picom";
@@ -40,7 +32,7 @@
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, anyrun, dwm, winapps, picom, nix-on-droid,  ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, dwm, winapps, picom, nix-on-droid,  ... }@inputs:
     let
       system = "x86_64-linux";
       config_miLaptop = import ./config/sharedConfig_miLaptop.nix;
