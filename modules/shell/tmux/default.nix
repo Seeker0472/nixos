@@ -1,4 +1,10 @@
-{ pkgs, ... }: {
+{ config, pkgs, ... }:
+let
+  tmux_conf_base =  "${config.home.homeDirectory}/nixos-config/modules/shell/tmux";
+  tmuxconfig_path = "${tmux_conf_base}/config.home.homeDirectory/tmux.conf";
+  tmuxlocal_path = "${tmux_conf_base}/tmux.conf.local";
+in
+{
   programs.tmux = {
     enable = true;
     #     # shortcut = "a";
@@ -8,7 +14,7 @@
     #     extraConfig = ''
     # '';
   };
-  home.file.".tmux.conf".source = ./.tmux.conf;
-  home.file.".tmux.conf.local".source = ./.tmux.conf.local;
-  # These files copied from oh-my-tmux
+
+  home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink tmuxconfig_path;
+  home.file.".tmux.conf.local".source = config.lib.file.mkOutOfStoreSymlink tmuxlocal_path;
 }

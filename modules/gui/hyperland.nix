@@ -1,24 +1,10 @@
 { config, lib, pkgs, ... }:
 let
-  copyDir = fromDir: toDir: # fromDir is a path, toDir is a string.
-    lib.mapAttrs'
-      (name: value: lib.nameValuePair (toDir + "/" + name)
-        (fromDir + "/${name}"))
-      (lib.filterAttrs (name: value: value == "regular")
-        (builtins.readDir fromDir));
-  copyDirRecursively = fromDir: toDir:
-    builtins.foldl'
-      (a: b: a // b)
-      (copyDir fromDir toDir)
-      (lib.mapAttrsToList
-        (name: value: copyDirRecursively (fromDir + "/${name}")
-          (toDir + "/" + name))
-        (lib.filterAttrs (name: value: value == "directory")
-          (builtins.readDir fromDir)));
-  mkHomeFile = fromDir: toDir:
-    lib.mapAttrs'
-      (name: value: lib.nameValuePair name ({ source = lib.mkDefault value; }))
-      (copyDirRecursively fromDir toDir);
+  gui_path_base = "${config.home.homeDirectory}/nixos-config/modules/gui";
+  hyprland_path = "${gui_path_base}/hypr";
+  waybar_path = "${gui_path_base}/waybar";
+  wofi_path = "${gui_path_base}/wofi";
+  wallpaper_path = "${gui_path_base}/wallpaper";
 in
 {
   home.packages = with pkgs;[
@@ -39,10 +25,8 @@ in
     grim
     slurp
   ];
-  home.file =
-    mkHomeFile ./hypr ".config/hypr" //
-    mkHomeFile ./waybar ".config/waybar" //
-    mkHomeFile ./wofi ".config/wofi" //
-    mkHomeFile ./wallpaper "Pictures/wallpaper/default";
-
+    home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink hyprland_path;
+    home.file.".config/waybar".source = config.lib.file.mkOutOfStoreSymlink waybar_path;
+    home.file.".config/wofi".source = config.lib.file.mkOutOfStoreSymlink wofi_path;
+    home.file."Pictures/wallpaper/default".source = config.lib.file.mkOutOfStoreSymlink wallpaper_path;
 }
