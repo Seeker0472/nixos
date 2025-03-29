@@ -68,18 +68,17 @@
     "openssl-1.1.1w"
   ];
 
-# TODO
-#  services.auto-cpufreq.enable = true;
-#  services.auto-cpufreq.settings = {
-#    battery = {
-#      governor = "powersave";
-#      turbo = "never";
-#    };
-#    charger = {
-#      governor = "performance";
-#      turbo = "auto";
-#    };
-#  };
+  services.auto-cpufreq.enable = true;
+  services.auto-cpufreq.settings = {
+    battery = {
+      governor = "powersave";
+      turbo = "never";
+    };
+    charger = {
+      governor = "performance";
+      turbo = "auto";
+    };
+  };
   services.sunshine = {
     enable = true;
     autoStart = true;
