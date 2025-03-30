@@ -32,6 +32,9 @@
   #   system = "x86_64-linux";
   # };
 
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_PATH}=="platform-i8042-serio-0", RUN+="${pkgs.kbd}/bin/setkeycodes e072 148"
+  '';
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
