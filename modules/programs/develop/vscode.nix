@@ -7,37 +7,38 @@ in
   home.packages = with pkgs;[ jq ];
   # home.packages = with pkgs;[vscode];
   programs.vscode = {
-    enable = true;
-    enableUpdateCheck = false;
-    enableExtensionUpdateCheck = false;
-    # mutableExtensionsDir = false;
-    # settings
-    userSettings = {
-      "files.autoSave" = "onFocusChange";
-      # git
-      "git.suggestSmartCommit" = false;
-      "git.autofetch" = true;
-
-      "files.watcherExclude" = {
-        "**/.bloop" = true;
-        "**/.metals" = true;
-        "**/.ammonite" = true;
-      };
-      "C_Cpp.intelliSenseEngine" = "disabled";
-      "digital-ide.welcome.show" = false;
-      "metals.inlayHints.hintsInPatternMatch.enable" = true;
-      # markdown
-      "markdown.marp.enableHtml" = true;
-      "markdown.marp.exportType" = "html";
-      "markdown-pdf.executablePath" = "chromium";
-
-      "workbench.colorTheme" = "Night Owl"; # TODO
-      # vims
-      # "vim.autoSwitchInputMethod.enable" = true;
-      # "vim.autoSwitchInputMethod.defaultIM" = "2";
-      # "vim.autoSwitchInputMethod.obtainIMCmd" = "fcitx5-remote";
-      # "vim.autoSwitchInputMethod.switchIMCmd" = "fcitx5-remote -t 2";
-      # "vim.useSystemClipboard"= true;
+  "extensions.autoCheckUpdates": false,
+  "files.autoSave": "onFocusChange",
+  "files.watcherExclude": {
+    "**/.ammonite": true,
+    "**/.bloop": true,
+    "**/.metals": true
+  },
+  "git.autofetch": true,
+  "git.suggestSmartCommit": false,
+  "markdown-pdf.executablePath": "chromium",
+  "markdown.marp.enableHtml": true,
+  "markdown.marp.exportType": "html",
+  "update.mode": "none",
+  "workbench.colorTheme": "Monokai Pro (Filter Octagon)",
+  "vscode-neovim.neovimInitVimPaths.linux": "/home/seeker/.config/nvim/init.lua",
+  "vscode-neovim.compositeKeys": {
+    "jk": {
+      "command": "vscode-neovim.escape",
+    },
+  },
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "workbench.iconTheme": "Monokai Pro (Filter Octagon) Monochrome Icons",
+  "git.confirmSync": false,
+  "vscode_custom_css.imports": [
+   "file:///home/seeker/.config/Code/User/custom.css" 
+  ],
+  "monokaiPro.fileIconsMonochrome": true,
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "makefile.configureOnOpen": true,
+  "workbench.editor.tabActionCloseVisibility": fals
 
     };
     extensions = pkgs.vscode-utils.extensionsFromVscodeMarketplace plugins.extensions;
