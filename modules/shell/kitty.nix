@@ -14,6 +14,7 @@
       mouse_hide_wait = "-1.0";
       remember_window_size = "no";
       cursor_trail = "3";
+      shell = "${pkgs.fish}/bin/fish";
     initial_window_width="90c";
     initial_window_height="26c";
     };

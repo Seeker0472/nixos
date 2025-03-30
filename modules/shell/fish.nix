@@ -8,6 +8,11 @@ programs.fish = {
       set theme_date_format +"%b/%e|%a %H:%M.%S"
       function fish_greeting; end
     '';
+    shellAliases = {
+      nfp = "nix-shell --run fish -p";
+      gd = "git difftool -d";
+      nrs = "sudo nixos-rebuild switch";
+    };
     # plugins = [
     #   # Enable a plugin (here grc for colorized command output) from nixpkgs
     #   { name = "grc"; src = pkgs.fishPlugins.grc.src; }
