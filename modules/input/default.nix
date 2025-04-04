@@ -1,6 +1,1 @@
-{ pkgs, ... }: {
-  imports = [
-    ./conf
-    ./mapping.nix
-  ];
-}
+{ pkgs, ... }: { imports = [ ./conf ./mapping.nix ]; }

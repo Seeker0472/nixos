@@ -1,6 +1,6 @@
-{ pkgs,lib, ... }: {
+{ pkgs, lib, ... }: {
   #kitty terminal
-  programs.kitty = lib.mkForce{
+  programs.kitty = lib.mkForce {
     enable = true;
     # kitty has catppuccin theme built-in,
     # all the built-in themes are packaged into an extra package named `kitty-themes`
@@ -15,10 +15,9 @@
       remember_window_size = "no";
       cursor_trail = "3";
       shell = "${pkgs.fish}/bin/fish";
-    initial_window_width="90c";
-    initial_window_height="26c";
+      initial_window_width = "90c";
+      initial_window_height = "26c";
     };
-
 
   };
   # home.file.".config/kitty/float_middle".text = ''

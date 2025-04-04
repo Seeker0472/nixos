@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-programs.fish = {
+  programs.fish = {
     enable = true;
     # TODO:添加OMF
     interactiveShellInit = ''
@@ -29,8 +29,9 @@ programs.fish = {
     #   }
     # ];
   };
-  home.packages = with pkgs;[
-    # oh-my-fish
-    subversion
-  ];
+  home.packages = with pkgs;
+    [
+      # oh-my-fish
+      subversion
+    ];
 }

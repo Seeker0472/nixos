@@ -1,4 +1,4 @@
-###################################################################
+# ##################################################################
 #  system software and it's configuration
 ###################################################################
 
@@ -77,26 +77,23 @@
     openFirewall = true;
   };
 
-#  services.mysql = {
-#   enable = true;
-#   package = pkgs.mariadb;
-#  ensureUsers = [{
-#    name = "seeker";
-#    ensurePermissions = {
-#      "seeker.*" = "ALL PRIVILEGES";
-#      "mysql.*" = "ALL PRIVILEGES";
-#    };
-#   }];
-#  };
+  #  services.mysql = {
+  #   enable = true;
+  #   package = pkgs.mariadb;
+  #  ensureUsers = [{
+  #    name = "seeker";
+  #    ensurePermissions = {
+  #      "seeker.*" = "ALL PRIVILEGES";
+  #      "mysql.*" = "ALL PRIVILEGES";
+  #    };
+  #   }];
+  #  };
 
   #input method
   i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
-    fcitx5.addons = with pkgs; [
-      fcitx5-rime
-      fcitx5-chinese-addons
-    ];
+    fcitx5.addons = with pkgs; [ fcitx5-rime fcitx5-chinese-addons ];
   };
 
   # virtualisation
@@ -106,17 +103,13 @@
     # speed-up boot process ,maybe `--restart=always` won't work
     enableOnBoot = false;
     rootless.setSocketVariable = true;
-    daemon.settings = {
-      data-root = "/etc/docker";
-    };
+    daemon.settings = { data-root = "/etc/docker"; };
   };
   users.extraGroups.vboxusers.members = [ "seeker" ];
-  
+
   # Thunar support
   services.gvfs.enable = true; # Mount, trash, and other functionalities
   services.tumbler.enable = true; # Thumbnail support for images
 
 }
-
-
 

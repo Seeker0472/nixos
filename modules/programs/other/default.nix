@@ -1,4 +1,1 @@
-{ pkgs, nur, sharedConfig, ... }: {
-  imports = [
-  ];
-  }
+{ pkgs, nur, sharedConfig, ... }: { imports = [ ]; }

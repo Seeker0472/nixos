@@ -1,4 +1,4 @@
-###################################################################
+# ##################################################################
 #  system software and it's configuration
 ###################################################################
 
@@ -53,21 +53,14 @@
   i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
-    fcitx5.addons = with pkgs; [
-      fcitx5-rime
-      fcitx5-chinese-addons
-    ];
+    fcitx5.addons = with pkgs; [ fcitx5-rime fcitx5-chinese-addons ];
   };
   virtualisation.docker = {
     enable = true;
     # speed-up boot process ,maybe `--restart=always` won't work
     enableOnBoot = false;
     rootless.setSocketVariable = true;
-    daemon.settings = {
-      data-root = "/etc/docker";
-    };
+    daemon.settings = { data-root = "/etc/docker"; };
   };
 }
-
-
 

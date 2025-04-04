@@ -5,9 +5,8 @@ let
   waybar_path = "${gui_path_base}/waybar";
   wofi_path = "${gui_path_base}/wofi";
   wallpaper_path = "${gui_path_base}/wallpaper";
-in
-{
-  home.packages = with pkgs;[
+in {
+  home.packages = with pkgs; [
     hyprland-qtutils # Hyprland dependence
     hyprpaper # wallpaper
     hyprlock # screen-locker
@@ -26,13 +25,17 @@ in
     slurp
   ];
   # map files
-    home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink hyprland_path;
-    home.file.".config/waybar".source = config.lib.file.mkOutOfStoreSymlink waybar_path;
-    home.file.".config/wofi".source = config.lib.file.mkOutOfStoreSymlink wofi_path;
-    home.file."Pictures/wallpaper/default".source = config.lib.file.mkOutOfStoreSymlink wallpaper_path;
+  home.file.".config/hypr".source =
+    config.lib.file.mkOutOfStoreSymlink hyprland_path;
+  home.file.".config/waybar".source =
+    config.lib.file.mkOutOfStoreSymlink waybar_path;
+  home.file.".config/wofi".source =
+    config.lib.file.mkOutOfStoreSymlink wofi_path;
+  home.file."Pictures/wallpaper/default".source =
+    config.lib.file.mkOutOfStoreSymlink wallpaper_path;
 
-    # set icon-theme
-   gtk = {
+  # set icon-theme
+  gtk = {
     enable = true;
     theme = {
       package = pkgs.libsForQt5.breeze-gtk;
@@ -42,5 +45,5 @@ in
       package = pkgs.libsForQt5.breeze-icons;
       name = "breeze";
     };
-   };
+  };
 }

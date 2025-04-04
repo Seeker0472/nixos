@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-imports = [
+  imports = [
     # pkgs.anyrun.homeManagerModules.default  
     ../../modules/programs
     ../../modules/shell
@@ -12,7 +12,7 @@ imports = [
     userName = "seeker";
     userEmail = "gmx472@qq.com";
   };
-  programs.bash.bashrcExtra= ''
+  programs.bash.bashrcExtra = ''
     exec fish
   '';
   # This value determines the Home Manager release that your

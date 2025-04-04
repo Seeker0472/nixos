@@ -1,5 +1,4 @@
-{ config, lib, pkgs, modulesPath, ... }:
-{
+{ config, lib, pkgs, modulesPath, ... }: {
   nixpkgs.config.joypixels.acceptLicense = true;
   fonts = {
     packages = with pkgs; [
@@ -7,7 +6,7 @@
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
       wqy_microhei
-      sarasa-gothic #更纱黑体
+      sarasa-gothic # 更纱黑体
       # jetbrains-mono
       maple-mono.NF-CN
 

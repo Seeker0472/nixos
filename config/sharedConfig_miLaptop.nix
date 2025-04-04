@@ -1,4 +1,4 @@
-##########################################################
+# #########################################################
 #
 #  The global config for all .nix files for miLaptop
 #  (passed to specialArgs in nixosSystem)
@@ -13,6 +13,6 @@
   sharedConfig = {
     machine = "miLaptop";
     desktop_environment = "hyperland";
-    software_package = [  "develop_full" "gui" "tools_full" ];
+    software_package = [ "develop_full" "gui" "tools_full" ];
   };
 }

@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 ###############################################################################
 #
 #  AstroNvim's configuration and all its dependencies(lsp, formatter, etc.)
@@ -18,9 +13,12 @@ let
   };
 in {
   # 这段代码的作用应该是在 home-manager 激活过程中，使用 rsync 将当前配置目录下的 nvim 文件夹同步到用户的 .config/nvim 目录，同时设置特定的文件权限。
-  home.activation.installAstroNvim = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    ${pkgs.rsync}/bin/rsync -avz --chmod=D2755,F744 ${./anvim}/ ${config.xdg.configHome}/nvim/
-  '';
+  home.activation.installAstroNvim =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      ${pkgs.rsync}/bin/rsync -avz --chmod=D2755,F744 ${
+        ./anvim
+      }/ ${config.xdg.configHome}/nvim/
+    '';
 
   # home.shellAliases = shellAliases;
   # programs.nushell.shellAliases = shellAliases;
@@ -45,14 +43,17 @@ in {
         "--suffix"
         "LIBRARY_PATH"
         ":"
-        "${lib.makeLibraryPath [stdenv.cc.cc zlib]}"
+        "${lib.makeLibraryPath [ stdenv.cc.cc zlib ]}"
 
         # PKG_CONFIG_PATH is used by pkg-config before compilation to search directories
         # containing .pc files that describe the libraries that need to be linked to your program.
         "--suffix"
         "PKG_CONFIG_PATH"
         ":"
-        "${lib.makeSearchPathOutput "dev" "lib/pkgconfig" [stdenv.cc.cc zlib]}"
+        "${lib.makeSearchPathOutput "dev" "lib/pkgconfig" [
+          stdenv.cc.cc
+          zlib
+        ]}"
       ];
 
       # Currently we use lazy.nvim as neovim's package manager, so comment this one.

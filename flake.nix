@@ -1,4 +1,4 @@
-###################################################################
+# ##################################################################
 #  flake's Entry File,
 ###################################################################
 {
@@ -32,20 +32,21 @@
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, dwm, winapps, picom, nix-on-droid,  ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, dwm, winapps
+    , picom, nix-on-droid, ... }@inputs:
     let
       system = "x86_64-linux";
       config_miLaptop = import ./config/sharedConfig_miLaptop.nix;
       config_LTG = import ./config/sharedConfig_LTG.nix;
       config_miPad = import ./config/sharedConfig_miPad.nix;
-      pkgs = import nixpkgs { inherit system; overlays = [ nur.overlays.default ]; };
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ nur.overlays.default ];
+      };
       pkgsConfig = {
         nixpkgs.config.allowUnfree = true;
-        nixpkgs.overlays = [
-          nur.overlays.default
-          dwm.overlays.default
-          picom.overlays.default
-        ];
+        nixpkgs.overlays =
+          [ nur.overlays.default dwm.overlays.default picom.overlays.default ];
       };
       home_managerConfig = {
         home-manager = {
@@ -55,8 +56,7 @@
           backupFileExtension = "backup";
         };
       };
-    in
-    {
+    in {
       inherit system;
       # configuration for Laptop
       nixosConfigurations.miLaptop = nixpkgs.lib.nixosSystem {
@@ -69,7 +69,10 @@
           # home-manager as nixos module
           home-manager.nixosModules.home-manager
           {
-            home-manager.extraSpecialArgs = { inherit (inputs) winapps; inherit (config_miLaptop) sharedConfig; };
+            home-manager.extraSpecialArgs = {
+              inherit (inputs) winapps;
+              inherit (config_miLaptop) sharedConfig;
+            };
           }
           home_managerConfig
         ];
@@ -82,27 +85,30 @@
           pkgsConfig
           home-manager.nixosModules.home-manager
           {
-            home-manager.extraSpecialArgs = { inherit (config_LTG) sharedConfig; };
+            home-manager.extraSpecialArgs = {
+              inherit (config_LTG) sharedConfig;
+            };
           }
           home_managerConfig
         ];
       };
-      nixOnDroidConfigurations.default = nix-on-droid.lib.nixOnDroidConfiguration {
-        pkgs = import nixpkgs-stable { system = "aarch64-linux"; };
-        # specialArgs = { inherit (config_miPad) sharedConfig; };
-        modules = [
-          ./nixos/miPad
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "backup";
-              config = ./users/nix-on-droid;
-              extraSpecialArgs = { inherit (config_miPad) sharedConfig; };
-            };
-          }
-        ];
+      nixOnDroidConfigurations.default =
+        nix-on-droid.lib.nixOnDroidConfiguration {
+          pkgs = import nixpkgs-stable { system = "aarch64-linux"; };
+          # specialArgs = { inherit (config_miPad) sharedConfig; };
+          modules = [
+            ./nixos/miPad
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup";
+                config = ./users/nix-on-droid;
+                extraSpecialArgs = { inherit (config_miPad) sharedConfig; };
+              };
+            }
+          ];
 
-      };
+        };
     };
 }

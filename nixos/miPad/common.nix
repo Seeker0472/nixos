@@ -1,9 +1,9 @@
 { pkgs, ... }: {
-  environment.packages = with pkgs;[
+  environment.packages = with pkgs; [
     vim
     git
     curl
-    unixtools.column #dep for omf
+    unixtools.column # dep for omf
     openssh
   ];
   # Backup etc files instead of failing to activate generation if a file already exists in /etc
@@ -19,8 +19,6 @@
 
   # terminal.font = ${pkgs.terminus_font_ttf}/share/fonts/truetype/TerminusTTF.ttf;
   # user.shell= "${pkgs.fish}/bin/fish";
-
-  
 
   time.timeZone = "Asia/Hong_Kong";
 }

@@ -8,7 +8,8 @@
   #HardWare AccelerationConfig
   #https://nixos.wiki/wiki/Accelerated_Video_Playback
   nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
+    intel-vaapi-driver =
+      pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
   };
   hardware.graphics = {
     # hardware.graphics on unstable
@@ -23,8 +24,11 @@
     ];
   };
 
-  environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
-  hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux; [ intel-vaapi-driver ];
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD";
+  }; # Force intel-media-driver
+  hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux;
+    [ intel-vaapi-driver ];
   # nix.settings.system-features = [ "nixos-test" "benchmark" "big-parallel" "kvm" "gccarch-tigerlake" ];
   # nixpkgs.hostPlatform = {
   #   cpu.arch = "tigerlake";
@@ -65,11 +69,18 @@
   users.users.seeker = {
     isNormalUser = true;
     description = "seeker";
-    extraGroups = [ "networkmanager" "wheel" "audio" "i2c" "docker" "dialout" "disk" "input"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "audio"
+      "i2c"
+      "docker"
+      "dialout"
+      "disk"
+      "input"
+    ];
   };
-  nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.1.1w"
-  ];
+  nixpkgs.config.permittedInsecurePackages = [ "openssl-1.1.1w" ];
 
   services.auto-cpufreq.enable = true;
   services.auto-cpufreq.settings = {

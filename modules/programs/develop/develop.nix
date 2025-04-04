@@ -9,8 +9,7 @@
     # coursier
 
     clang-tools
-    # clang
-    # rocmPackages_5.llvm.clang-tools-extra #clang
+    nixfmt-classic
   ] ++ (if builtins.elem "develop_full" sharedConfig.software_package then [
     # jetbrains.idea-ultimate
     # jetbrains.clion

@@ -1,4 +1,4 @@
-##########################################################
+# #########################################################
 #
 #  The global config for all .nix files for LTG
 #  (passed to specialArgs in nixosSystem)

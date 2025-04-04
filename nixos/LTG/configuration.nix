@@ -18,7 +18,6 @@
   #i2c need user in group?
   hardware.i2c.enable = true;
 
-
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -40,11 +39,18 @@
   users.users.seeker = {
     isNormalUser = true;
     description = "seeker";
-    extraGroups = [ "networkmanager" "wheel" "audio" "i2c" "docker" "dialout" "disk" "input"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "audio"
+      "i2c"
+      "docker"
+      "dialout"
+      "disk"
+      "input"
+    ];
   };
-  nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.1.1w"
-  ];
+  nixpkgs.config.permittedInsecurePackages = [ "openssl-1.1.1w" ];
 
   # services.auto-cpufreq.enable = true;
   # services.auto-cpufreq.settings = {
@@ -61,7 +67,6 @@
   systemd.extraConfig = ''
     DefaultTimeoutStopSec=10s
   '';
-
 
   # 将默认编辑器设置为 vim
   environment.variables.EDITOR = "vim";
