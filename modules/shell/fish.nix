@@ -12,6 +12,7 @@ programs.fish = {
       nfp = "nix-shell --run fish -p";
       gd = "git difftool -d";
       nrs = "sudo nixos-rebuild switch";
+      icat = "kitten icat";
     };
     # plugins = [
     #   # Enable a plugin (here grc for colorized command output) from nixpkgs

@@ -5,6 +5,8 @@
 #         Copyright 2012— Gregory Pakosz (@gpakosz).
 
 
+set -g default-command "fish"
+
 # -- bindings ------------------------------------------------------------------
 
 # preserve tmux stock bindings,
@@ -443,7 +445,6 @@ set -g @plugin 'tmux-plugins/tmux-cpu'
 #set -g @plugin 'tmux-plugins/tmux-resurrect'
 #set -g @plugin 'tmux-plugins/tmux-continuum'
 #set -g @continuum-restore 'on'
-
 
 # -- custom variables ----------------------------------------------------------
 
