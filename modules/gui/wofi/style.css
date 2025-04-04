@@ -1,68 +1,57 @@
-/*
-* wofi style. Colors are from authors below.
-* Base16 Gruvbox dark, medium
-* Author: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
-*
-*/
-
-@define-color base00 #ffdab9;
-@define-color input_back #efac71;
-@define-color input_font #4f443b;
-@define-color selec_text #000080;
 window {
-    opacity: 0.9;
-    border:  0px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 18px;
-}
-
-#input {
-	border-radius: 10px 10px 0px 0px;
-    border:  none;
-    padding: 10px;
     margin: 0px;
-    font-size: 28px;
-	color: @input_font;
-	background-color: @input_back;
-}
-#input:focus {
-    outline: none;
-    box-shadow: none;
-    border: none;
-}
-
-#inner-box {
-	margin: 0px;
-	background-color: @base00;
+    border: 2px solid #bd93f9;
+    background-color: #282a36;
+    /* border-radius: 10px; */
+    font-size: 18px;
 }
 
 #outer-box {
 	margin: 0px;
-	background-color: @base00;
-    border-radius: 10px;
+    /*border-radius: 10px;*/
 }
-#expander-box {
-}
-
-#selected {
-  border-radius: 5px;
-	background-color: #dcb9ff;
+#input {
+    margin: 5px;
+    border: none;
+    color: #f8f8f2;
+    background-color: #44475a;
 }
 
-#entry {
-	padding: 0px;
-    margin: 0px;
-	background-color: @base00;
+#inner-box {
+    margin: 5px;
+    border: none;
+    background-color: #282a36;
+}
+
+#outer-box {
+    margin: 5px;
+    border: none;
+    background-color: #282a36;
 }
 
 #scroll {
-	margin: 5px;
-	background-color: @base00;
+    margin: 0px;
+    border: none;
 }
 
 #text {
-  color: @selec_text;
-	margin: 0px;
-	padding: 2px 2px 2px 10px;
+    margin: 5px;
+    border: none;
+    color: #f8f8f2;
+}
+
+#entry.activatable #text {
+    color: #282a36;
+}
+
+#entry>* {
+    color: #f8f8f2;
+}
+
+#entry:selected {
+    background-color: #44475a;
+}
+
+#entry:selected #text {
+    font-weight: bold;
 }
