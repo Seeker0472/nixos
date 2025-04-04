@@ -12,6 +12,7 @@
     font-size: 13px;
 }
 
+
 window#waybar {
     background-color: @main-bg;
     transition-property: background-color, border-color;
@@ -120,4 +121,16 @@ window#waybar {
 #workspaces,
 #taskbar {
     padding: 0px;
+}
+
+tooltip {
+  color: bisque;
+  background-color: @main-bg;
+  border-radius: 6px;
+  text-shadow: none;
+}
+
+tooltip * {
+  color: bisque;
+  text-shadow: none;
 }
