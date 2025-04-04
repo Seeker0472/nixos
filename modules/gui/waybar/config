@@ -1,24 +1,50 @@
 {
-  "layer": "top",
-  "position":  "top",
-  "height": 26,
-  "modules-left": ["hyprland/workspaces"],
-  "modules-center": ["hyprland/window"],
-  "modules-right": [
-        "pulseaudio",
-        "bluetooth",
-        "network",
-        "cpu",
-        "memory",
-        "temperature",
-        "backlight",
-        "battery",
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "modules-left": [
+        "hyprland/workspaces"
+    ],
+    "modules-center": [
+        "hyprland/window"
+    ],
+    "modules-right": [
+        "group/sysinfo",
+        "group/hardware",
         "clock",
         "tray",
+    ],
+    "group/sysinfo": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "not-power",
+            "transition-left-to-right": false,
+        },
+        "modules": [
+            "battery",
+            "temperature",
+            "cpu",
+            "memory",
+        ]
+    },
+    "group/hardware": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "not-power",
+            "transition-left-to-right": false,
+        },
+        "modules": [
+            "network",
+            "bluetooth",
+            "pulseaudio",
+            "backlight"
         ],
-  //TODO:add self-defined symbol to show machine status bluetooth,etc.
-  //module configs
-   "pulseaudio": {
+    },
+    //TODO:add self-defined symbol to show machine status bluetooth,etc.
+    //module configs
+    "pulseaudio": {
         // "scroll-step": 1, // %, can be a float
         "format": "{volume}% {icon} {format_source}",
         "format-bluetooth": "{volume}% {icon} {format_source}",
@@ -33,7 +59,11 @@
             "phone": " ",
             "portable": " ",
             "car": " ",
-            "default": ["", " ", " "]
+            "default": [
+                "",
+                " ",
+                " "
+            ]
         },
         "on-click": "pavucontrol"
     },
@@ -46,7 +76,7 @@
         "format-disconnected": "Disconnected  ",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
         "on-click-right": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&& nmcli device wifi rescan &&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG nmtui-connect",
-        },
+    },
     "cpu": {
         "format": "{usage}%  ",
         "tooltip": false,
@@ -63,12 +93,25 @@
         "critical-threshold": 80,
         // "format-critical": "{temperatureC}°C {icon}",
         "format": "{temperatureC}°C {icon}",
-        "format-icons": ["", " "]
+        "format-icons": [
+            "",
+            " "
+        ]
     },
     "backlight": {
         // "device": "acpi_video1",
         "format": "{percent}% {icon}",
-        "format-icons": ["", "", "", "", "", "", "", "", ""]
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
     },
     "battery": {
         "states": {
@@ -81,29 +124,34 @@
         "format-charging": "{capacity}% 󰂄",
         "format-plugged": "{capacity}% ",
         "format-alt": "{time} {icon}",
-        "format-icons": ["", "", "", "", ""]
+        "format-icons": [
+            " ",
+            " ",
+            " ",
+            " ",
+            " "
+        ]
     },
     "clock": {
         // "timezone": "America/New_York",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "format-alt": "{:%Y-%m-%d}",
-        "on-click-right" : "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14  -o confirm_os_window_close=0 --class RTG nvim ~/.todo.md"
+        "on-click-right": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14  -o confirm_os_window_close=0 --class RTG nvim ~/.todo.md"
     },
     "tray": {
         //"icon-size": 21,
         "spacing": 4
     },
     "bluetooth": {
-  	"format": " {status}",
-  	"format-connected": " {num_connections}",
-    "format-alt": " {device_alias}",
-  	// "format-connected-battery": " {device_alias} {device_battery_percentage}%",
-  	// "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
-  	"tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-  	"tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
-  	"tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-  	"tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
-    "on-click-right" : "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14  -o confirm_os_window_close=0 --class RTG bluetuith"
-    } 
-
+        "format": " {status}",
+        "format-connected": " {num_connections}",
+        "format-alt": " {device_alias}",
+        // "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        // "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+        "on-click-right": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14  -o confirm_os_window_close=0 --class RTG bluetuith"
+    }
 }
