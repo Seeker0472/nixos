@@ -98,6 +98,8 @@
       fcitx5-chinese-addons
     ];
   };
+
+  # virtualisation
   virtualisation.virtualbox.host.enable = true;
   virtualisation.docker = {
     enable = true;
@@ -109,6 +111,11 @@
     };
   };
   users.extraGroups.vboxusers.members = [ "seeker" ];
+  
+  # Thunar support
+  services.gvfs.enable = true; # Mount, trash, and other functionalities
+  services.tumbler.enable = true; # Thumbnail support for images
+
 }
 
 

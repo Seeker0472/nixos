@@ -25,8 +25,22 @@ in
     grim
     slurp
   ];
+  # map files
     home.file.".config/hypr".source = config.lib.file.mkOutOfStoreSymlink hyprland_path;
     home.file.".config/waybar".source = config.lib.file.mkOutOfStoreSymlink waybar_path;
     home.file.".config/wofi".source = config.lib.file.mkOutOfStoreSymlink wofi_path;
     home.file."Pictures/wallpaper/default".source = config.lib.file.mkOutOfStoreSymlink wallpaper_path;
+
+    # set icon-theme
+   gtk = {
+    enable = true;
+    theme = {
+      package = pkgs.libsForQt5.breeze-gtk;
+      name = "Breeze";
+    };
+    iconTheme = {
+      package = pkgs.libsForQt5.breeze-icons;
+      name = "breeze";
+    };
+   };
 }

@@ -14,6 +14,8 @@
 
     #utils
     xfce.thunar # file manager
+    xfce.xfconf # save preface for thunar
+
     gparted
     clash-verge-rev
     ncdu
