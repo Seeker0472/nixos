@@ -56,8 +56,8 @@ tmux_conf_new_pane_retain_current_path=true
 #   - true
 #   - false (default)
 #   - disabled (do not modify split-window bindings)
-tmux_conf_new_pane_reconnect_ssh=true
-
+tmux_conf_new_pane_reconnect_ssh=false
+# FIXME:Workaround for unknown-bug!
 
 # -- display -------------------------------------------------------------------
 
