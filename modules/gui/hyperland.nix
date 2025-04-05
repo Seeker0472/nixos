@@ -5,6 +5,7 @@ let
   waybar_path = "${gui_path_base}/waybar";
   wofi_path = "${gui_path_base}/wofi";
   wallpaper_path = "${gui_path_base}/wallpaper";
+  mako_path = "${gui_path_base}/mako";
 in {
   home.packages = with pkgs; [
     hyprland-qtutils # Hyprland dependence
@@ -31,6 +32,8 @@ in {
     config.lib.file.mkOutOfStoreSymlink waybar_path;
   home.file.".config/wofi".source =
     config.lib.file.mkOutOfStoreSymlink wofi_path;
+  home.file.".config/mako".source =
+    config.lib.file.mkOutOfStoreSymlink mako_path;
   home.file."Pictures/wallpaper/default".source =
     config.lib.file.mkOutOfStoreSymlink wallpaper_path;
 

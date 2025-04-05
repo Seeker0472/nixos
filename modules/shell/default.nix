@@ -1,5 +1,5 @@
 { pkgs, sharedConfig, ... }: {
-  imports = [ ./tools.nix ./bash.nix ./fish.nix ./tmux ./neovim ]
+  imports = [ ./tools.nix ./bash.nix ./fish.nix ./tmux ./map.nix ]
     ++ (if builtins.elem "gui" sharedConfig.software_package then
       [ ./kitty.nix ]
     else

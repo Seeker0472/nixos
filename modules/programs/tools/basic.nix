@@ -2,7 +2,10 @@
   home.packages = with pkgs;
     [
       axel # Console app for parallel connection
-
+      # clipboard
+      wl-clip-persist
+      wl-clipboard
+      cliphist
       # networkmanagerapplet
     ] ++ (if builtins.elem "gui" sharedConfig.software_package then [
       # communication
