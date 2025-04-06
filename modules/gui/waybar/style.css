@@ -1,3 +1,4 @@
+/* define the colors used in the theme */
 @define-color bar-bg #1e1e2f;
 @define-color main-bg rgba(30, 30, 47, 0.9);
 @define-color main-fg #cdd6f4;
@@ -7,11 +8,18 @@
 @define-color wb-hvr-bg #f5c2e7;
 @define-color wb-hvr-fg #313244;
 
+@define-color green-opacity rgba(0, 255, 0, 0.174);
+@define-color yellow-opacity rgba(255, 255, 0, 0.319);
+@define-color red-opacity rgba(255, 0, 0, 0.319);
+@define-color purple-opacity rgba(255, 0, 255, 0.578);
+
+
 * {
     font-family: "Maple Mono NF CN";
     font-size: 13px;
 }
 
+/* set the default color for all */
 
 window#waybar {
     background-color: @main-bg;
@@ -21,18 +29,9 @@ window#waybar {
     opacity: 1;
 }
 
+/* set default button style*/
 #workspaces button {
-    /* Use box-shadow instead of border so the text isn't offset */
-    box-shadow: inset 0 -3px transparent;
-    /* Avoid rounded borders under each button name */
     border: none;
-    border-radius: 0;
-    padding: 0 5px;
-    color: #ffffff;
-}
-
-
-#workspaces button {
     box-shadow: none;
     text-shadow: none;
     border-radius: 9px;
@@ -116,9 +115,7 @@ window#waybar {
     margin-bottom: 3px;
 }
 
-/*FIXME: assign color for different state
-    AKA: battery charging, discharging, full
-    */
+
 #window {
     color: bisque;
 }
@@ -128,6 +125,7 @@ window#waybar {
     padding: 0px;
 }
 
+/* tooltip style */
 tooltip {
   color: bisque;
   background-color: @main-bg;
@@ -140,14 +138,19 @@ tooltip * {
   text-shadow: none;
 }
 
+/*assign color for different state
+    AKA: battery charging, discharging, full
+    */
+
 #battery.charging, #battery.plugged {
-    background-color: rgba(0, 255, 0, 0.174); 
+    background-color: @green-opacity; 
 }
 
 #battery.warning:not(.charging) {
-    background-color: rgba(255, 255, 0, 0.319);
+    background-color: @yellow-opacity;
 }
 
+/* blinking animation */
 @keyframes blink {
     to {
         background-color: white;
@@ -166,20 +169,20 @@ tooltip * {
 }
 
 #network.disconnected {
-    background-color: rgba(245, 60, 60, 0.57);
+    background-color: @red-opacity;
 }
 
 #cpu.warning {
-    background-color: rgba(255, 255, 0, 0.319);
+    background-color: @yellow-opacity;
 }
 #memory.warning {
-    background-color: rgba(255, 255, 0, 0.319);
+    background-color: @yellow-opacity;
 }
 #cpu.high {
-    background-color: rgba(245, 60, 60, 0.57);
+    background-color: @red-opacity;
 }
 #memory.high {
-    background-color: rgba(245, 60, 60, 0.57);
+    background-color: @red-opacity;
 }
 
 #pulseaudio {
@@ -190,9 +193,8 @@ tooltip * {
     background-color: @main-bg;
 }
 
-
+/* custom module */
 #custom-gotobed.bedtime {
-    /*color: rgb(166, 227, 161); 例如，工作时间显示绿色 */
     background-color:blueviolet;
     color: white;
     animation-name: blink;
@@ -200,9 +202,8 @@ tooltip * {
     animation-timing-function: steps(12);
     animation-iteration-count: infinite;
     animation-direction: alternate;
-    /* 添加其他样式 */
 }
 
 #custom-wallpaper {
-    background-color: rgba(255, 0, 251, 0.578);
+    background-color: @purple-opacity;
 }

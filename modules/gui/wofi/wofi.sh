@@ -1,4 +1,5 @@
 # 打印菜单
+# FIXME: add a more flexible way to add menu items
 call_menu() {
     echo ' next wallpaper'
     [ "$(docker ps | grep windows)" ] && echo '󰖳 shutdown windows' || echo '󰖳 open windows'
