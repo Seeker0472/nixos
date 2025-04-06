@@ -20,7 +20,10 @@
       xfce.thunar # file manager
       xfce.xfconf # save preface for thunar
 
+      # Note: using sudo -EH gparted to start
+      # Reference https://wiki.archlinux.org/title/Running_GUI_applications_as_root
       gparted
+
       clash-verge-rev
       ncdu
       # games

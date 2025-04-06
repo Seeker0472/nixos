@@ -10,6 +10,7 @@ let
 in {
   home.packages = with pkgs; [
     hyprland-qtutils # Hyprland dependence
+    xdg-desktop-portal-hyprland 
     hyprpaper # wallpaper
     wpaperd
     hyprlock # screen-locker
@@ -19,6 +20,7 @@ in {
     bluetuith # bluetooth tui
     wofi # app launcher
     mako # notification
+    hyprpolkitagent # polkit agent (root permission)
     pavucontrol
     networkmanager # tui network
     libnotify # notify-send
