@@ -39,8 +39,9 @@
         },
         "modules": [
             "network",
+            "custom/wallpaper",
             "bluetooth",
-            "backlight"
+            "backlight",
         ],
     },
     //TODO:add self-defined symbol to show machine status bluetooth,etc.
@@ -174,5 +175,9 @@
         "exec": "~/scripts/gotobed.sh", 
         // "tooltip": false, // 如果脚本输出中包含 tooltip，可以设为 false，避免 Waybar 默认行为干扰
         // "escape": true, // 如果你的文本包含特殊字符，可能需要开启
+    },
+    "custom/wallpaper":{
+        "format": "󰸉 ",
+        "on-click":"wpaperctl next-wallpaper"
     }
 }

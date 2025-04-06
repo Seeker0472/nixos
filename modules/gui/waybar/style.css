@@ -68,10 +68,10 @@ window#waybar {
     min-height: 10px
 }
 
+/* need to add all the modules here */
 #backlight,
 #battery,
 #bluetooth,
-#clock,
 #clock,
 #cpu,
 #idle_inhibitor,
@@ -83,7 +83,8 @@ window#waybar {
 #tray,
 #window,
 #workspaces,
-#custom-gotobed
+#custom-gotobed,
+#custom-wallpaper
  {
     color: @main-fg;
     /* background: @main-bg; */
@@ -101,7 +102,8 @@ window#waybar {
 #bluetooth,
 #pulseaudio,
 #backlight,
-#custom-gotobed
+#custom-gotobed,
+#custom-wallpaper
 {
     color: @main-fg;
     background-color: @main-bg; /* lay upon the background , get darker */
@@ -199,4 +201,8 @@ tooltip * {
     animation-iteration-count: infinite;
     animation-direction: alternate;
     /* 添加其他样式 */
+}
+
+#custom-wallpaper {
+    background-color: rgba(255, 0, 251, 0.578);
 }

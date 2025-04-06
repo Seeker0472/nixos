@@ -17,6 +17,7 @@
       shell = "${pkgs.fish}/bin/fish";
       initial_window_width = "90c";
       initial_window_height = "26c";
+      background_opacity="0.92";
     };
 
   };

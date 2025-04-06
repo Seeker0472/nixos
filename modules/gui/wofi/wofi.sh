@@ -1,6 +1,6 @@
 # 打印菜单
 call_menu() {
-    echo ' set wallpaper'
+    echo ' next wallpaper'
     [ "$(docker ps | grep windows)" ] && echo '󰖳 shutdown windows' || echo '󰖳 open windows'
 }
 
@@ -16,8 +16,8 @@ call_power(){
 # 执行菜单
 execute_menu() {
     case $1 in
-    ' set wallpaper')
-          notify-send "TODO"
+    ' next wallpaper')
+        wpaperctl next-wallpaper
         ;;
     '󰖳 open windows')
         docker start 5880dec702c4
