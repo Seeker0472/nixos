@@ -82,7 +82,8 @@ window#waybar {
 #pulseaudio,
 #tray,
 #window,
-#workspaces
+#workspaces,
+#custom-gotobed
  {
     color: @main-fg;
     /* background: @main-bg; */
@@ -99,7 +100,9 @@ window#waybar {
 #network,
 #bluetooth,
 #pulseaudio,
-#backlight {
+#backlight,
+#custom-gotobed
+{
     color: @main-fg;
     background-color: @main-bg; /* lay upon the background , get darker */
     border-radius: 9px;
@@ -133,4 +136,67 @@ tooltip {
 tooltip * {
   color: bisque;
   text-shadow: none;
+}
+
+#battery.charging, #battery.plugged {
+    background-color: rgba(0, 255, 0, 0.174); 
+}
+
+#battery.warning:not(.charging) {
+    background-color: rgba(255, 255, 0, 0.319);
+}
+
+@keyframes blink {
+    to {
+        background-color: white;
+        color: black;
+    }
+}
+/* Using steps() instead of linear as a timing function to limit cpu usage */
+#battery.critical:not(.charging) {
+    background-color: red;
+    color: white;
+    animation-name: blink;
+    animation-duration: 2s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#network.disconnected {
+    background-color: rgba(245, 60, 60, 0.57);
+}
+
+#cpu.warning {
+    background-color: rgba(255, 255, 0, 0.319);
+}
+#memory.warning {
+    background-color: rgba(255, 255, 0, 0.319);
+}
+#cpu.high {
+    background-color: rgba(245, 60, 60, 0.57);
+}
+#memory.high {
+    background-color: rgba(245, 60, 60, 0.57);
+}
+
+#pulseaudio {
+    background-color: rgba(0, 251, 255, 0.263);
+}
+
+#pulseaudio.muted {
+    background-color: @main-bg;
+}
+
+
+#custom-gotobed.bedtime {
+    /*color: rgb(166, 227, 161); 例如，工作时间显示绿色 */
+    background-color:blueviolet;
+    color: white;
+    animation-name: blink;
+    animation-duration: 2s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    /* 添加其他样式 */
 }
