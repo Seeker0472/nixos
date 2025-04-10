@@ -1,35 +1,108 @@
-# 打印菜单
-# FIXME: add a more flexible way to add menu items
+# --- 配置 ---
+WINDOWS_CONTAINER_NAME="WinApps" # WinApps 容器名 
+
+# --- 主菜单项 ---
+# 使用一个占位符 __INPUT__ 来标记需要用户输入的地方
+declare -A menu_items
+
+menu_items['󰖚 Hyprsunset 5000K']='pkill hyprsunset ; hyprsunset -t 5000'
+menu_items[' next wallpaper']='wpaperctl next-wallpaper'
+menu_items['󰌌 Set Hyprsunset Temp...']='pkill hyprsunset ; hyprsunset -t __INPUT__'
+
+if docker ps -q -f "name=^/${WINDOWS_CONTAINER_NAME}$" | grep -q .; then
+    menu_items['󰖳 shutdown windows']="docker stop ${WINDOWS_CONTAINER_NAME}"
+else
+    menu_items['󰖳 open windows']="docker start ${WINDOWS_CONTAINER_NAME}"
+fi
+
+# --- 电源菜单项 ---
+declare -A power_options
+power_options['  Shutdown']='poweroff'
+power_options['  Reboot']='reboot'
+power_options[' 󰒲 Hibernate']='systemctl hibernate'
+power_options['  Lock']='hyprlock' 
+
+
+# --- 函数 ---
+
+# 显示主菜单并获取选择
 call_menu() {
-    echo ' next wallpaper'
-    [ "$(docker ps | grep windows)" ] && echo '󰖳 shutdown windows' || echo '󰖳 open windows'
+    # 从 menu_items 数组的键（显示文本）生成菜单
+    printf "%s\n" "${!menu_items[@]}" | wofi --show dmenu -p " Menu"
 }
 
-call_power(){
-    case $(echo -e '  Shutdown\n  Reboot\n 󰒲 Hibernate\n  Lock\n' | wofi --show dmenu) in
-    "  Shutdown") poweroff ;;
-    "  Reboot") reboot ;;
-    " 󰒲 Hibernate") systemctl hibernate ;;
-    "  Lock") hyprlock ;;
-    esac
-}
+#  # 执行主菜单选择对应的命令
+#  execute_menu() {
+#      local selection="$1"
+#      # 从 menu_items 数组中查找选中项对应的值（命令）
+#      local command="${menu_items[$selection]}"
+#  
+#      # 如果找到了命令，则执行它
+#      if [[ -n "$command" ]]; then
+#          # 使用 eval 来确保命令中的特殊字符或参数被正确处理
+#          eval "$command"
+#      fi
+#  }
 
-# 执行菜单
+# 执行主菜单选择对应的命令
 execute_menu() {
-    case $1 in
-    ' next wallpaper')
-        wpaperctl next-wallpaper
-        ;;
-    '󰖳 open windows')
-        docker start 5880dec702c4
-        ;;
-    '󰖳 shutdown windows')
-        docker stop 5880dec702c4
-        ;;
-    esac
+    local selection="$1"
+    local command_template="${menu_items[$selection]}" # 获取命令模板
+    local user_input
+    local final_command
+
+    # 如果选择无效或用户取消，则退出
+    if [[ -z "$command_template" ]]; then
+        return
+    fi
+
+    # 检查命令模板是否包含占位符 __INPUT__
+    if [[ "$command_template" == *__INPUT__* ]]; then
+        # 如果包含占位符，则再次调用 wofi 获取用户输入
+        # -p 设置提示信息
+        user_input=$(wofi --show dmenu -p "Enter Temperature (e.g., 4500):")
+
+        # 检查用户是否提供了输入（没有按 Esc 取消）
+        if [[ -n "$user_input" ]]; then
+            # 使用 Bash 的字符串替换功能将占位符替换为用户输入
+            # ${parameter//pattern/string} 全局替换
+            final_command="${command_template//__INPUT__/$user_input}"
+            # 执行最终构建好的命令
+            eval "$final_command"
+        # else
+            # 用户取消了输入，可以选择不执行任何操作或给出提示
+            # echo "Input cancelled." >&2
+        fi
+    else
+        # 如果命令模板不包含占位符，则直接执行
+        eval "$command_template"
+    fi
 }
+
+# 显示电源菜单并执行选择
+call_power() {
+    local selection
+    # 从 power_options 数组的键生成菜单
+    selection=$(printf "%s\n" "${!power_options[@]}" | wofi --show dmenu -p " Power")
+
+    local command="${power_options[$selection]}"
+
+    if [[ -n "$command" ]]; then
+        eval "$command"
+    # else: 用户取消选择，不执行任何操作
+    fi
+}
+
+# --- 主逻辑 ---
+# 根据传入脚本的第一个参数决定执行哪个菜单
 case "$1" in
-  menu)execute_menu "$(call_menu | wofi --show dmenu -p "")" ;;
-  power)call_power ;;
-  *) execute_menu "$(call_menu | wofi --show dmenu -p "")" ;;
+  menu)
+    execute_menu "$(call_menu)"
+    ;;
+  power)
+    call_power
+    ;;
+  *) # 默认行为，显示主菜单
+    execute_menu "$(call_menu)"
+    ;;
 esac

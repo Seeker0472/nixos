@@ -13,8 +13,10 @@
       wechat-uos
 
       # multimedia
-      vlc
+      # vlc
       mpv
+      cava
+      netease-cloud-music-gtk
 
       #utils
       xfce.thunar # file manager
