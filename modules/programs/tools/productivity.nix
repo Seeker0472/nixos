@@ -2,6 +2,8 @@
   home.packages = with pkgs;
     [
       # productivity
+
+      evince # pdf viewer
       pandoc # 文档
       ffmpeg
       marp-cli

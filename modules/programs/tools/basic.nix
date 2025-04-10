@@ -17,6 +17,7 @@
       mpv
       cava
       netease-cloud-music-gtk
+      viewnior # image viewer
 
       #utils
       xfce.thunar # file manager
