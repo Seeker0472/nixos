@@ -20,6 +20,19 @@
       "image/bmp"  = "viewnior.desktop"; # BMP
       "image/tiff" = "viewnior.desktop"; # TIFF
       "image/webp" = "viewnior.desktop"; # WebP
+
+      # --- Video ---
+      "video/mp4"  = "mpv.desktop";
+      "video/mpv"  = "mpv.desktop";
+      "video/mkv"  = "mpv.desktop";
+      "video/webm" = "mpv.desktop";
+      "video/avi"  = "mpv.desktop";
+      
+      # --- Audio ---
+      "audio/mpeg" = "mpv.desktop";
+      "audio/flac" = "mpv.desktop";
+      "audio/wav"  = "mpv.desktop";
+      "audio/mp3"  = "mpv.desktop";
     };
   };
 

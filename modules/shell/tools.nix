@@ -88,6 +88,7 @@
 
     ddcutil # brightness
     ranger # fileExpo
+    yazi
 
   ];
 }
