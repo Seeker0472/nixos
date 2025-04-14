@@ -78,7 +78,7 @@
     "cava": {
         //"cava_config": "/home/seeker/.config/cava/config_bar",
         "framerate": 30,
-        "autosens": 0,
+        "autosens": 1,
         "sensitivity": 5,
         "bars": 14,
         "lower_cutoff_freq": 100,

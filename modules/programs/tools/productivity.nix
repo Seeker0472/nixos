@@ -3,12 +3,13 @@
     [
       # productivity
 
-      evince # pdf viewer
       pandoc # 文档
       ffmpeg
       marp-cli
     ] ++ (if builtins.elem "gui" sharedConfig.software_package then [
+      evince # pdf viewer
       wpsoffice-cn
+      libreoffice
       obsidian
     ] else
       [ ]) ++ (if builtins.elem "gui" sharedConfig.software_package then [
