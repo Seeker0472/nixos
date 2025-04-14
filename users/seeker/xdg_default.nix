@@ -13,6 +13,19 @@
       # --- PDF ---
       "application/pdf" = "org.gnome.Evince.desktop";
 
+      # --- Word,PPT,Excel ---
+      # Word (.doc, .docx)
+      "application/msword" = "libreoffice-writer.desktop";
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "libreoffice-writer.desktop";
+
+      # Excel (.xls, .xlsx)
+      "application/vnd.ms-excel" = "libreoffice-calc.desktop";
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "libreoffice-calc.desktop";
+
+      # PowerPoint (.ppt, .pptx)
+      "application/vnd.ms-powerpoint" = "libreoffice-impress.desktop";
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "libreoffice-impress.desktop";     
+
       # --- Picture ---
       "image/jpeg" = "viewnior.desktop"; # JPG, JPEG
       "image/png"  = "viewnior.desktop"; # PNG

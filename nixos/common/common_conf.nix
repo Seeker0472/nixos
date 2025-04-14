@@ -6,7 +6,8 @@
     HandlePowerKey=ignore
   '';
   #Make Windows Happy
-  time.hardwareClockInLocalTime = true;
+  # A better way is to let windows use UTC time
+  # time.hardwareClockInLocalTime = true;
 
   # time zone.
   time.timeZone = "Asia/Hong_Kong";

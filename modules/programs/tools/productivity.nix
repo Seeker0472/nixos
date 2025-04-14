@@ -8,7 +8,8 @@
       marp-cli
     ] ++ (if builtins.elem "gui" sharedConfig.software_package then [
       evince # pdf viewer
-      wpsoffice-cn
+      # weird !,adding wpsoffice will cause doc to it's default application nomatter what mime app set
+      # wpsoffice-cn
       libreoffice
       obsidian
     ] else
