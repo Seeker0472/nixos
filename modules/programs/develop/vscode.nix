@@ -16,7 +16,7 @@ in
   },
   "git.autofetch": true,
   "git.suggestSmartCommit": false,
-  "markdown-pdf.executablePath": "chromium",
+  "markdown-pdf.executablePath": "google-chrome-stable",
   "markdown.marp.enableHtml": true,
   "markdown.marp.exportType": "html",
   "update.mode": "none",
@@ -30,16 +30,15 @@ in
   "extensions.experimental.affinity": {
     "asvetliakov.vscode-neovim": 1
   },
-  "workbench.iconTheme": "Monokai Pro (Filter Octagon) Monochrome Icons",
+  "workbench.iconTheme": "Monokai Pro (Filter Octagon) Icons",
   "git.confirmSync": false,
   "vscode_custom_css.imports": [
    "file:///home/seeker/.config/Code/User/custom.css" 
   ],
   "monokaiPro.fileIconsMonochrome": true,
   "C_Cpp.intelliSenseEngine": "disabled",
-  "makefile.configureOnOpen": true,
-  "workbench.editor.tabActionCloseVisibility": fals
-
+  "makefile.configureOnOpen": true, 
+  "workbench.editor.tabActionCloseVisibility": false
     };
     extensions = pkgs.vscode-utils.extensionsFromVscodeMarketplace plugins.extensions;
   };
