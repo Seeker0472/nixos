@@ -56,6 +56,8 @@
     zstd
     gnupg
 
+    jq #JSON parser
+
     # nix related
     #
     # it provides the command `nom` works just like `nix`
