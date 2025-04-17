@@ -9,11 +9,15 @@ menu_items['󰖚 Hyprsunset 5000K']='pkill hyprsunset ; hyprsunset -t 5000'
 menu_items[' next wallpaper']='wpaperctl next-wallpaper'
 menu_items['󰌌 Set Hyprsunset Temp...']='pkill hyprsunset ; hyprsunset -t __INPUT__'
 
-if docker ps -q -f "name=^/${WINDOWS_CONTAINER_NAME}$" | grep -q .; then
-    menu_items['󰖳 shutdown windows']="docker stop ${WINDOWS_CONTAINER_NAME}"
-else
-    menu_items['󰖳 open windows']="docker start ${WINDOWS_CONTAINER_NAME}"
-fi
+update_menu_items() {
+    # --- 一些需要动态更新的菜单项 ---
+    # 1. 检查 Windows 容器是否在运行
+    if docker ps -q -f "name=^/${WINDOWS_CONTAINER_NAME}$" | grep -q .; then
+        menu_items['󰖳 shutdown windows']="docker stop ${WINDOWS_CONTAINER_NAME}"
+    else
+        menu_items['󰖳 open windows']="docker start ${WINDOWS_CONTAINER_NAME}"
+    fi
+}
 
 # --- 电源菜单项 ---
 declare -A power_options
@@ -27,6 +31,7 @@ power_options['  Lock']='hyprlock'
 
 # 显示主菜单并获取选择
 call_menu() {
+    update_menu_items
     # 从 menu_items 数组的键（显示文本）生成菜单
     printf "%s\n" "${!menu_items[@]}" | wofi --show dmenu -p " Menu"
 }
