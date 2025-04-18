@@ -24,6 +24,8 @@
     pulseaudioFull
     firefox
     tailscale
+
+    powertop
   ];
   # From https://nixos.wiki/wiki/Fish
   #programs.bash = {

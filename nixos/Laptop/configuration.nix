@@ -81,7 +81,8 @@
     ];
   };
   nixpkgs.config.permittedInsecurePackages = [ "openssl-1.1.1w" ];
-
+  powerManagement.powertop.enable = true;
+  powerManagement.enable = true;
   services.auto-cpufreq.enable = true;
   services.auto-cpufreq.settings = {
     battery = {

@@ -26,8 +26,10 @@ in {
     libnotify # notify-send
     acpi # battery
     brightnessctl
-    grim
-    slurp
+    grim # screenshot
+    slurp # screenshot
+    libinput-gestures # touchpad gesture
+    ydotool
   ];
   # map files
   home.file.".config/hypr".source =
