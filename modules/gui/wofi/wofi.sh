@@ -17,6 +17,17 @@ update_menu_items() {
     else
         menu_items['󰖳 open windows']="docker start ${WINDOWS_CONTAINER_NAME}"
     fi
+
+    # 2. 检查 Waydroid 是否在运行
+    # 使用 pgrep 查找匹配完整命令行的进程
+    # -f 选项告诉 pgrep 匹配完整的命令行，而不仅仅是进程名
+    # > /dev/null 2>&1 将 pgrep 的标准输出和标准错误都重定向到 /dev/null
+    # 我们只关心 pgrep 的退出状态 (0 表示找到，非 0 表示未找到)
+    if pgrep -f "lxc-start -P /var/lib/waydroid/lxc" > /dev/null 2>&1; then
+        menu_items['󰀲  close waydroid']="waydroid session stop"
+    else
+        menu_items['󰀲 open waydroid']="waydroid session start &"
+    fi
 }
 
 # --- 电源菜单项 ---
@@ -31,7 +42,6 @@ power_options['  Lock']='hyprlock'
 
 # 显示主菜单并获取选择
 call_menu() {
-    update_menu_items
     # 从 menu_items 数组的键（显示文本）生成菜单
     printf "%s\n" "${!menu_items[@]}" | wofi --show dmenu -p " Menu"
 }
@@ -102,12 +112,14 @@ call_power() {
 # 根据传入脚本的第一个参数决定执行哪个菜单
 case "$1" in
   menu)
+    update_menu_items
     execute_menu "$(call_menu)"
     ;;
   power)
     call_power
     ;;
   *) # 默认行为，显示主菜单
+    update_menu_items
     execute_menu "$(call_menu)"
     ;;
 esac

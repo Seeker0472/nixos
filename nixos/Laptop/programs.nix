@@ -108,6 +108,8 @@
     rootless.setSocketVariable = true;
     daemon.settings = { data-root = "/etc/docker"; };
   };
+  # TODO!
+  virtualisation.waydroid.enable = true;
   users.extraGroups.vboxusers.members = [ "seeker" ];
 
   # Thunar support
