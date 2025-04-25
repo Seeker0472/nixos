@@ -37,3 +37,4 @@ height=800
 width=800
 max-icon-size=1000
 icon-location=bottom
+on-button-left=exec makoctl dismiss -a;hyprctl dispatch exec "[float]pinta /tmp/screenshot.png" 

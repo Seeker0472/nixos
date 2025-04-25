@@ -30,6 +30,7 @@ in {
     slurp # screenshot
     libinput-gestures # touchpad gesture
     ydotool
+    pinta
   ];
   # map files
   home.file.".config/hypr".source =
@@ -46,6 +47,7 @@ in {
     config.lib.file.mkOutOfStoreSymlink wallpaper_path;
 
   # set icon-theme
+  # if error, use nwg-look manually
   gtk = {
     enable = true;
     theme = {
