@@ -8,6 +8,7 @@ declare -A menu_items
 menu_items['󰖚 Hyprsunset 5000K']='pkill hyprsunset ; hyprsunset -t 5000'
 menu_items[' next wallpaper']='wpaperctl next-wallpaper'
 menu_items['󰌌 Set Hyprsunset Temp...']='pkill hyprsunset ; hyprsunset -t __INPUT__'
+menu_items['󰹑 Set display']='nwg-displays'
 
 update_menu_items() {
     # --- 一些需要动态更新的菜单项 ---

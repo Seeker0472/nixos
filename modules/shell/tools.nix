@@ -57,6 +57,7 @@
     gnupg
 
     jq #JSON parser
+    file-rename
 
     # nix related
     #
