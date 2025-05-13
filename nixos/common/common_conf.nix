@@ -38,4 +38,24 @@
   # https://nixos.org/manual/nix/stable/command-ref/conf-file.html#conf-auto-optimise-store
   nix.settings.auto-optimise-store = true;
 
+  # keyd to remap keys, caps->esc
+  # wiki on https://wiki.nixos.org/wiki/Keyd
+  services.keyd = {
+    enable = true;
+    keyboards = {
+      default = {
+        ids = [ "*" ];
+        settings = {
+          main = {
+            capslock = "esc";
+            esc = "esc";
+          };
+          otherlayer = { };
+        };
+        extraConfig = ''
+        '';
+      };
+    };
+  };
+
 }
