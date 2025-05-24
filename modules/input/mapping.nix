@@ -18,8 +18,8 @@ let
     (name: value: lib.nameValuePair name ({ source = lib.mkDefault value; }))
     (copyDirRecursively fromDir toDir);
 in {
-  home.file = mkHomeFile ./rime ".local/share/fcitx5/rime"
-    // mkHomeFile ./fcitx5-nord/Nord-Dark ".local/share/fcitx5/themes/Nord-Dark"
+  home.file = 
+     mkHomeFile ./fcitx5-nord/Nord-Dark ".local/share/fcitx5/themes/Nord-Dark"
     // mkHomeFile ./fcitx5-nord/Nord-Light
     ".local/share/fcitx5/themes/Nord-Light";
 }
