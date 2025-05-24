@@ -24,6 +24,7 @@
       nrs = "sudo nixos-rebuild switch";
       icat = "kitten icat";
       kssh = "kitten ssh";
+      kmpv = "mpv --vo=kitty";
     };
     # plugins = [
     #   # Enable a plugin (here grc for colorized command output) from nixpkgs
