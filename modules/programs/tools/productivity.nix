@@ -18,7 +18,7 @@
         pkgs.nur.repos.novel2430.wemeet-bin-bwrap-wayland-screenshare
         # feishu
         drawio # 流程图
-        gimp # 图片处理
+        gimp3-with-plugins # 图片处理
       ] else
         [ ]);
 
