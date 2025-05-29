@@ -6,6 +6,7 @@
         Hostname ssh.github.com
         Port 443
         User git
+        ProxyCommand nc -X connect -x 127.0.0.1:7890 %h %p
     '';
   };
   programs.direnv = {
