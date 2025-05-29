@@ -35,7 +35,7 @@
       [ ])
     ++ (if builtins.elem "tools_full" sharedConfig.software_package then [
       obs-studio
-      libsForQt5.kdenlive
+      kdePackages.kdenlive
     ] else
       [ ]);
   # home.packages = with pkgs; [

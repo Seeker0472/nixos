@@ -1,4 +1,4 @@
-{ pkgs, nur, sharedConfig, ... }: {
+{ pkgs, nur, sharedConfig, nixpkgs-dev, ... }: {
   home.packages = with pkgs;
     [
       # programming/ysyx/learning
@@ -21,6 +21,7 @@
         # jetbrains.clion
         # jetbrains.pycharm-professional
         vscode
+        zed-editor
 
         # pkgs.nur.repos.lschuermann.vivado-2022_2
         # ciscoPacketTracer8

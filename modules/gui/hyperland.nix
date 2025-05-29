@@ -32,6 +32,7 @@ in {
     ydotool
     pinta
     nwg-displays
+    kdePackages.kwallet # secret storage(required by zed-editor)
   ];
   # map files
   home.file.".config/hypr".source =
