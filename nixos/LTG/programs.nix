@@ -26,18 +26,6 @@
     tailscale
   ];
 
-  systemd.services.clashverges = {
-    description = "AutoStart ClashVergeService";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
-    serviceConfig = {
-      Type = "simple";
-      User = "root";
-      ExecStart = "${pkgs.clash-verge-rev}/bin/clash-verge-service";
-      Restart = "on-failure";
-    };
-  };
-
   # 启用 OpenSSH 后台服务
   services.openssh = {
     enable = true;

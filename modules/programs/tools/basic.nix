@@ -28,6 +28,7 @@
       gparted
 
       clash-verge-rev
+      flclash
       ncdu
       # games
       hmcl

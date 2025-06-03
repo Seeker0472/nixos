@@ -11,6 +11,7 @@
       lua5_1
       luarocks
       ripgrep
+      python313Packages.ipython
       # coursier
 
       clang-tools

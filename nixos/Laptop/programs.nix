@@ -51,17 +51,18 @@
   #   };
   # };
 
-  systemd.services.clashverges = {
-    description = "AutoStart ClashVergeService";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
-    serviceConfig = {
-      Type = "simple";
-      User = "root";
-      ExecStart = "${pkgs.clash-verge-rev}/bin/clash-verge-service";
-      Restart = "on-failure";
-    };
-  };
+#  自启动clash,现在已经改成了flclash
+#  systemd.services.clashverges = {
+#    description = "AutoStart ClashVergeService";
+#    wantedBy = [ "multi-user.target" ];
+#    after = [ "network.target" ];
+#    serviceConfig = {
+#      Type = "simple";
+#      User = "root";
+#      ExecStart = "${pkgs.clash-verge-rev}/bin/clash-verge-service";
+#      Restart = "on-failure";
+#    };
+#  };
   # programs.direnv = {
   #   enable = true;
   #   silent = true;
