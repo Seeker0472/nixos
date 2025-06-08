@@ -20,12 +20,18 @@
     ];
   # TODO: the issue may because the compositor of weston
   services.displayManager = {
-    sddm = {
+    # sddm = {
+    #   enable = true;
+    #   wayland.enable = true;
+    #   autoNumlock = true;
+    #   theme = "catppuccin-mocha";
+    #   package = pkgs.kdePackages.sddm;
+    # };
+    gdm = {
       enable = true;
-      wayland.enable = true;
-      autoNumlock = true;
-      theme = "catppuccin-mocha";
-      package = pkgs.kdePackages.sddm;
+      settings = {
+        };
+      };
     };
   };
   environment.sessionVariables.NIXOS_OZONE_WL = "1";

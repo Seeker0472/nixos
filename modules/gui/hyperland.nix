@@ -10,7 +10,8 @@ let
 in {
   home.packages = with pkgs; [
     hyprland-qtutils # Hyprland dependence
-    xdg-desktop-portal-hyprland 
+    #  XDPH is already enabled by programs.hyprland.enable = true;
+    # xdg-desktop-portal-hyprland 
     hyprpaper # wallpaper
     wpaperd
     hyprlock # screen-locker
