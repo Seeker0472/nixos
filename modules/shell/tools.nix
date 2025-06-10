@@ -95,7 +95,20 @@
 
     ddcutil # brightness
     ranger # fileExpo
-    yazi
+
+    fzf # amazing tool to find things!
 
   ];
+  programs.yazi = {
+    enable = true;
+    settings = {
+      tasks = {
+        micro_workers = 5;
+        macro_workers = 10;
+        bizarre_retry = 5;
+        image_alloc = 4096;
+        image_bound = [15720 8640];
+      };
+    };
+  };
 }

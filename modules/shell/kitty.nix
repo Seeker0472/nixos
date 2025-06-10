@@ -23,6 +23,7 @@
     keybindings = {
       # new window
       "ctrl+shift+enter" = "launch --cwd=current --copy-env --copy-cmdline";
+      "ctrl+shift+alt+enter" = "launch --cwd=current";
       "ctrl+shift+q" = "close_window";
       "ctrl+shift+w" = "new_window";
       
