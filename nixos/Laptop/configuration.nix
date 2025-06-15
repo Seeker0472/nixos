@@ -5,6 +5,9 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
+  # boot.kernelParams = [ "debug" "initcall_debug" "loglevel=8" "noquiet" ];
+  # boot.kernelPackages = pkgs.linuxPackages_6_14;
+
   #HardWare AccelerationConfig
   #https://nixos.wiki/wiki/Accelerated_Video_Playback
   nixpkgs.config.packageOverrides = pkgs: {

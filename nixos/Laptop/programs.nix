@@ -119,7 +119,7 @@
     # speed-up boot process ,maybe `--restart=always` won't work
     enableOnBoot = false;
     rootless.setSocketVariable = true;
-    daemon.settings = { data-root = "/etc/docker"; };
+    #daemon.settings = { data-root = "/etc/docker"; };
   };
   # TODO!
   virtualisation.waydroid.enable = true;

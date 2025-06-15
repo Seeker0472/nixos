@@ -5,6 +5,7 @@
   # inputs 中的每一项依赖有许多类型与定义方式，可以是另一个 flake，也可以是一个普通的 Git 仓库，又或者一个本地路径。
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # nixpkgs.url = "github:Seeker0472/nixpkgs/unstable-test";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
     nix-on-droid = {
       url = "github:nix-community/nix-on-droid/release-24.05";
@@ -13,40 +14,27 @@
     # lock nur
     nur.url = "github:nix-community/NUR";
 
-    dwm.url = "github:Seeker0472/dwm/develop";
-    picom.url = "github:Seeker0472/picom";
-    picom.inputs.nixpkgs.follows = "nixpkgs";
-    dwm.inputs.nixpkgs.follows = "nixpkgs";
-
     # Home Manager
     home-manager = {
       # url = "github:nix-community/home-manager/release-24.05";
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    winapps = {
-      url = "github:winapps-org/winapps/feat-nix-packaging";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
-    };
   };
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, dwm, winapps
-    , picom, nix-on-droid, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, nix-on-droid, ... }@inputs:
     let
       system = "x86_64-linux";
       config_miLaptop = import ./config/sharedConfig_miLaptop.nix;
       config_LTG = import ./config/sharedConfig_LTG.nix;
       config_miPad = import ./config/sharedConfig_miPad.nix;
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [ nur.overlays.default ];
-      };
+
       pkgsConfig = {
         nixpkgs.config.allowUnfree = true;
         nixpkgs.overlays =
-          [ nur.overlays.default dwm.overlays.default picom.overlays.default ];
+          [ nur.overlays.default ];
       };
       home_managerConfig = {
         home-manager = {
@@ -70,7 +58,6 @@
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = {
-              inherit (inputs) winapps;
               inherit (config_miLaptop) sharedConfig;
             };
           }
