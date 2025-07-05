@@ -13,6 +13,6 @@
   sharedConfig = {
     machine = "LTG";
     desktop_environment = "kde";
-    software_package = [ "develop" "gui" "tools" ];
+    software_package = [ "gui" ];
   };
 }

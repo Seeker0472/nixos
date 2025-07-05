@@ -1,0 +1,33 @@
+{ pkgs, nur, sharedConfig, nixpkgs-dev, ... }: {
+  home.packages = with pkgs;
+    [
+      # ----- Develop ------
+      # programming/ysyx/learning
+      gcc
+      gdb
+      gnumake
+      lazygit
+      #neovim & dependences
+      neovim
+      lua5_1
+      luarocks
+      ripgrep
+      python313Packages.ipython
+      # coursier
+
+      clang-tools
+      nixfmt-classic
+
+      # ------ Tools ------
+      axel # Console app for parallel connection
+      wl-clip-persist
+      wl-clipboard
+      cliphist
+      ncdu # ----
+
+      # ------ Productivity ------
+      pandoc # 文档
+      ffmpeg
+      marp-cli
+    ];
+}

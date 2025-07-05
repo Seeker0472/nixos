@@ -13,6 +13,6 @@
   sharedConfig = {
     machine = "miLaptop";
     desktop_environment = "hyperland";
-    software_package = [ "develop_full" "gui" "tools_full" ];
+    software_package = [ "gui" ];
   };
 }
