@@ -77,18 +77,20 @@
         set -l color_mode_insert_bg blue
         set -l color_mode_normal_bg magenta
         set -l color_mode_visual_bg green
-        set -l color_mode_replace_bg blue
+        set -l color_mode_replace_bg red
         set -l color_mode_default_bg white
 
         # set -l color_success_bg green
         set -l color_error_bg red
         set -l color_path_bg cyan
-        set -l color_git_bg yellow # maybe more color!
+        set -l color_jobs_bg brblack
+        set -l color_venv_bg magenta
         set -l color_nix_bg green
-        set -l color_venv_bg red
+        set -l color_git_bg yellow # maybe more color!
         
         # --- 计算各段颜色 ---
         set -l last_status $status
+        set -l job_count (count (jobs))
 
         if test $last_status -eq 0
           set _color_path_bg $color_path_bg
@@ -124,7 +126,21 @@
           set _color_venv_bg $_color_nix_bg
         end
 
+        # background jobs
+        if test $job_count -gt 0
+          set _color_jobs_bg $color_jobs_bg
+        else 
+          set _color_jobs_bg $_color_venv_bg
+        end
+
         # --- 绘制PROMPT ---
+        # ----- 可以考虑加上更多的Prompt
+        # Node.js/JavaScript: 显示 Node.js 版本 (node -v)，或者当目录中存在 package.json 时显示一个 Node 图标 ⬢。还可以显示 npm、yarn 或 pnpm 的工作区信息。
+        # Go: 当存在 go.mod 文件时，显示 Go 的版本 (go version)。
+        # Rust: 当存在 Cargo.toml 文件时，显示 Rust 工具链信息 (rustc --version)。
+        # Docker / Containers: 显示当前的 Docker context，或者当检测到 Dockerfile 时显示一个 Docker 图标 🐳。
+        # Kubernetes: 显示当前的 kubectl context/namespace
+        # Cloud (AWS/GCP/Azure): 显示当前配置的 AWS Profile ($AWS_PROFILE) 或 GCP Project。
 
         # 1. [ 模式 ] 段
         set -l mode_bg
@@ -164,7 +180,16 @@
         # end
 
         # 3. [ 路径 ] 段
-        _prompt_segment $_color_path_bg $_color_venv_bg (prompt_pwd)
+        set -l _prompt_pwd_text (prompt_pwd) 
+        if not test -w .
+          set _prompt_pwd_text " $_prompt_pwd_text"
+        end
+        _prompt_segment $_color_path_bg $_color_jobs_bg $_prompt_pwd_text
+
+        # 4. jobs
+        if test $job_count -gt 0
+          _prompt_segment $_color_jobs_bg $_color_venv_bg "󰲋 $job_count"
+        end
 
         # 4. [ Python venv ]
         if test -n "$VIRTUAL_ENV"
