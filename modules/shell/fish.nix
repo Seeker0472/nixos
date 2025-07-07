@@ -29,6 +29,19 @@
     };
     functions = {
       fish_mode_prompt = "";
+      backup = ''    
+        function backup --description "Create a timestamped backup of a file"
+            set file $argv[1]
+            if test -f "$file"
+                set -l backup_name "$file"(date +'.%Y-%m-%d_%H-%M-%S')
+                cp "$file" "$backup_name"
+                echo "Backed up $file->$backup_name"
+            else
+                echo "Error: File not found - $file"
+                return 1
+            end
+        end
+      '';
       _print_git_segment = ''
         # 定义颜色
         set -l color_git_bg $argv[1]
@@ -223,24 +236,21 @@
         set_color normal
       '';
     };
-    # plugins = [
-    #   # Enable a plugin (here grc for colorized command output) from nixpkgs
-    #   { name = "grc"; src = pkgs.fishPlugins.grc.src; }
-    #   # Manually packaging and enable a plugin
-    #   {
-    #     name = "z";
-    #     src = pkgs.fetchFromGitHub {
-    #       owner = "jethrokuan";
-    #       repo = "z";
-    #       rev = "e0e1b9dfdba362f8ab1ae8c1afc7ccf62b89f7eb";
-    #       sha256 = "0dbnir6jbwjpjalz14snzd3cgdysgcs3raznsijd6savad3qhijc";
-    #     };
-    #   }
-    # ];
+    plugins = [
+      { name = "z"; src = pkgs.fishPlugins.z.src; } # fast cd into dir
+      { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; } # TODO:LEARN!
+      { name = "grc"; src = pkgs.fishPlugins.grc.src; } # Generic Recolouriser
+      { name = "fish-ysy"; src = pkgs.fishPlugins.fish-you-should-use.src; } # remind to use alies
+      { name = "done"; src = pkgs.fishPlugins.done.src; } # notify
+      # { name = "forgit"; src = pkgs.fishPlugins.forgit.src; }
+      # { name = "cman"; src = pkgs.fishPlugins.colored-man-pages.src; } # no use
+    ];
   };
   home.packages = with pkgs;
     [
       # oh-my-fish
       subversion
+      fd # fzf-fish's dependence
+      grc
     ];
 }
