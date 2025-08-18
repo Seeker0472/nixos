@@ -105,9 +105,11 @@
     openFirewall = true;
   };
 
-  systemd.extraConfig = ''
-    DefaultTimeoutStopSec=10s
-  '';
+  # systemd.extraConfig
+  # TODO: duplicate config with LTG
+  systemd.settings.Manager = {
+    DefaultTimeoutStopSec = "10s";
+  };
 
   #   ## Added-User
   #   users.users.seekerRemote = {

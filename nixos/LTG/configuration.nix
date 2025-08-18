@@ -64,9 +64,9 @@
   #   };
   # };
 
-  systemd.extraConfig = ''
-    DefaultTimeoutStopSec=10s
-  '';
+  # systemd.extraConfig = ''
+  #   DefaultTimeoutStopSec=10s
+  # '';
 
   # 将默认编辑器设置为 vim
   environment.variables.EDITOR = "vim";

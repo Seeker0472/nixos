@@ -23,6 +23,7 @@
     # gdb
     pulseaudioFull
     firefox
+    qutebrowser
     tailscale
 
     powertop
