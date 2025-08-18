@@ -240,7 +240,7 @@
       { name = "z"; src = pkgs.fishPlugins.z.src; } # fast cd into dir
       { name = "fzf-fish"; src = pkgs.fishPlugins.fzf-fish.src; } # TODO:LEARN!
       { name = "grc"; src = pkgs.fishPlugins.grc.src; } # Generic Recolouriser
-      { name = "fish-ysy"; src = pkgs.fishPlugins.fish-you-should-use.src; } # remind to use alies
+      # { name = "fish-ysy"; src = pkgs.fishPlugins.fish-you-should-use.src; } # remind to use alies TODO:nix-ondroid don't work
       { name = "done"; src = pkgs.fishPlugins.done.src; } # notify
       # { name = "forgit"; src = pkgs.fishPlugins.forgit.src; }
       # { name = "cman"; src = pkgs.fishPlugins.colored-man-pages.src; } # no use

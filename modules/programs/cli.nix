@@ -12,7 +12,7 @@
       lua5_1
       luarocks
       ripgrep
-      python313Packages.ipython
+      python312Packages.ipython #TODO:python313:nix-ondroid error
       # coursier
 
       clang-tools

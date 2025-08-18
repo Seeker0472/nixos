@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   imports = [
     # pkgs.anyrun.homeManagerModules.default  
     ../../modules/programs
@@ -15,16 +15,16 @@
   programs.bash.bashrcExtra = ''
     exec fish
   '';
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
+
   home.stateVersion = "24.05";
 
+    # ${pkgs.coreutils}/bin/cp -f ${pkgs.maple-mono.NF-CN}/share/fonts/truetype/MapleMono-NF-CN-Regular.ttf ${config.home.homeDirectory}/.termux/font.ttf
+  home.activation.copyFont = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ${pkgs.coreutils}/bin/mkdir -p "$HOME/.termux"
+    ${pkgs.coreutils}/bin/rm -f "$HOME/.termux/font.ttf"
+    ${pkgs.coreutils}/bin/cp -f ${pkgs.maple-mono-NF}/share/fonts/truetype/MapleMono-NF-Regular.ttf $HOME/.termux/font.ttf
+'';
+  
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }

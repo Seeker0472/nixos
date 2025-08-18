@@ -17,7 +17,13 @@
     experimental-features = nix-command flakes
   '';
 
-  # terminal.font = ${pkgs.terminus_font_ttf}/share/fonts/truetype/TerminusTTF.ttf;
+  environment.motd = "";
+  # TODO: maybe wait next release seems not supported yet
+  # user.userName = "seeker";
+  # user.group = "seeker";
+
+
+  # terminal.font = "${pkgs.maple-mono.NF-CN}/share/fonts/truetype/MapleMono-NF-CN-Regular.ttf";
   # user.shell= "${pkgs.fish}/bin/fish";
 
   time.timeZone = "Asia/Hong_Kong";
