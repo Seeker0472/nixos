@@ -6,10 +6,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # nixpkgs.url = "github:Seeker0472/nixpkgs/unstable-test";
+    # seems the nod project supports until 24.05
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
     nix-on-droid = {
-      url = "github:nix-community/nix-on-droid/release-24.05";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/nix-on-droid";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
     };
     # lock nur
     nur.url = "github:nix-community/NUR";
@@ -20,11 +21,15 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    home-manager-stable = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs-stable";     
+    };
   };
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nur, nix-on-droid, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager-stable,home-manager, nur, nix-on-droid, ... }@inputs:
     let
       system = "x86_64-linux";
       config_miLaptop = import ./config/sharedConfig_miLaptop.nix;

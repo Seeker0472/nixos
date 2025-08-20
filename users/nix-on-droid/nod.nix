@@ -18,7 +18,6 @@
 
   home.stateVersion = "24.05";
 
-    # ${pkgs.coreutils}/bin/cp -f ${pkgs.maple-mono.NF-CN}/share/fonts/truetype/MapleMono-NF-CN-Regular.ttf ${config.home.homeDirectory}/.termux/font.ttf
   home.activation.copyFont = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${pkgs.coreutils}/bin/mkdir -p "$HOME/.termux"
     ${pkgs.coreutils}/bin/rm -f "$HOME/.termux/font.ttf"

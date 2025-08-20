@@ -19,8 +19,8 @@
 
   environment.motd = "";
   # TODO: maybe wait next release seems not supported yet
-  # user.userName = "seeker";
-  # user.group = "seeker";
+  user.userName = "seeker";
+  user.group = "seeker";
 
 
   # terminal.font = "${pkgs.maple-mono.NF-CN}/share/fonts/truetype/MapleMono-NF-CN-Regular.ttf";
