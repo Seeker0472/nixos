@@ -16,6 +16,7 @@
     ../../modules/gui
     # ../../modules/input
     ../../modules/input
+    ../../modules/sops
     ./basepkgs.nix
     ./xdg_default.nix
   ];

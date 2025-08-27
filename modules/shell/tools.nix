@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   programs.ssh = {
     enable = true;
     extraConfig = ''
@@ -8,6 +8,19 @@
         User git
         ProxyCommand nc -X connect -x 127.0.0.1:7890 %h %p
     '';
+    matchBlocks."*".identityFile = [
+        config.sops.secrets."id_ed25519".path
+    ];
+  };
+  sops.secrets."id_ed25519" = {
+    sopsFile = ./ssh.secrets.yaml;
+    key = "ssh_id_ed25519_private_key";
+    path = "${config.home.homeDirectory}/.ssh/id_seeker";
+  };
+  sops.secrets."id_ed25519-public" = {
+    sopsFile = ./ssh.secrets.yaml;
+    key = "ssh_id_ed25519_public_key";
+    path = "${config.home.homeDirectory}/.ssh/id_seeker.pub";
   };
   programs.direnv = {
     enable = true;
@@ -107,7 +120,7 @@
         macro_workers = 10;
         bizarre_retry = 5;
         image_alloc = 4096;
-        image_bound = [15720 8640];
+        image_bound = [ 15720 8640 ];
       };
     };
   };

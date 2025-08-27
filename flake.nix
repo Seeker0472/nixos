@@ -7,13 +7,18 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # nixpkgs.url = "github:Seeker0472/nixpkgs/unstable-test";
     # seems the nod project supports until 24.05
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs-2405.url = "github:NixOS/nixpkgs/nixos-24.05";
     nix-on-droid = {
       url = "github:nix-community/nix-on-droid";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
+      inputs.nixpkgs.follows = "nixpkgs-2405";
     };
     # lock nur
     nur.url = "github:nix-community/NUR";
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Home Manager
     home-manager = {
@@ -21,15 +26,15 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-manager-stable = {
+    home-manager-2405 = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-stable";     
+      inputs.nixpkgs.follows = "nixpkgs-2405";
     };
   };
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager-stable,home-manager, nur, nix-on-droid, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-2405, home-manager-2405, home-manager, nur, nix-on-droid, sops-nix, ... }@inputs:
     let
       system = "x86_64-linux";
       config_miLaptop = import ./config/sharedConfig_miLaptop.nix;
@@ -47,9 +52,13 @@
           useUserPackages = true;
           users.seeker = import users/seeker/home.nix;
           backupFileExtension = "backup";
+          sharedModules = [
+            inputs.sops-nix.homeManagerModules.sops
+          ];
         };
       };
-    in {
+    in
+    {
       inherit system;
       # configuration for Laptop
       nixosConfigurations.miLaptop = nixpkgs.lib.nixosSystem {
@@ -86,7 +95,7 @@
       };
       nixOnDroidConfigurations.default =
         nix-on-droid.lib.nixOnDroidConfiguration {
-          pkgs = import nixpkgs-stable { system = "aarch64-linux"; };
+          pkgs = import nixpkgs-2405 { system = "aarch64-linux"; };
           # specialArgs = { inherit (config_miPad) sharedConfig; };
           modules = [
             ./nixos/miPad

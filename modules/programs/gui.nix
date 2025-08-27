@@ -48,6 +48,7 @@
       pkgs.nur.repos.novel2430.wemeet-bin-bwrap-wayland-screenshare
       # feishu
       drawio # 流程图
+      zotero
 
     ];
 }
