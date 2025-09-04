@@ -39,6 +39,8 @@
   
     # native wayland support (unstable)
     wineWowPackages.waylandFull
+
+    rclone
   ];
   # From https://nixos.wiki/wiki/Fish
   #programs.bash = {

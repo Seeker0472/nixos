@@ -75,6 +75,7 @@
               inherit (config_miLaptop) sharedConfig;
             };
           }
+          sops-nix.nixosModules.sops
           home_managerConfig
         ];
       };

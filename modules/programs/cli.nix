@@ -24,6 +24,9 @@
       wl-clipboard
       cliphist
       ncdu # ----
+      sops
+      age
+      tty-clock
 
       # ------ Productivity ------
       pandoc # 文档
