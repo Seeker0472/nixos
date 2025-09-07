@@ -1,10 +1,14 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  services.logind.extraConfig = ''
+  services.logind.settings.Login = {
     # don't shutdown when power button is short-pressed
-    HandlePowerKey=ignore
-  '';
+    HandlePowerKey = "ignore";
+  };
+  # FIXME: remove this!
+  nixpkgs.config.permittedInsecurePackages = [
+    "qtwebengine-5.15.19"
+  ];
   #Make Windows Happy
   # A better way is to let windows use UTC time
   # time.hardwareClockInLocalTime = true;

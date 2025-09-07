@@ -19,7 +19,8 @@
 
       # ------ communication ------
       qq
-      wechat-uos
+      wechat
+      # wechat-uos
 
       # ------ multimedia ------
       mpv
@@ -45,7 +46,8 @@
       libreoffice
       obsidian
       # pkgs.nur.repos.linyinfeng.wemeet #腾讯会议
-      pkgs.nur.repos.novel2430.wemeet-bin-bwrap-wayland-screenshare
+      # FIXME:maintain one myself
+      # pkgs.nur.repos.novel2430.wemeet-bin-bwrap-wayland-screenshare
       # feishu
       drawio # 流程图
       zotero

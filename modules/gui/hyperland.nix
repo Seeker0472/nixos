@@ -73,11 +73,11 @@ in
   gtk = {
     enable = true;
     theme = {
-      package = pkgs.libsForQt5.breeze-gtk;
+      package = pkgs.kdePackages.breeze-gtk;
       name = "Breeze";
     };
     iconTheme = {
-      package = pkgs.libsForQt5.breeze-icons;
+      package = pkgs.kdePackages.breeze-icons;
       name = "breeze";
     };
   };
