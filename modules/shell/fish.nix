@@ -30,7 +30,7 @@
     functions = {
       fish_mode_prompt = "";
       backup = ''    
-        function backup --description "Create a timestamped backup of a file"
+        # function backup --description "Create a timestamped backup of a file"
             set file $argv[1]
             if test -f "$file"
                 set -l backup_name "$file"(date +'.%Y-%m-%d_%H-%M-%S')
@@ -40,7 +40,15 @@
                 echo "Error: File not found - $file"
                 return 1
             end
-        end
+        # end
+      '';
+      rh = ''
+        # function rh --description "Restart a process via hyprctl"
+          set -l process $argv[1]
+          pkill "$process"
+          echo "starting: $process"
+          hyprctl dispatch exec "$process"
+        # end
       '';
       _print_git_segment = ''
         # 定义颜色
@@ -60,14 +68,62 @@
 
         set -l content " $branch"
 
-        # 检查是否有改动
+        # change
         if not git diff --quiet --ignore-submodules --
           set content "$content*"
         end
+        
+        # cached
+        if not git diff --cached --quiet --ignore-submodules --
+          set content "$content+"
+        end
+
+        # untracked
+        # exclude-standard
+        if git ls-files --others --exclude-standard | grep -q . >> /dev/null 
+          set content "$content?"
+        end
+
+        # submodule
+        if not git submodule foreach --quiet --recursive 'git diff --quiet --exit-code' &>/dev/null || \
+           not git submodule foreach --quiet --recursive 'git diff --cached --quiet --exit-code' &>/dev/null || \
+        begin
+          git submodule foreach --quiet --recursive 'git ls-files --others --exclude-standard' 2>&1 | grep -q . &>/dev/null
+        end
+          set content "$content↻"
+        end
+
+        # upstreams
+        set -l git_upstream (_git_ahead_verbose)
+        set content "$content$git_upstream"
 
         # 调用新的 _prompt_segment, 因为是最后一个段落, 所以 next_bg 是 'normal'
         _prompt_segment $color_git_bg normal $content
       '';
+      _git_ahead_verbose=''
+        # Copied from https://github.com/oh-my-fish/theme-bobthefish/blob/e3b4d4eafc23516e35f162686f08a42edf844e40/functions/fish_prompt.fish#L297
+        set -l commits (command git rev-list --left-right '@{upstream}...HEAD' 2>/dev/null)
+        or return
+
+        set -l git_ahead_glyph "↑"
+        set -l git_behind_glyph "↓"
+
+        set -l behind (count (for arg in $commits; echo $arg; end | command grep '^<'))
+        set -l ahead (count (for arg in $commits; echo $arg; end | command grep -v '^<'))
+
+        switch "$ahead $behind"
+        case ''\'' # no upstream
+        case '0 0' # equal to upstream
+            return
+        case '* 0' # ahead of upstream
+            echo "$git_ahead_glyph$ahead"
+        case '0 *' # behind upstream
+            echo "$git_behind_glyph$behind"
+        case '*' # diverged from upstream
+            echo "$git_ahead_glyph$ahead$git_behind_glyph$behind"
+        end
+      '';
+
       _prompt_segment = ''
         set -l self_bg $argv[1]
         set -l next_bg $argv[2]
