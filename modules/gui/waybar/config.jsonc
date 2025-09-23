@@ -3,12 +3,13 @@
     "position": "top",
     "height": 32,
     "modules-left": [
-        "hyprland/workspaces"
-    ],
-    "modules-center": [
+        "hyprland/workspaces",
         "hyprland/window"
     ],
+    "modules-center": [
+    ],
     "modules-right": [
+        "custom/lrc",
         "cava",
         "custom/gotobed",
         "group/sysinfo",
@@ -94,8 +95,8 @@
         "input_delay": 2,
         "format-icons" : ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" ],
         "actions": {
-                   "on-click-right": "mode"
-                   }
+                   "on-click-right": "mode",
+                   },
     },
     "network": {
         // "interface": "wlp2*", // (Optional) To force the use of this interface
@@ -202,5 +203,10 @@
     "custom/wallpaper":{
         "format": "󰸉 ",
         "on-click":"wpaperctl next-wallpaper"
+    },
+    "custom/lrc": {
+      "interval": 1,
+      "exec": "~/scripts/waybarlrc.sh",
+      "format-alt": "󰝛 zzz"
     }
 }

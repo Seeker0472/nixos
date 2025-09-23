@@ -40,6 +40,7 @@ in
     pinta
     nwg-displays
     kdePackages.kwallet # secret storage(required by zed-editor)
+    playerctl
   ];
   # map files
   home.file.".config/hypr".source =

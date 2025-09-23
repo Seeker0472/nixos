@@ -107,6 +107,7 @@ window#waybar {
 #workspaces,
 #cava,
 #custom-gotobed,
+#custom-lrc,
 #custom-wallpaper
  {
     color: @main-fg;
@@ -127,6 +128,7 @@ window#waybar {
 #backlight,
 #cava,
 #custom-gotobed,
+#custom-lrc,
 #custom-wallpaper
 {
     color: @main-fg;
@@ -143,6 +145,7 @@ window#waybar {
 
 #window {
     color: bisque;
+    margin-left: 10px;
 }
 
 #workspaces,
@@ -231,4 +234,11 @@ tooltip * {
 
 #custom-wallpaper {
     background-color: @purple-opacity;
+}
+
+#custom-lrc {
+    /*
+     * font-family: "Noto Sans CJK SC";
+     * font-size: 15px;
+     */
 }

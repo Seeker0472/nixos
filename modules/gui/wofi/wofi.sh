@@ -5,10 +5,13 @@ WINDOWS_CONTAINER_NAME="WinApps" # WinApps 容器名
 # 使用一个占位符 __INPUT__ 来标记需要用户输入的地方
 declare -A menu_items
 
-menu_items['󰖚 Hyprsunset 5000K']='pkill hyprsunset ; hyprsunset -t 5000'
+menu_items['󰖚 hyprsunset 5000K']='pkill hyprsunset ; hyprsunset -t 5000'
 menu_items[' next wallpaper']='wpaperctl next-wallpaper'
-menu_items['󰌌 Set Hyprsunset Temp...']='pkill hyprsunset ; hyprsunset -t __INPUT__'
-menu_items['󰹑 Set display']='nwg-displays'
+menu_items['󰌌 set Hyprsunset Temp...']='pkill hyprsunset ; hyprsunset -t __INPUT__'
+menu_items['󰹑 set display']='nwg-displays'
+menu_items['󱡓 disable opacity']='hyprctl keyword decoration:inactive_opacity 1.0 ; hyprctl keyword decoration:active_opacity 1.0 ; hyprctl keyword decoration:blur:enabled false '
+menu_items['󰤺 disable animation']='hyprctl keyword animations:enabled 0'
+menu_items['󰑓 reload hyprland config']='hyprctl reload'
 
 update_menu_items() {
     # --- 一些需要动态更新的菜单项 ---
