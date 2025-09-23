@@ -10,7 +10,7 @@
     fsType = "exfat";
     options = [ "noatime" "x-systemd.automount" ];
   };
-  services.davfs2.enable = true;
+  # services.davfs2.enable = true;
 
   # FIXME:use TPM for auth
 
