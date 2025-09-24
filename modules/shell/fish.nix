@@ -50,78 +50,86 @@
           hyprctl dispatch exec "$process"
         # end
       '';
-      _print_git_segment = ''
-        # 定义颜色
+
+      _print_git_segment_fast = ''
         set -l color_git_bg $argv[1]
-
-        # 检查是否在 git 仓库中
-        git rev-parse --is-inside-work-tree >/dev/null 2>&1
+    
+        # 通过解析 git status 的输出来获取所有信息
+        # 这是最高效的方式，只调用一次 git
+        set -l git_status (command git status --porcelain=v2 --branch 2>/dev/null)
         if test $status -ne 0
-            return # 如果不是，就直接退出
+          return # 如果不是 git 仓库，直接退出
         end
-
-        # 获取分支名
-        set -l branch (git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    
+        set -l branch ''\''
+        set -l ahead 0
+        set -l behind 0
+        set -l staged 0
+        set -l unstaged 0
+        set -l untracked 0
+    
+        # 解析 git status 输出
+        for line in $git_status
+          # 分支信息 (# branch.oid, # branch.head, # branch.upstream, # branch.abbrev)
+          if string match -q "# branch.head *" $line
+            set branch (string replace '# branch.head ' ''\'' $line)
+          else if string match -q "# branch.ab *" $line
+            set -l abbrev_info (string replace '# branch.ab ' ''\'' $line)
+            # 格式为 'ahead X', 'behind Y', or 'ahead X, behind Y'
+            if string match -q "*+*" $abbrev_info
+                set ahead (string replace -r '.*\+(\d+).*' '$1' $abbrev_info)
+            end
+            if string match -q "*-*" $abbrev_info
+                set behind (string replace -r '.*\-(\d+).*' '$1' $abbrev_info)
+            end
+          # 暂存/未暂存文件 (1 XY)
+          else if string match -q "1 *" $line
+            set -l index_status (string sub -s 3 -l 1 $line)
+            set -l worktree_status (string sub -s 4 -l 1 $line)
+            if test "$index_status" != "."
+                set staged (math $staged + 1)
+            end
+            if test "$worktree_status" != "."
+                set unstaged (math $unstaged + 1)
+            end
+          # 未跟踪文件 (? <path>)
+          else if string match -q "? *" $line
+            set untracked (math $untracked + 1)
+          end
+        end
+    
         if [ -z "$branch" ]
-            return
+          return
         end
-
+    
         set -l content " $branch"
-
-        # change
-        if not git diff --quiet --ignore-submodules --
+    
+        # 状态符号
+        if test $unstaged -gt 0
           set content "$content*"
         end
-        
-        # cached
-        if not git diff --cached --quiet --ignore-submodules --
+        if test $staged -gt 0
           set content "$content+"
         end
-
-        # untracked
-        # exclude-standard
-        if git ls-files --others --exclude-standard | grep -q . >> /dev/null 
+        if test $untracked -gt 0
           set content "$content?"
         end
-
-        # submodule
-        if not git submodule foreach --quiet --recursive 'git diff --quiet --exit-code' &>/dev/null || \
-           not git submodule foreach --quiet --recursive 'git diff --cached --quiet --exit-code' &>/dev/null || \
-        begin
-          git submodule foreach --quiet --recursive 'git ls-files --others --exclude-standard' 2>&1 | grep -q . &>/dev/null
+    
+        # 子模块->太慢了,不添加
+        # if test -f .gitmodules; and command git submodule status | command grep -q -e '^[+ ]'
+        #     set content "$content↻"
+        # end
+    
+        # 上游信息
+        if test $ahead -gt 0
+          set content "$content↑$ahead"
         end
-          set content "$content↻"
+        if test $behind -gt 0
+          set content "$content↓$behind"
         end
+    
+        _prompt_segment $color_git_bg normal " $content "
 
-        # upstreams
-        set -l git_upstream (_git_ahead_verbose)
-        set content "$content$git_upstream"
-
-        # 调用新的 _prompt_segment, 因为是最后一个段落, 所以 next_bg 是 'normal'
-        _prompt_segment $color_git_bg normal $content
-      '';
-      _git_ahead_verbose=''
-        # Copied from https://github.com/oh-my-fish/theme-bobthefish/blob/e3b4d4eafc23516e35f162686f08a42edf844e40/functions/fish_prompt.fish#L297
-        set -l commits (command git rev-list --left-right '@{upstream}...HEAD' 2>/dev/null)
-        or return
-
-        set -l git_ahead_glyph "↑"
-        set -l git_behind_glyph "↓"
-
-        set -l behind (count (for arg in $commits; echo $arg; end | command grep '^<'))
-        set -l ahead (count (for arg in $commits; echo $arg; end | command grep -v '^<'))
-
-        switch "$ahead $behind"
-        case ''\'' # no upstream
-        case '0 0' # equal to upstream
-            return
-        case '* 0' # ahead of upstream
-            echo "$git_ahead_glyph$ahead"
-        case '0 *' # behind upstream
-            echo "$git_behind_glyph$behind"
-        case '*' # diverged from upstream
-            echo "$git_ahead_glyph$ahead$git_behind_glyph$behind"
-        end
       '';
 
       _prompt_segment = ''
@@ -129,15 +137,29 @@
         set -l next_bg $argv[2]
         set -l content $argv[3]
 
+        if set -q argv[4]
+          set_color $self_bg
+          echo -n "$argv[4]"
+          set_color normal
+        end
+
+        if set -q argv[5]
+          set -l s_after $argv[5]
+        else
+          set s_after ""
+        end
+
+        echo -n "$s_before"
+
         # 绘制自身背景和内容
         set_color --background $self_bg
         set_color black # 文字颜色
-        echo -n " $content "
+        echo -n "$content"
 
         # 绘制连接到下一个段落的箭头
         set_color --background $next_bg
         set_color $self_bg
-        echo -n ""
+        echo -n "$s_after"
       '';
 
       fish_prompt = ''
@@ -235,7 +257,7 @@
                 set mode_indicator $fish_bind_mode
         end
 
-        _prompt_segment $mode_bg $_color_path_bg "$mode_indicator"
+        _prompt_segment $mode_bg $_color_path_bg "$mode_indicator " "╭"
         
         # 现在感觉 [ 状态 ]段没有用,把上一条指令的结果显示在路径的背景颜色更高效x
         # 如果模式段的下一个是状态段,就启用这些
@@ -253,30 +275,34 @@
         if not test -w .
           set _prompt_pwd_text " $_prompt_pwd_text"
         end
-        _prompt_segment $_color_path_bg $_color_jobs_bg $_prompt_pwd_text
+        _prompt_segment $_color_path_bg $_color_jobs_bg " $_prompt_pwd_text "
 
         # 4. jobs
         if test $job_count -gt 0
-          _prompt_segment $_color_jobs_bg $_color_venv_bg "󰲋 $job_count"
+          _prompt_segment $_color_jobs_bg $_color_venv_bg " 󰲋 $job_count "
         end
 
         # 4. [ Python venv ]
         if test -n "$VIRTUAL_ENV"
           set -l venv_basename (basename "$VIRTUAL_ENV")
-          _prompt_segment $color_venv_bg $_color_nix_bg " $venv_basename"
+          _prompt_segment $color_venv_bg $_color_nix_bg "  $venv_basename "
         end
         
         # 5. [ Nix-venv or Nix-shell ]
         if test -n "$IN_NIX_SHELL"; or test -n "$DIRENV_DIR"
-          _prompt_segment $color_nix_bg $_color_git_bg $_nix_prompt
+          _prompt_segment $color_nix_bg $_color_git_bg " $_nix_prompt "
         end
 
         # 6. [ Git ]
-        _print_git_segment $color_git_bg
+        # _print_git_segment $color_git_bg
+        _print_git_segment_fast $color_git_bg
 
         # 7. Prompt 结尾
         set_color normal
-        echo -n " "
+        echo ""
+        set_color $mode_bg
+        echo -n "╰ "
+        set_color normal
       '';
       fish_right_prompt = ''
         set_color 7d7d7d
