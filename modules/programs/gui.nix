@@ -1,4 +1,6 @@
-{ pkgs, nur, sharedConfig, nixpkgs-dev, ... }: {
+{ pkgs, nur,testargs, sharedConfig, zen-browser, ... }: {
+
+  programs.zen-browser.enable = true;
   home.packages = with pkgs;
     [
       # ------ Develop ------

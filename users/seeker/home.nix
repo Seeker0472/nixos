@@ -24,9 +24,12 @@
   # git 相关配置
   programs.git = {
     enable = true;
-    userName = "seeker";
-    userEmail = "gmx472@qq.com";
-    extraConfig = {
+    settings = {
+      user =
+        {
+          name = "seeker";
+          email = "gmx472@qq.com";
+        };
       # 设置 kitten 为默认的 difftool
       diff.tool = "kitten";
 
