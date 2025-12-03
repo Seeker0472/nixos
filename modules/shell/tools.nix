@@ -28,6 +28,11 @@
     key = "ssh_id_ed25519_public_key";
     path = "${config.home.homeDirectory}/.ssh/id_seeker.pub";
   };
+  sops.secrets."nix_config" = {
+    sopsFile = ./ssh.secrets.yaml;
+    key = "nix_config";
+    path = "${config.home.homeDirectory}/.config/my_nix.conf";
+  };
   programs.direnv = {
     enable = true;
     # enableBashIntegration =true;

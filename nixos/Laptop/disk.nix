@@ -25,6 +25,15 @@
     # this is the path where the secret will be mounted
     path = "/etc/rclone/rclone.conf";
   };
+# FIXME:rename it and move it into common!
+  sops.secrets."nix_config" = {
+    sopsFile = ./webdav.secrets.yaml;
+    key = "nix_config";
+    path = "/etc/nix/my_nix.conf";
+  };
+  nix.extraOptions = ''
+    !include ${config.sops.secrets.nix_config.path}
+  '';
   systemd.services.rclone-webdav = {
     description = "Rclone Mount for WebDAV ( 123PAN )";
     wantedBy = [ "multi-user.target" ];

@@ -4,11 +4,18 @@
     enable = true;
     defaultApplications = {
       # --- Web ---
-      "text/html" = "firefox.desktop";
-      "x-scheme-handler/http" = "firefox.desktop";
-      "x-scheme-handler/https" = "firefox.desktop";
-      "x-scheme-handler/about" = "firefox.desktop";
-      "x-scheme-handler/unknown" = "firefox.desktop";
+      "text/html" = "zen-beta.desktop";
+      "x-scheme-handler/http" = "zen-beta.desktop";
+      "x-scheme-handler/https" = "zen-beta.desktop";
+      "x-scheme-handler/about" = "zen-beta.desktop";
+      "x-scheme-handler/unknown" = "zen-beta.desktop";
+
+      # --- Web ---
+      # "text/html" = "firefox.desktop";
+      # "x-scheme-handler/http" = "firefox.desktop";
+      # "x-scheme-handler/https" = "firefox.desktop";
+      # "x-scheme-handler/about" = "firefox.desktop";
+      # "x-scheme-handler/unknown" = "firefox.desktop";
 
       # --- PDF ---
       "application/pdf" = "org.gnome.Evince.desktop";
