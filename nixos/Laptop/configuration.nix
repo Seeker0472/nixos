@@ -24,14 +24,18 @@
       # vulkan-tools
       libva
       vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable;
+      intel-compute-runtime
+      rocmPackages.clr.icd # dv
     ];
+    extraPackages32 = with pkgs.pkgsi686Linux;
+      [ intel-vaapi-driver ];
+
   };
 
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "iHD";
-  }; # Force intel-media-driver
-  hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux;
-    [ intel-vaapi-driver ];
+  };
+  # Force intel-media-driver
   # nix.settings.system-features = [ "nixos-test" "benchmark" "big-parallel" "kvm" "gccarch-tigerlake" ];
   # nixpkgs.hostPlatform = {
   #   cpu.arch = "tigerlake";

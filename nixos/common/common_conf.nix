@@ -29,6 +29,11 @@
     "https://mirrors.ustc.edu.cn/nix-channels/store"
   ];
 
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryPackage = pkgs.pinentry-qt;
+  };
+
   # do garbage collection weekly to keep disk usage low
   nix.gc = {
     automatic = true;
