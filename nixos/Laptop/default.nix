@@ -1,4 +1,4 @@
-{ lib, pkgs, modulesPath, sharedConfig, ... }: {
+{ lib, pkgs, modulesPath,  ... }: {
   imports = [
     # Include the results of the hardware scan.
     ./configuration.nix

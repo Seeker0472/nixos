@@ -1,4 +1,4 @@
-{ pkgs, nur, sharedConfig, nixpkgs-dev, ... }: {
+{ pkgs, nur,  nixpkgs-dev, ... }: {
   home.packages = with pkgs;
     [
       # ----- Develop ------

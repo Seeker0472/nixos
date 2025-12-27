@@ -1,4 +1,4 @@
-{ pkgs, nur,testargs, sharedConfig, zen-browser, ... }: {
+{ pkgs, nur,testargs,  zen-browser, ... }: {
 
   programs.zen-browser.enable = true;
   home.packages = with pkgs;

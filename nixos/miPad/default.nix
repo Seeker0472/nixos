@@ -1,4 +1,4 @@
-{ pkgs, nur, sharedConfig, ... }: {
+{ pkgs, nur,  ... }: {
   imports = [
     ./common.nix
     #    ../common/develop.nix

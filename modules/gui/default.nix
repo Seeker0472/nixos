@@ -1,8 +1,9 @@
-{ pkgs, nur, winapps, sharedConfig, ... }:
+{ pkgs, nur, winapps,  ... }:
 
 {
-  imports = [ ] ++ (if sharedConfig.desktop_environment == "hyperland" then
-    [ ./hyperland.nix ]
-  else
-    [ ]);
+  #imports = [ ] ++ (if sharedConfig.desktop_environment == "hyperland" then
+  #  [ ./hyperland.nix ]
+  #else
+  #  [ ]);
+  imports = [./hyprland.nix];
 }
