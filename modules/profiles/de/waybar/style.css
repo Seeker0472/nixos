@@ -1,0 +1,244 @@
+/* define the colors used in the theme */
+@define-color bar-bg #1e1e2f;
+@define-color main-bg rgba(30, 30, 47, 0.9);
+@define-color main-fg #cdd6f4;
+
+@define-color wb-act-bg #a6adc8;
+@define-color wb-act-fg #313244;
+@define-color wb-hvr-bg #f5c2e7;
+@define-color wb-hvr-fg #313244;
+@define-color wb-urgent-bg #eb4d4b;
+@define-color wb-urgent1-bg #ebbbbb;
+
+@define-color green-opacity rgba(0, 255, 0, 0.174);
+@define-color yellow-opacity rgba(255, 255, 0, 0.319);
+@define-color red-opacity rgba(255, 0, 0, 0.319);
+@define-color purple-opacity rgba(255, 0, 255, 0.578);
+
+
+* {
+    font-family: "Maple Mono NF CN";
+    font-size: 13px;
+}
+
+/* set the default color for all */
+
+window#waybar {
+    background-color: @main-bg;
+    transition-property: background-color, border-color;
+    transition-duration: 0.5s;
+    border-radius: 0px 0px 6px 6px;
+    opacity: 1;
+}
+
+/* set default button style*/
+#workspaces button {
+    border: none;
+    box-shadow: none;
+    text-shadow: none;
+    border-radius: 9px;
+    margin: 3px 0px;
+    padding: 0 3px;
+    color: @main-fg;
+    animation: ws_normal 20s ease-in-out 1;
+}
+
+#workspaces button.active {
+    background: @wb-act-bg;
+    color: @wb-act-fg;
+    margin-left: 3px;
+    margin-right: 3px;
+    padding-left: 12px;
+    padding-right: 12px;
+    animation: ws_active 20s ease-in-out 1;
+    transition: all 0.4s cubic-bezier(.55, -0.68, .48, 1.682);
+}
+
+#workspaces button:hover {
+    background: @wb-hvr-bg;
+    color: @wb-hvr-fg;
+    animation: ws_hover 20s ease-in-out 1;
+    transition: all 0.3s cubic-bezier(.55, -0.68, .48, 1.682);
+}
+
+/* blinking animation */
+@keyframes blink_button {
+    to {
+        background-color: @wb-urgent1-bg;
+    }
+}
+#workspaces button.urgent {
+    background-color: @wb-urgent-bg;
+    margin-left: 3px;
+    margin-right: 3px;
+    padding-left: 12px;
+    padding-right: 12px;
+    animation: ws_active 20s ease-in-out 1;
+    transition: all 0.4s cubic-bezier(.55, -0.68, .48, 1.682);
+    animation-name: blink_button;
+    animation-duration: 1s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#tray menu * {
+    min-height: 16px
+}
+
+#tray menu separator {
+    min-height: 10px
+}
+
+/* need to add all the modules here */
+#backlight,
+#battery,
+#bluetooth,
+#clock,
+#cpu,
+#idle_inhibitor,
+#language,
+#memory,
+#network,
+#privacy,
+#pulseaudio,
+#tray,
+#window,
+#workspaces,
+#cava,
+#custom-gotobed,
+#custom-lrc,
+#custom-wallpaper
+ {
+    color: @main-fg;
+    /* background: @main-bg; */
+    margin: 4px 0px 4px 0px;
+    /* margin:  0px; */
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+#battery,
+#temperature,
+#cpu,
+#memory,
+#network,
+#bluetooth,
+#pulseaudio,
+#backlight,
+#cava,
+#custom-gotobed,
+#custom-lrc,
+#custom-wallpaper
+{
+    color: @main-fg;
+    background-color: @main-bg; /* lay upon the background , get darker */
+    border-radius: 9px;
+    padding: 0px 5px 0px 5px;
+    margin: 0px 6px 0px 0px;
+    border-radius: 9px;
+
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+
+#window {
+    color: bisque;
+    margin-left: 10px;
+}
+
+#workspaces,
+#taskbar {
+    padding: 0px;
+}
+
+/* tooltip style */
+tooltip {
+  color: bisque;
+  background-color: @main-bg;
+  border-radius: 6px;
+  text-shadow: none;
+}
+
+tooltip * {
+  color: bisque;
+  text-shadow: none;
+}
+
+/*assign color for different state
+    AKA: battery charging, discharging, full
+    */
+
+#battery.charging, #battery.plugged {
+    background-color: @green-opacity; 
+}
+
+#battery.warning:not(.charging) {
+    background-color: @yellow-opacity;
+}
+
+/* blinking animation */
+@keyframes blink {
+    to {
+        background-color: white;
+        color: black;
+    }
+}
+/* Using steps() instead of linear as a timing function to limit cpu usage */
+#battery.critical:not(.charging) {
+    background-color: red;
+    color: white;
+    animation-name: blink;
+    animation-duration: 2s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#network.disconnected {
+    background-color: @red-opacity;
+}
+
+#cpu.warning {
+    background-color: @yellow-opacity;
+}
+#memory.warning {
+    background-color: @yellow-opacity;
+}
+#cpu.high {
+    background-color: @red-opacity;
+}
+#memory.high {
+    background-color: @red-opacity;
+}
+
+#pulseaudio {
+    background-color: rgba(0, 251, 255, 0.263);
+}
+
+#pulseaudio.muted {
+    background-color: @main-bg;
+}
+
+/* custom module */
+#custom-gotobed.bedtime {
+    background-color:blueviolet;
+    color: white;
+    animation-name: blink;
+    animation-duration: 2s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#custom-wallpaper {
+    background-color: @purple-opacity;
+}
+
+#custom-lrc {
+    /*
+     * font-family: "Noto Sans CJK SC";
+     * font-size: 15px;
+     */
+}

@@ -30,13 +30,13 @@
     # --- Wine ---
     # support both 32-bit and 64-bit applications
     wineWowPackages.stable
-  
+
     # 实验性功能
     # wineWowPackages.staging
-  
+
     # winetricks (all versions)
     winetricks
-  
+
     # native wayland support (unstable)
     wineWowPackages.waylandFull
 
@@ -120,7 +120,7 @@
   virtualisation.docker = {
     enable = true;
     # speed-up boot process ,maybe `--restart=always` won't work
-    enableOnBoot = false;
+    # enableOnBoot = false;
     rootless.setSocketVariable = true;
     #daemon.settings = { data-root = "/etc/docker"; };
   };
@@ -133,4 +133,3 @@
   services.tumbler.enable = true; # Thumbnail support for images
 
 }
-

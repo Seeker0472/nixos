@@ -6,7 +6,7 @@
       modules = [
         ../nixos # 基础系统配置
         ./modules/nixpkgs-settings.nix
-        ./modules/user-seeker.nix
+        ../users/seeker
         inputs.sops-nix.nixosModules.sops
       ];
     };
@@ -14,7 +14,11 @@
     LTG = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; };
-      modules = [ ../nixos ./nixpkgs-settings.nix ./user-seeker.nix ];
+      modules = [
+        ../nixos
+        ./nixpkgs-settings.nix
+        ../users/seeker
+      ];
     };
   };
 }
