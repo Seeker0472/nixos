@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   ####################################################
   #
   #   All Seeker's Home Manager Conf.
@@ -9,37 +9,8 @@
   home.username = "seeker";
   home.homeDirectory = "/home/seeker";
 
-  imports = [
-    # pkgs.anyrun.homeManagerModules.default
-    ../../modules_old/programs
-    ../../modules_old/shell
-    ../../modules_old/gui
-    # ../../modules/input
-    ../../modules_old/input
-    ../../modules_old/sops
-    ./xdg_default.nix
-  ];
+  imports = [./xdg_default.nix ./tools.nix ./git.nix ./old];
 
-  # git 相关配置
-  programs.git = {
-    enable = true;
-    settings = {
-      user =
-        {
-          name = "seeker";
-          email = "gmx472@qq.com";
-        };
-      # 设置 kitten 为默认的 difftool
-      diff.tool = "kitten";
-
-      # 定义如何调用 kitten diff
-      # 注意 Nix 字符串中需要转义内部的双引号
-      difftool.kitten.cmd = ''kitten diff "$LOCAL" "$REMOTE"'';
-
-      # 禁止 git difftool 在每次启动前都询问
-      difftool.prompt = false;
-    };
-  };
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
   # when a new Home Manager release introduces backwards

@@ -1,1 +1,1 @@
-{ pkgs, ... }: { imports = [ ./nod.nix ]; }
+{pkgs, ...}: {imports = [./nod.nix];}

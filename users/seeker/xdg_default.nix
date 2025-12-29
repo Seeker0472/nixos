@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   # TODO!
   xdg.mimeApps = {
     enable = true;
@@ -31,29 +31,28 @@
 
       # PowerPoint (.ppt, .pptx)
       "application/vnd.ms-powerpoint" = "libreoffice-impress.desktop";
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "libreoffice-impress.desktop";     
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "libreoffice-impress.desktop";
 
       # --- Picture ---
       "image/jpeg" = "viewnior.desktop"; # JPG, JPEG
-      "image/png"  = "viewnior.desktop"; # PNG
-      "image/gif"  = "viewnior.desktop"; # GIF
-      "image/bmp"  = "viewnior.desktop"; # BMP
+      "image/png" = "viewnior.desktop"; # PNG
+      "image/gif" = "viewnior.desktop"; # GIF
+      "image/bmp" = "viewnior.desktop"; # BMP
       "image/tiff" = "viewnior.desktop"; # TIFF
       "image/webp" = "viewnior.desktop"; # WebP
 
       # --- Video ---
-      "video/mp4"  = "mpv.desktop";
-      "video/mpv"  = "mpv.desktop";
-      "video/mkv"  = "mpv.desktop";
+      "video/mp4" = "mpv.desktop";
+      "video/mpv" = "mpv.desktop";
+      "video/mkv" = "mpv.desktop";
       "video/webm" = "mpv.desktop";
-      "video/avi"  = "mpv.desktop";
-      
+      "video/avi" = "mpv.desktop";
+
       # --- Audio ---
       "audio/mpeg" = "mpv.desktop";
       "audio/flac" = "mpv.desktop";
-      "audio/wav"  = "mpv.desktop";
-      "audio/mp3"  = "mpv.desktop";
+      "audio/wav" = "mpv.desktop";
+      "audio/mp3" = "mpv.desktop";
     };
   };
-
 }

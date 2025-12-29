@@ -34,9 +34,14 @@
   # function as value
   # an attribute set
   # 它是一个以 inputs 中的依赖项为参数的函数，函数的返回值是一个 attribute set，这个返回的 attribute set 即为该 flake 的构建结果
-  outputs = { self, flake-parts, nixpkgs, ... }@inputs:
-    # https://flake.parts/module-arguments.html
-    flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = {
+    self,
+    flake-parts,
+    nixpkgs,
+    ...
+  } @ inputs:
+  # https://flake.parts/module-arguments.html
+    flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         # Optional: use external flake logic, e.g.
         # inputs.foo.flakeModules.default
@@ -45,15 +50,18 @@
       flake = {
         # Put your original flake attributes here.
       };
-      systems = [ "x86_64-linux" "aarch64-linux" ];
-      perSystem = { config, pkgs, ... }:
-        {
-          # Recommended: move all package definitions here.
-          # e.g. (assuming you have a nixpkgs input)
-          # packages.foo = pkgs.callPackage ./foo/package.nix { };
-          # packages.bar = pkgs.callPackage ./bar/package.nix {
-          #   foo = config.packages.foo;
-          # };
-        };
+      systems = ["x86_64-linux" "aarch64-linux"];
+      perSystem = {
+        config,
+        pkgs,
+        ...
+      }: {
+        # Recommended: move all package definitions here.
+        # e.g. (assuming you have a nixpkgs input)
+        # packages.foo = pkgs.callPackage ./foo/package.nix { };
+        # packages.bar = pkgs.callPackage ./bar/package.nix {
+        #   foo = config.packages.foo;
+        # };
+      };
     };
 }

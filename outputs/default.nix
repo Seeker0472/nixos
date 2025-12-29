@@ -1,1 +1,1 @@
-{ inputs, ... }: { imports = [ ./nixos-configurations.nix ]; }
+{inputs, ...}: {imports = [./nixos-configurations.nix];}

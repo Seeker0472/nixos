@@ -1,0 +1,1 @@
+{pkgs, ...}: {imports = [./map.nix];}

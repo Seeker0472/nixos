@@ -1,91 +1,94 @@
 # Rename into rules
-{ ... }:
+{...}: {
+  home-manager.sharedModules = [
+    {
+      # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
+      # See https://wiki.hyprland.org/Configuring/Workspace-Rules/ for workspace rules
+      # TODO!
 
-{
-  # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
-  # See https://wiki.hyprland.org/Configuring/Workspace-Rules/ for workspace rules
+      wayland.windowManager.hyprland.settings = {
+        windowrulev2 = [
+          # float&pin kitty
+          "float, initialClass:(.*F.*),initialTitle:^(kitty)$"
+          "size 70% 70%, initialClass:(.*F.*),initialTitle:^(kitty)$"
+          "pin, initialClass:(.*G.*),initialTitle:^(kitty)$"
 
-  wayland.windowManager.hyprland.settings = {
-    windowrulev2 = [
-      # float&pin kitty
-      "float, initialClass:(.*F.*),initialTitle:^(kitty)$"
-      "size 70% 70%, initialClass:(.*F.*),initialTitle:^(kitty)$"
-      "pin, initialClass:(.*G.*),initialTitle:^(kitty)$"
+          # kitty: right-Up of screen
+          "size 60% 60%, initialClass:^(RT.*), initialTitle:^(kitty)$"
+          "float, initialClass:^(RT.*), initialTitle:^(kitty)$"
+          "move 40% 30, initialClass:^(RT.*), initialTitle:^(kitty)$"
 
-      # kitty: right-Up of screen
-      "size 60% 60%, initialClass:^(RT.*), initialTitle:^(kitty)$"
-      "float, initialClass:^(RT.*), initialTitle:^(kitty)$"
-      "move 40% 30, initialClass:^(RT.*), initialTitle:^(kitty)$"
+          # FIXME:move them out!!!
 
-      # FIXME:move them out!!!
+          # Thunar Float
+          "size 50% 20%, initialClass:^(Thunar)$,initialTitle:^(File Operation Progress)$"
+          "size 50% 50%, initialClass:^(Thunar)$,initialTitle:(.*Properties)"
+          "size 70% 70%, initialClass:^(Thunar)$"
+          "float, initialClass:^(Thunar)$"
 
-      # Thunar Float
-      "size 50% 20%, initialClass:^(Thunar)$,initialTitle:^(File Operation Progress)$"
-      "size 50% 50%, initialClass:^(Thunar)$,initialTitle:(.*Properties)"
-      "size 70% 70%, initialClass:^(Thunar)$"
-      "float, initialClass:^(Thunar)$"
+          # QQ / WeChat 图片查看器
+          "size 70% 70%, initialClass:^(QQ)$, initialTitle:^(图片查看器)$"
+          "float, initialClass:^(QQ)$, initialTitle:^(图片查看器)$"
+          "size 70% 70%, initialClass:^(wechat)$, initialTitle:^(预览)$"
+          "float, initialClass:^(wechat)$, initialTitle:^(预览)$"
 
-      # QQ / WeChat 图片查看器
-      "size 70% 70%, initialClass:^(QQ)$, initialTitle:^(图片查看器)$"
-      "float, initialClass:^(QQ)$, initialTitle:^(图片查看器)$"
-      "size 70% 70%, initialClass:^(wechat)$, initialTitle:^(预览)$"
-      "float, initialClass:^(wechat)$, initialTitle:^(预览)$"
+          # Fcitx / Input
+          "pin, initialClass:(.*fcitx.*)"
 
-      # Fcitx / Input
-      "pin, initialClass:(.*fcitx.*)"
+          # 无边框/阴影规则 (WeChat, HMCL, Wemeet)
+          "noborder, initialClass:^(wechat)$"
+          "noshadow, initialClass:^(wechat)$"
+          "noblur, initialClass:^(wechat)$"
+          "noborder, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
+          "noshadow, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
+          "noblur, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
+          "noborder, initialClass:^(wemeetapp)$"
+          "noshadow, initialClass:^(wemeetapp)$"
+          "noblur, initialClass:^(wemeetapp)$"
+          "pin, initialClass:^(wemeetapp)$"
 
-      # 无边框/阴影规则 (WeChat, HMCL, Wemeet)
-      "noborder, initialClass:^(wechat)$"
-      "noshadow, initialClass:^(wechat)$"
-      "noblur, initialClass:^(wechat)$"
-      "noborder, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
-      "noshadow, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
-      "noblur, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
-      "noborder, initialClass:^(wemeetapp)$"
-      "noshadow, initialClass:^(wemeetapp)$"
-      "noblur, initialClass:^(wemeetapp)$"
-      "pin, initialClass:^(wemeetapp)$"
+          # 其他
+          "suppressevent maximize, class:.*"
+          "fullscreen, class:Waydroid"
+          "fullscreen, class:waydroid.*"
 
-      # 其他
-      "suppressevent maximize, class:.*"
-      "fullscreen, class:Waydroid"
-      "fullscreen, class:waydroid.*"
+          # 将特定应用分配到特殊工作区
+          "workspace special:music, class:(com.gitee.gmg137.NeteaseCloudMusicGtk4)"
+          "workspace special:qq, class:(QQ)"
+          "workspace special:wechat, class:(wechat)"
+          "workspace special:obsidian, class:(obsidian)"
+          "workspace special:waydroid, class:(Waydroid)"
+          "workspace special:waydroid, class:(waydroid.*)"
+          "workspace special:zotero, class:(Zotero)"
+        ];
 
-      # 将特定应用分配到特殊工作区
-      "workspace special:music, class:(com.gitee.gmg137.NeteaseCloudMusicGtk4)"
-      "workspace special:qq, class:(QQ)"
-      "workspace special:wechat, class:(wechat)"
-      "workspace special:obsidian, class:(obsidian)"
-      "workspace special:waydroid, class:(Waydroid)"
-      "workspace special:waydroid, class:(waydroid.*)"
-      "workspace special:zotero, class:(Zotero)"
-    ];
+        windowrule = [
+          "noinitialfocus, class:(jetbrains-.*), title:^win(.*)"
+          "noinitialfocus, class:(org.jackhuang.hmcl.Launcher)"
+        ];
 
-    windowrule = [
-      "noinitialfocus, class:(jetbrains-.*), title:^win(.*)"
-      "noinitialfocus, class:(org.jackhuang.hmcl.Launcher)"
-    ];
+        workspace = [
+          "1, defaultName: 1, border:1, rounding:0, gapsin:0, gapsout:0, on-created-empty: [ ] kitty"
+          "2, defaultName: 2, border:1, rounding:0, gapsin:0, gapsout:0, on-created-empty: [ ] kitty"
+          "3, defaultName:󰭠 3"
+          "4, defaultName:󰭠 4"
+          "5, defaultName:󰭠 5"
+          "6, defaultName:󰭠 6"
+          "7, defaultName:󰭠 7"
+          "8, defaultName:󰭠 8"
+          "9, defaultName:󰭠 9"
 
-    workspace = [
-      "1, defaultName: 1, border:1, rounding:0, gapsin:0, gapsout:0, on-created-empty: [ ] kitty"
-      "2, defaultName: 2, border:1, rounding:0, gapsin:0, gapsout:0, on-created-empty: [ ] kitty"
-      "3, defaultName:󰭠 3"
-      "4, defaultName:󰭠 4"
-      "5, defaultName:󰭠 5"
-      "6, defaultName:󰭠 6"
-      "7, defaultName:󰭠 7"
-      "8, defaultName:󰭠 8"
-      "9, defaultName:󰭠 9"
+          "200, defaultName:󰰷, on-created-empty: [ ] zen"
+          "201, defaultName:󰨞, on-created-empty: [ ] code"
 
-      "200, defaultName:󰰷, on-created-empty: [ ] zen"
-      "201, defaultName:󰨞, on-created-empty: [ ] code"
-
-      "special:music, on-created-empty: [ ] netease-cloud-music-gtk4"
-      "special:qq, on-created-empty: [ ] qq"
-      "special:wechat, on-created-empty: [ ] QT_SCALE_FACTOR=1.6 wechat"
-      "special:obsidian, on-created-empty: [ ] obsidian"
-      "special:waydroid, on-created-empty: [ ] waydroid show-full-ui"
-      "special:zotero, on-created-empty: [ ] zotero"
-    ];
-  };
+          "special:music, on-created-empty: [ ] netease-cloud-music-gtk4"
+          "special:qq, on-created-empty: [ ] qq"
+          "special:wechat, on-created-empty: [ ] QT_SCALE_FACTOR=1.6 wechat"
+          "special:obsidian, on-created-empty: [ ] obsidian"
+          "special:waydroid, on-created-empty: [ ] waydroid show-full-ui"
+          "special:zotero, on-created-empty: [ ] zotero"
+        ];
+      };
+    }
+  ];
 }
