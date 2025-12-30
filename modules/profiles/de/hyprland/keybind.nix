@@ -1,12 +1,16 @@
 {
   pkgs,
   lib,
+  config,
   ...
 }: let
   slurp = "${pkgs.slurp}/bin/slurp";
   grim = "${pkgs.grim}/bin/grim";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
   notify-send = "${pkgs.libnotify}/bin/notify-send";
+  wpctl = "${pkgs.wireplumber}/bin/wpctl";
+  brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
+  playerctl = "${pkgs.playerctl}/bin/playerctl";
   rm = "${pkgs.coreutils}/bin/rm";
 
   screenshootScript = pkgs.writeShellScriptBin "screenshoot" ''
@@ -203,29 +207,27 @@ in {
 
         # Laptop multimedia keys for volume and LCD brightness
         bindel = [
-          #TODO!
-          ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-          ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-          ", XF86MonBrightnessUp, exec, brightnessctl s 10%+"
-          ", XF86MonBrightnessDown, exec, brightnessctl s 10%-"
-        ];
+          ", XF86AudioRaiseVolume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+          ", XF86AudioLowerVolume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ", XF86AudioMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle"
+          ", XF86AudioMicMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
 
-        # Media keys & Lid Switch
-        bindl = [
-          # TODO!
-          ", XF86AudioNext, exec, playerctl next"
-          ", XF86AudioPause, exec, playerctl play-pause"
-          ", XF86AudioPlay, exec, playerctl play-pause"
-          ", XF86AudioPrev, exec, playerctl previous"
-
-          # Lid off/on workarounds
-          ''
-            , switch:off:Lid Switch, execr, [ $(hyprctl monitors | grep -c "eDP-1") -ne 1 ] && hyprctl keyword monitor eDP-1,2560x1600@120.0,0x237,1.33''
-          ''
-            , switch:on:Lid Switch, execr, [ $(hyprctl monitors | grep -c "ID") -ne 1 ] && hyprctl keyword monitor eDP-1,disable''
-        ];
+          ", XF86MonBrightnessUp, exec, ${brightnessctl} s 10%+"
+          ", XF86MonBrightnessDown, exec, ${brightnessctl} s 10%-"
+        ]; # Media keys & Lid Switch
+        bindl =
+          [
+            ", XF86AudioNext, exec, ${playerctl} next"
+            ", XF86AudioPause, exec, ${playerctl} play-pause"
+            ", XF86AudioPlay, exec, ${playerctl} play-pause"
+            ", XF86AudioPrev, exec, ${playerctl} previous"
+          ]
+          ++ (lib.optionals (config.networking.hostName == "miLaptop") [
+            ''
+              , switch:off:Lid Switch, execr, [ $(hyprctl monitors | grep -c "eDP-1") -ne 1 ] && hyprctl keyword monitor eDP-1,2560x1600@120.0,0x237,1.33''
+            ''
+              , switch:on:Lid Switch, execr, [ $(hyprctl monitors | grep -c "ID") -ne 1 ] && hyprctl keyword monitor eDP-1,disable''
+          ]);
       };
     }
   ];

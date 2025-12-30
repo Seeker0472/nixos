@@ -8,7 +8,8 @@
       mako.enable = true;
       wpaperd.enable = true;
     };
-    type = "laptop";
+    machine_type = "laptop";
+    cpu = "intel";
     programs = {kdeconnect.enable = true;};
   };
 }

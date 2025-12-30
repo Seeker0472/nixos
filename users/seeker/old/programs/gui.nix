@@ -38,11 +38,11 @@
     evince # pdf viewer
 
     # ------ games ------
-    hmcl
+    # hmcl
 
     # ------ broswer ------
-    google-chrome
-    #    microsoft-edge
+    # google-chrome
+    # microsoft-edge
     chromium
 
     # ------ Productity ------

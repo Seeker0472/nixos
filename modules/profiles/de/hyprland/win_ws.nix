@@ -8,16 +8,6 @@
 
       wayland.windowManager.hyprland.settings = {
         windowrulev2 = [
-          # float&pin kitty
-          "float, initialClass:(.*F.*),initialTitle:^(kitty)$"
-          "size 70% 70%, initialClass:(.*F.*),initialTitle:^(kitty)$"
-          "pin, initialClass:(.*G.*),initialTitle:^(kitty)$"
-
-          # kitty: right-Up of screen
-          "size 60% 60%, initialClass:^(RT.*), initialTitle:^(kitty)$"
-          "float, initialClass:^(RT.*), initialTitle:^(kitty)$"
-          "move 40% 30, initialClass:^(RT.*), initialTitle:^(kitty)$"
-
           # FIXME:move them out!!!
 
           # Thunar Float
@@ -34,10 +24,10 @@
           "noborder, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
           "noshadow, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
           "noblur, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
-          "noborder, initialClass:^(wemeetapp)$"
-          "noshadow, initialClass:^(wemeetapp)$"
-          "noblur, initialClass:^(wemeetapp)$"
-          "pin, initialClass:^(wemeetapp)$"
+          # "noborder, initialClass:^(wemeetapp)$"
+          # "noshadow, initialClass:^(wemeetapp)$"
+          # "noblur, initialClass:^(wemeetapp)$"
+          # "pin, initialClass:^(wemeetapp)$"
 
           # 其他
           "suppressevent maximize, class:.*"
@@ -47,14 +37,14 @@
           # 将特定应用分配到特殊工作区
           "workspace special:music, class:(com.gitee.gmg137.NeteaseCloudMusicGtk4)"
           "workspace special:obsidian, class:(obsidian)"
-          "workspace special:waydroid, class:(Waydroid)"
-          "workspace special:waydroid, class:(waydroid.*)"
+          # "workspace special:waydroid, class:(Waydroid)"
+          # "workspace special:waydroid, class:(waydroid.*)"
           "workspace special:zotero, class:(Zotero)"
         ];
 
         windowrule = [
-          "noinitialfocus, class:(jetbrains-.*), title:^win(.*)"
-          "noinitialfocus, class:(org.jackhuang.hmcl.Launcher)"
+          # "noinitialfocus, class:(jetbrains-.*), title:^win(.*)"
+          # "noinitialfocus, class:(org.jackhuang.hmcl.Launcher)"
         ];
 
         workspace = [

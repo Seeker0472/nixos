@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.seeker.de;
-  ident = config.seeker.type;
+  ident = config.seeker.machine_type;
   killRTG = pkgs.writeShellScriptBin "kill-rtg" ''
     ${pkgs.hyprland}/bin/hyprctl clients -j | \
     ${pkgs.jq}/bin/jq -r '.[] | select(.class == "RTG") | .pid' | \
