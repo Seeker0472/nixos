@@ -16,17 +16,17 @@
             {
               timeout = 240;
               on-timeout = ''
-                ${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "on-line" && ${pkgs.libnotify}/bin/notify-send "Zzz"'';
+                ${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "off-line" && ${pkgs.libnotify}/bin/notify-send "Zzz"'';
             }
             {
               timeout = 300;
               on-timeout = ''
-                ${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "on-line" && ${pkgs.systemd}/bin/loginctl lock-session'';
+                ${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "off-line" && ${pkgs.systemd}/bin/loginctl lock-session'';
             }
             {
               timeout = 600;
               on-timeout = ''
-                ${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "on-line" && ${pkgs.systemd}/bin/systemctl hibernate'';
+                ${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "off-line" && ${pkgs.systemd}/bin/systemctl suspend-then-hibernate'';
             }
           ];
         };
