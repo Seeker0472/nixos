@@ -26,19 +26,11 @@
           "size 70% 70%, initialClass:^(Thunar)$"
           "float, initialClass:^(Thunar)$"
 
-          # QQ / WeChat 图片查看器
-          "size 70% 70%, initialClass:^(QQ)$, initialTitle:^(图片查看器)$"
-          "float, initialClass:^(QQ)$, initialTitle:^(图片查看器)$"
-          "size 70% 70%, initialClass:^(wechat)$, initialTitle:^(预览)$"
-          "float, initialClass:^(wechat)$, initialTitle:^(预览)$"
-
           # Fcitx / Input
           "pin, initialClass:(.*fcitx.*)"
 
-          # 无边框/阴影规则 (WeChat, HMCL, Wemeet)
-          "noborder, initialClass:^(wechat)$"
-          "noshadow, initialClass:^(wechat)$"
-          "noblur, initialClass:^(wechat)$"
+          # 无边框/阴影规则 (HMCL, Wemeet)
+
           "noborder, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
           "noshadow, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
           "noblur, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
@@ -54,8 +46,6 @@
 
           # 将特定应用分配到特殊工作区
           "workspace special:music, class:(com.gitee.gmg137.NeteaseCloudMusicGtk4)"
-          "workspace special:qq, class:(QQ)"
-          "workspace special:wechat, class:(wechat)"
           "workspace special:obsidian, class:(obsidian)"
           "workspace special:waydroid, class:(Waydroid)"
           "workspace special:waydroid, class:(waydroid.*)"
@@ -82,8 +72,6 @@
           "201, defaultName:󰨞, on-created-empty: [ ] code"
 
           "special:music, on-created-empty: [ ] netease-cloud-music-gtk4"
-          "special:qq, on-created-empty: [ ] qq"
-          "special:wechat, on-created-empty: [ ] QT_SCALE_FACTOR=1.6 wechat"
           "special:obsidian, on-created-empty: [ ] obsidian"
           "special:waydroid, on-created-empty: [ ] waydroid show-full-ui"
           "special:zotero, on-created-empty: [ ] zotero"

@@ -1,1 +1,1 @@
-{...}: {imports = [./de ./input ./security ./shell ./sops ./system];}
+{...}: {imports = [./de ./input ./security ./sops ./system ./programs];}

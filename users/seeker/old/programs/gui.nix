@@ -9,7 +9,6 @@
   home.packages = with pkgs; [
     # ------ Develop ------
     vscode
-    zed-editor
     gtkwave
     surfer # better wav
 
@@ -24,8 +23,8 @@
     flclash
 
     # ------ communication ------
-    qq
-    wechat
+    # qq
+    # wechat
     # wechat-uos
 
     # ------ multimedia ------

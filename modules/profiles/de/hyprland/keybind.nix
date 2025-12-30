@@ -1,4 +1,39 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  ...
+}: let
+  slurp = "${pkgs.slurp}/bin/slurp";
+  grim = "${pkgs.grim}/bin/grim";
+  wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
+  notify-send = "${pkgs.libnotify}/bin/notify-send";
+  rm = "${pkgs.coreutils}/bin/rm";
+
+  screenshootScript = pkgs.writeShellScriptBin "screenshoot" ''
+    # TMP_FILE=$(mktemp --suffix=.png)
+    TMP_FILE=/tmp/screenshot.png
+
+    GEOMETRY=$(${slurp})
+
+    # Check whether canceled
+    if [ $? -ne 0 ] || [ -z "$GEOMETRY" ]; then
+        ${rm} -f "$TMP_FILE"
+        ${notify-send} -u low "Screenshot Cancelled"
+        exit 1
+    fi
+
+    # screenshoot && copy && notify
+    if ${grim} -g "$GEOMETRY" "$TMP_FILE"; then
+        ${wl-copy} --type image/png < "$TMP_FILE"
+        ${notify-send} "Area Screenshot Taken" "Screenshot copied to clipboard,click to edit." --icon="$TMP_FILE" --category=screenshoot
+        # ${rm} "$TMP_FILE"
+        exit 0
+    else
+        ${notify-send} -u critical "Screenshot Failed" "Could not capture screen area."
+        # ${rm} "$TMP_FILE"
+        exit 1
+    fi
+  '';
   wpaperctl = "${pkgs.wpaperd}/bin/wpaperctl";
 in {
   home-manager.sharedModules = [
@@ -93,9 +128,7 @@ in {
           "$mainMod, C, workspace, 200"
           "$mainMod, V, workspace, 201"
           "$mainMod, N, togglespecialworkspace, music"
-          "$mainMod, Q, togglespecialworkspace, qq"
-          "$mainMod, 0, togglespecialworkspace, qq"
-          "$mainMod, W, togglespecialworkspace, wechat"
+
           "$mainMod, O, togglespecialworkspace, obsidian"
           "$mainMod, G, togglespecialworkspace, waydroid"
           "$mainMod, Z, togglespecialworkspace, zotero"
@@ -157,16 +190,9 @@ in {
           ''$mainMod CONTROL SHIFT, P, exec, notify-send "TODO"''
 
           # screenshot
-          # "$mainMod SHIFT, A, exec, bash ~/scripts/screenshot.sh"
-          # "$mainMod SHIFT ALT, A, exec, grim"
-          # ", Print, exec, bash ~/scripts/screenshot.sh"
-
-          ''$mainMod SHIFT, A, exec, notify-send "TODO"''
-          ''$mainMod SHIFT ALT, A, exec,notify-send "TODO"''
-          '', Print, exec,notify-send "TODO"''
-
-          # Fix for Linux QQ clipboard TODO
-          "$mainMod CONTROL, C, exec, sh -c 'wl-paste --primary --no-newline | wl-copy'"
+          "$mainMod SHIFT, A, exec, ${lib.getExe screenshootScript}"
+          "$mainMod SHIFT ALT, A, exec, grim"
+          ", Print, exec, ${lib.getExe screenshootScript}"
         ];
 
         # Mouse bindings
