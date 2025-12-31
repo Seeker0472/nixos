@@ -47,7 +47,7 @@ in {
       # auto-decrept
       security.pam.services.login.enableGnomeKeyring = true;
 
-      warnings = ["Auto-enabling PAM security feature because a user requested it."];
+      # warnings = ["Auto-enabling PAM security feature because a user requested it."];
     })
   ];
 }
