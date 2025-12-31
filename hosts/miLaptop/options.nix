@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   # TODO: default option not work!
   config.seeker = {
     de = {
@@ -10,6 +11,8 @@
     };
     machine_type = "laptop";
     cpu = "intel";
-    programs = {kdeconnect.enable = true;};
+    programs = {
+      kdeconnect.enable = true;
+    };
   };
 }

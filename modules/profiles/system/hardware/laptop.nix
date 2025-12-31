@@ -3,7 +3,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   config = lib.mkIf (config.seeker.machine_type == "laptop") {
     services.logind.settings.Login = {
       # don't shutdown when power button is short-pressed
@@ -11,8 +12,8 @@
     };
     # Enable CUPS to print documents.
     services.printing.enable = true;
-    environment.systemPackages = [pkgs.powertop];
-    boot.supportedFilesystems = ["exfat"];
+    environment.systemPackages = [ pkgs.powertop ];
+    boot.supportedFilesystems = [ "exfat" ];
 
     #mirror and allfirmware
     hardware.enableAllFirmware = true;
@@ -22,13 +23,13 @@
       enable = true;
       keyboards = {
         default = {
-          ids = ["*"];
+          ids = [ "*" ];
           settings = {
             main = {
               capslock = "esc";
               esc = "esc";
             };
-            otherlayer = {};
+            otherlayer = { };
           };
           extraConfig = "";
         };
@@ -49,7 +50,9 @@
       };
     };
     # systemd.extraConfig
-    systemd.settings.Manager = {DefaultTimeoutStopSec = "10s";};
+    systemd.settings.Manager = {
+      DefaultTimeoutStopSec = "10s";
+    };
     # Enable touchpad support (enabled default in most desktopManager).
     services.libinput.enable = true;
 
@@ -82,10 +85,10 @@
       fontconfig = {
         enable = true;
         defaultFonts = {
-          sansSerif = ["Noto Sans CJK SC"];
-          serif = ["Noto Serif CJK SC"];
-          monospace = ["Maple Mono NF CN"];
-          emoji = ["JoyPixels"];
+          sansSerif = [ "Noto Sans CJK SC" ];
+          serif = [ "Noto Serif CJK SC" ];
+          monospace = [ "Maple Mono NF CN" ];
+          emoji = [ "JoyPixels" ];
         };
       };
     };

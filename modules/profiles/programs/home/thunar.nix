@@ -3,11 +3,15 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.seeker.home.thunar.enable = lib.mkEnableOption "Thunar";
   config = lib.mkMerge [
     (lib.mkIf config.seeker.home.thunar.enable {
-      home.packages = [ pkgs.xfce.thunar pkgs.xfce.xfconf ];
+      home.packages = [
+        pkgs.xfce.thunar
+        pkgs.xfce.xfconf
+      ];
       wayland.windowManager.hyprland.settings = {
         "$fileManager" = "thunar";
         windowrulev2 = [

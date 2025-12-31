@@ -2,6 +2,10 @@
   pkgs,
   nur,
   ...
-}: {
-  imports = [./cli.nix ./gui.nix];
+}:
+{
+  imports = [
+    ./cli.nix
+    ./gui.nix
+  ];
 }

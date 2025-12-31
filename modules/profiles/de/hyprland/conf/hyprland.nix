@@ -1,7 +1,8 @@
-{pkgs,...}: {
+{ pkgs, ... }:
+{
   home-manager.sharedModules = [
     {
-      home.packages = [ pkgs.nwg-displays ]; #set display for hyprland
+      home.packages = [ pkgs.nwg-displays ]; # set display for hyprland
       wayland.windowManager.hyprland.extraConfig = ''
         # source the nwg-displays generated config
         source = ./monitors.conf
@@ -23,7 +24,9 @@
         #   ",preferred,auto,auto"
         # ];
 
-        xwayland = {force_zero_scaling = true;};
+        xwayland = {
+          force_zero_scaling = true;
+        };
       };
     }
   ];
@@ -36,7 +39,7 @@
   services.displayManager = {
     gdm = {
       enable = true;
-      settings = {};
+      settings = { };
     };
   };
   environment.sessionVariables.NIXOS_OZONE_WL = "1";

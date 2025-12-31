@@ -4,27 +4,22 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.seeker.de;
   custom_cursor = {
     name = "Bibata-Modern-Amber";
     package = pkgs.bibata-cursors;
     size = 32;
   };
-in {
+in
+{
   options.seeker.de = {
-    hyprland.enable =
-      lib.mkEnableOption
-      "Hyprland, a dynamic tiling Wayland compositor that doesn't sacrifice on looks";
-    waybar.enable =
-      lib.mkEnableOption "Waybar, a highly customizable Wayland bar";
-    wofi.enable =
-      lib.mkEnableOption
-      "wofi, a launcher and menu program for Wayland compositors";
-    mako.enable =
-      lib.mkEnableOption "mako, a lightweight notification daemon for Wayland";
-    wpaperd.enable =
-      lib.mkEnableOption "wpaperd, a modern wallpaper daemon for Wayland";
+    hyprland.enable = lib.mkEnableOption "Hyprland, a dynamic tiling Wayland compositor that doesn't sacrifice on looks";
+    waybar.enable = lib.mkEnableOption "Waybar, a highly customizable Wayland bar";
+    wofi.enable = lib.mkEnableOption "wofi, a launcher and menu program for Wayland compositors";
+    mako.enable = lib.mkEnableOption "mako, a lightweight notification daemon for Wayland";
+    wpaperd.enable = lib.mkEnableOption "wpaperd, a modern wallpaper daemon for Wayland";
   };
   config = lib.mkMerge [
     (lib.mkIf cfg.hyprland.enable {
@@ -34,7 +29,10 @@ in {
         mako.enable = lib.mkDefault true;
         wpaperd.enable = lib.mkDefault true;
       };
-      environment.systemPackages = with pkgs; [libnotify acpi];
+      environment.systemPackages = with pkgs; [
+        libnotify
+        acpi
+      ];
 
       home-manager.sharedModules = [
         {
@@ -45,9 +43,7 @@ in {
           wayland.windowManager.hyprland = {
             enable = true;
             settings.exec-once = [
-              "hyprctl setcursor ${custom_cursor.name} ${
-                builtins.toString custom_cursor.size
-              }"
+              "hyprctl setcursor ${custom_cursor.name} ${builtins.toString custom_cursor.size}"
             ];
           };
 

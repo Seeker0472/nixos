@@ -7,7 +7,8 @@
   pkgs,
   modulesPath,
   ...
-}: {
+}:
+{
   programs.nix-ld.enable = true;
   # programs.nix-ld.libraries = with pkgs; [
   #   pkgs.llvmPackages_latest.llvm

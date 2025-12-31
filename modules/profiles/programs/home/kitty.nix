@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   config = {
     programs.kitty = {
       # enable = true;
@@ -40,19 +41,19 @@
       '';
     };
 
-    wayland.windowManager.hyprland.settings={
+    wayland.windowManager.hyprland.settings = {
       "$terminal" = "kitty";
       windowrulev2 = [
-      # float&pin kitty
-      "float, initialClass:(.*F.*),initialTitle:^(kitty)$"
-      "size 70% 70%, initialClass:(.*F.*),initialTitle:^(kitty)$"
-      "pin, initialClass:(.*G.*),initialTitle:^(kitty)$"
+        # float&pin kitty
+        "float, initialClass:(.*F.*),initialTitle:^(kitty)$"
+        "size 70% 70%, initialClass:(.*F.*),initialTitle:^(kitty)$"
+        "pin, initialClass:(.*G.*),initialTitle:^(kitty)$"
 
-      # kitty: right-Up of screen
-      "size 60% 60%, initialClass:^(RT.*), initialTitle:^(kitty)$"
-      "float, initialClass:^(RT.*), initialTitle:^(kitty)$"
-      "move 40% 30, initialClass:^(RT.*), initialTitle:^(kitty)$"
-    ];
+        # kitty: right-Up of screen
+        "size 60% 60%, initialClass:^(RT.*), initialTitle:^(kitty)$"
+        "float, initialClass:^(RT.*), initialTitle:^(kitty)$"
+        "move 40% 30, initialClass:^(RT.*), initialTitle:^(kitty)$"
+      ];
     };
   };
 }

@@ -3,7 +3,8 @@
   nur,
   nixpkgs-dev,
   ...
-}: {
+}:
+{
   home.packages = with pkgs; [
     # ----- Develop ------
     # programming/ysyx/learning

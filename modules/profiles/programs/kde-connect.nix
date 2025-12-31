@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.seeker.programs.kdeconnect.enable = lib.mkEnableOption "ked-connect";
   config = lib.mkMerge [
     (lib.mkIf config.seeker.programs.kdeconnect.enable {

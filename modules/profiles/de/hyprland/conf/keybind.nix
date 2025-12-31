@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   slurp = "${pkgs.slurp}/bin/slurp";
   grim = "${pkgs.grim}/bin/grim";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
@@ -39,7 +40,8 @@
     fi
   '';
   wpaperctl = "${pkgs.wpaperd}/bin/wpaperctl";
-in {
+in
+{
   home-manager.sharedModules = [
     {
       wayland.windowManager.hyprland.settings = {
@@ -55,13 +57,10 @@ in {
           "$mainMod, D, exec, $menu"
 
           # Hitokoto & Wallpaper (Refactored to stable service)
-          ''
-            , XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://hitokoto.mayx.eu.org/ | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
-          ''
-            SHIFT, XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://hitokoto.mayx.eu.org/?c=a | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
+          '', XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://hitokoto.mayx.eu.org/ | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
+          ''SHIFT, XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://hitokoto.mayx.eu.org/?c=a | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
           "CONTROL, XF86Launch1, exec, ${wpaperctl} next-wallpaper"
-          ''
-            CONTROL SHIFT, XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://v1.hitokoto.mangofanfan.cn/?c=a | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
+          ''CONTROL SHIFT, XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://v1.hitokoto.mangofanfan.cn/?c=a | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
 
           ", mouse:275, workspace, e+1"
           ", mouse:276, workspace, e-1"
@@ -214,19 +213,16 @@ in {
           ", XF86MonBrightnessUp, exec, ${brightnessctl} s 10%+"
           ", XF86MonBrightnessDown, exec, ${brightnessctl} s 10%-"
         ]; # Media keys & Lid Switch
-        bindl =
-          [
-            ", XF86AudioNext, exec, ${playerctl} next"
-            ", XF86AudioPause, exec, ${playerctl} play-pause"
-            ", XF86AudioPlay, exec, ${playerctl} play-pause"
-            ", XF86AudioPrev, exec, ${playerctl} previous"
-          ]
-          ++ (lib.optionals (config.networking.hostName == "miLaptop") [
-            ''
-              , switch:off:Lid Switch, execr, [ $(hyprctl monitors | grep -c "eDP-1") -ne 1 ] && hyprctl keyword monitor eDP-1,2560x1600@120.0,0x237,1.33''
-            ''
-              , switch:on:Lid Switch, execr, [ $(hyprctl monitors | grep -c "ID") -ne 1 ] && hyprctl keyword monitor eDP-1,disable''
-          ]);
+        bindl = [
+          ", XF86AudioNext, exec, ${playerctl} next"
+          ", XF86AudioPause, exec, ${playerctl} play-pause"
+          ", XF86AudioPlay, exec, ${playerctl} play-pause"
+          ", XF86AudioPrev, exec, ${playerctl} previous"
+        ]
+        ++ (lib.optionals (config.networking.hostName == "miLaptop") [
+          '', switch:off:Lid Switch, execr, [ $(hyprctl monitors | grep -c "eDP-1") -ne 1 ] && hyprctl keyword monitor eDP-1,2560x1600@120.0,0x237,1.33''
+          '', switch:on:Lid Switch, execr, [ $(hyprctl monitors | grep -c "ID") -ne 1 ] && hyprctl keyword monitor eDP-1,disable''
+        ]);
       };
     }
   ];

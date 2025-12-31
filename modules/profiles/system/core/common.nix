@@ -4,7 +4,8 @@
   pkgs,
   modulesPath,
   ...
-}: {
+}:
+{
   nix.settings = {
     substituters = [
       "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
@@ -20,7 +21,7 @@
   # Select internationalisation properties.
   i18n.defaultLocale = "en_HK.UTF-8";
 
-  nixpkgs.config.permittedInsecurePackages = [];
+  nixpkgs.config.permittedInsecurePackages = [ ];
   #Make Windows Happy
   # A better way is to let windows use UTC time
   # time.hardwareClockInLocalTime = true;
@@ -52,5 +53,8 @@
     openFirewall = true;
   };
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 }

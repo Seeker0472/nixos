@@ -3,11 +3,12 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.seeker.home.wechat.enable = lib.mkEnableOption "Wechat";
   config = lib.mkMerge [
     (lib.mkIf config.seeker.home.wechat.enable {
-      home.packages = [pkgs.wechat];
+      home.packages = [ pkgs.wechat ];
       wayland.windowManager.hyprland.settings = {
         windowrulev2 = [
           # WeChat 图片查看器
@@ -23,7 +24,7 @@
         workspace = [
           "special:wechat, on-created-empty: [ ] QT_SCALE_FACTOR=1.6 wechat"
         ];
-        bind = ["$mainMod, W, togglespecialworkspace, wechat"];
+        bind = [ "$mainMod, W, togglespecialworkspace, wechat" ];
       };
     })
   ];

@@ -2,7 +2,8 @@
   pkgs,
   config,
   ...
-}: {
+}:
+{
   programs.ssh = {
     # FIXME: warring!
     # evaluation warning: seeker profile: `programs.ssh` default values will be removed in the future.
@@ -42,7 +43,9 @@
     # enableBashIntegration =true;
     # enableFishIntegration = true;
     nix-direnv.enable = true;
-    config = {hide_env_diff = true;};
+    config = {
+      hide_env_diff = true;
+    };
   };
 
   # 通过 home.packages 安装一些常用的软件
@@ -133,7 +136,10 @@
         macro_workers = 10;
         bizarre_retry = 5;
         image_alloc = 4096;
-        image_bound = [15720 8640];
+        image_bound = [
+          15720
+          8640
+        ];
       };
     };
   };

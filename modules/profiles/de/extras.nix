@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   #hardware!
   environment.systemPackages = with pkgs; [
     pulseaudioFull

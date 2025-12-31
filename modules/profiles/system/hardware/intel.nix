@@ -3,7 +3,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   config = lib.mkIf (config.seeker.cpu == "intel") {
     #HardWare AccelerationConfig
     #https://nixos.wiki/wiki/Accelerated_Video_Playback
@@ -16,6 +17,8 @@
         intel-compute-runtime
       ];
     };
-    environment.sessionVariables = {LIBVA_DRIVER_NAME = "iHD";};
+    environment.sessionVariables = {
+      LIBVA_DRIVER_NAME = "iHD";
+    };
   };
 }

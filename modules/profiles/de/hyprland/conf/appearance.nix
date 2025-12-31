@@ -3,7 +3,8 @@
 #####################
 # Refer to https://wiki.hyprland.org/Configuring/Variables/
 # https://wiki.hyprland.org/Configuring/Variables/#general
-{...}: {
+{ ... }:
+{
   home-manager.sharedModules = [
     {
       wayland.windowManager.hyprland.settings = {
@@ -91,7 +92,9 @@
         };
 
         # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
-        master = {new_status = "master";};
+        master = {
+          new_status = "master";
+        };
 
         # https://wiki.hyprland.org/Configuring/Variables/#misc
         misc = {

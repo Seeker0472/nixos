@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   home-manager.sharedModules = [
     {
       services.hypridle = {
@@ -15,18 +16,15 @@
           listener = [
             {
               timeout = 240;
-              on-timeout = ''
-                ${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "off-line" && ${pkgs.libnotify}/bin/notify-send "Zzz"'';
+              on-timeout = ''${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "off-line" && ${pkgs.libnotify}/bin/notify-send "Zzz"'';
             }
             {
               timeout = 300;
-              on-timeout = ''
-                ${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "off-line" && ${pkgs.systemd}/bin/loginctl lock-session'';
+              on-timeout = ''${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "off-line" && ${pkgs.systemd}/bin/loginctl lock-session'';
             }
             {
               timeout = 600;
-              on-timeout = ''
-                ${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "off-line" && ${pkgs.systemd}/bin/systemctl suspend-then-hibernate'';
+              on-timeout = ''${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q "off-line" && ${pkgs.systemd}/bin/systemctl suspend-then-hibernate'';
             }
           ];
         };

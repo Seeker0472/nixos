@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   sops.age.keyFile = "${config.users.users.seeker.home}/.config/age/keys";
 
   sops.secrets."rclone" = {
@@ -27,9 +28,9 @@
   '';
   systemd.services.rclone-webdav = {
     description = "Rclone Mount for WebDAV ( 123PAN )";
-    wantedBy = ["multi-user.target"];
-    after = ["network-online.target"];
-    wants = ["network-online.target"];
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
 
     serviceConfig = {
       Type = "simple";

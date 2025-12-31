@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.seeker.de;
-in {
+in
+{
   config = lib.mkIf cfg.hyprland.enable {
     home-manager.sharedModules = [
       {
@@ -14,7 +16,9 @@ in {
           "wpaperd".source = lib.mkIf cfg.wpaperd.enable ./wpaperd;
         };
 
-        home.file = {"Pictures/wallpaper/default".source = ./wallpaper;};
+        home.file = {
+          "Pictures/wallpaper/default".source = ./wallpaper;
+        };
       }
     ];
   };

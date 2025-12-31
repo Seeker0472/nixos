@@ -1,8 +1,10 @@
-{config, ...}: let
+{ config, ... }:
+let
   tmux_conf_base = "${config.home.homeDirectory}/nixos-config/modules/shell/tmux";
   tmuxconfig_path = "${tmux_conf_base}/tmux.conf";
   tmuxlocal_path = "${tmux_conf_base}/tmux.conf.local";
-in {
+in
+{
   programs.tmux = {
     enable = true;
     #     # shortcut = "a";
@@ -13,8 +15,6 @@ in {
     # '';
   };
 
-  home.file.".tmux.conf".source =
-    config.lib.file.mkOutOfStoreSymlink tmuxconfig_path;
-  home.file.".tmux.conf.local".source =
-    config.lib.file.mkOutOfStoreSymlink tmuxlocal_path;
+  home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink tmuxconfig_path;
+  home.file.".tmux.conf.local".source = config.lib.file.mkOutOfStoreSymlink tmuxlocal_path;
 }

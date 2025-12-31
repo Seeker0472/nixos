@@ -1,7 +1,8 @@
 # modules/nixpkgs-settings.nix
-{inputs, ...}: {
+{ inputs, ... }:
+{
   nixpkgs = {
     config.allowUnfree = true;
-    overlays = [inputs.nur.overlays.default];
+    overlays = [ inputs.nur.overlays.default ];
   };
 }

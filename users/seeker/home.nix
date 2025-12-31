@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   ####################################################
   #
   #   All Seeker's Home Manager Conf.
@@ -9,7 +10,13 @@
   home.username = "seeker";
   home.homeDirectory = "/home/seeker";
 
-  imports = [./xdg_default.nix ./tools.nix ./git.nix ./old ./config.nix];
+  imports = [
+    ./xdg_default.nix
+    ./tools.nix
+    ./git.nix
+    ./old
+    ./config.nix
+  ];
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage

@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   imports = [
     # pkgs.anyrun.homeManagerModules.default
     ../../modules/programs
@@ -22,7 +23,7 @@
 
   home.stateVersion = "24.05";
 
-  home.activation.copyFont = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.copyFont = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ${pkgs.coreutils}/bin/mkdir -p "$HOME/.termux"
     ${pkgs.coreutils}/bin/rm -f "$HOME/.termux/font.ttf"
     ${pkgs.coreutils}/bin/cp -f ${pkgs.maple-mono-NF}/share/fonts/truetype/MapleMono-NF-Regular.ttf $HOME/.termux/font.ttf

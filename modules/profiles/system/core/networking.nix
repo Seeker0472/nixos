@@ -4,7 +4,8 @@
   pkgs,
   modulesPath,
   ...
-}: {
+}:
+{
   # Enable networking
   networking.networkmanager.enable = true;
 
@@ -16,7 +17,10 @@
   # TODO！！！！
   networking.firewall = {
     enable = false;
-    allowedTCPPorts = [80 443];
+    allowedTCPPorts = [
+      80
+      443
+    ];
     allowedUDPPortRanges = [
       {
         from = 4000;

@@ -1,4 +1,5 @@
-{config, ...}: {
+{ config, ... }:
+{
   # virtualisation
   virtualisation.virtualbox.host.enable = true;
   virtualisation.docker = {
@@ -8,5 +9,5 @@
     rootless.setSocketVariable = true;
     #daemon.settings = { data-root = "/etc/docker"; };
   };
-  users.extraGroups.vboxusers.members = ["seeker"];
+  users.extraGroups.vboxusers.members = [ "seeker" ];
 }

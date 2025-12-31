@@ -1,5 +1,10 @@
-{pkgs, ...}: {
-  imports = [./disk.nix ./hardware-configuration.nix ./options.nix];
+{ pkgs, ... }:
+{
+  imports = [
+    ./disk.nix
+    ./hardware-configuration.nix
+    ./options.nix
+  ];
   networking.hostName = "miLaptop";
   system.stateVersion = "24.05"; # DoNot change
   services.udev.extraRules = ''

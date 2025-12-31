@@ -1,8 +1,9 @@
-{inputs, ...}: {
+{ inputs, ... }:
+{
   flake.nixosConfigurations = {
     miLaptop = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = {inherit inputs;}; # 只传 inputs 即可
+      specialArgs = { inherit inputs; }; # 只传 inputs 即可
       modules = [
         ../hosts/miLaptop
         ./common/nixpkgs-settings.nix
@@ -14,8 +15,12 @@
 
     LTG = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = {inherit inputs;};
-      modules = [../nixos ./nixpkgs-settings.nix ../users/seeker];
+      specialArgs = { inherit inputs; };
+      modules = [
+        ../nixos
+        ./nixpkgs-settings.nix
+        ../users/seeker
+      ];
     };
   };
 }

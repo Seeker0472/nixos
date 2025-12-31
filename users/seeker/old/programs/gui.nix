@@ -4,7 +4,8 @@
   testargs,
   zen-browser,
   ...
-}: {
+}:
+{
   programs.zen-browser.enable = true;
   home.packages = with pkgs; [
     # ------ Develop ------

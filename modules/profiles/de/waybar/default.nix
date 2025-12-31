@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.seeker.de;
   ident = config.seeker.machine_type;
   killRTG = pkgs.writeShellScriptBin "kill-rtg" ''
@@ -16,7 +17,9 @@
   #  lib.getExe pkg
   #} ${args}";
 
-  runInRTG = pkg: bin: args: "${killRTG}/bin/kill-rtg && ${pkgs.kitty}/bin/kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG ${pkg}/bin/${bin} ${args}";
+  runInRTG =
+    pkg: bin: args:
+    "${killRTG}/bin/kill-rtg && ${pkgs.kitty}/bin/kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG ${pkg}/bin/${bin} ${args}";
 
   gotobedScript = pkgs.writeShellScriptBin "gotobed" ''
     start_hour=22
@@ -32,7 +35,8 @@
     fi
     exit 0
   '';
-in {
+in
+{
   config = lib.mkIf cfg.waybar.enable {
     home-manager.sharedModules = [
       {
@@ -45,7 +49,10 @@ in {
             position = "top";
             height = 32;
 
-            modules-left = ["hyprland/workspaces" "hyprland/window"];
+            modules-left = [
+              "hyprland/workspaces"
+              "hyprland/window"
+            ];
             # modules-center = [ "custom/lrc" ];
             modules-right = [
               "cava"
@@ -63,9 +70,11 @@ in {
                 transition-duration = 500;
                 transition-left-to-right = false;
               };
-              modules =
-                (lib.optional (ident == "laptop") "battery")
-                ++ ["temperature" "cpu" "memory"];
+              modules = (lib.optional (ident == "laptop") "battery") ++ [
+                "temperature"
+                "cpu"
+                "memory"
+              ];
             };
 
             "group/control" = {
@@ -74,9 +83,12 @@ in {
                 transition-duration = 500;
                 transition-left-to-right = false;
               };
-              modules =
-                ["network" "custom/wallpaper" "bluetooth"]
-                ++ (lib.optional (ident == "laptop") "backlight");
+              modules = [
+                "network"
+                "custom/wallpaper"
+                "bluetooth"
+              ]
+              ++ (lib.optional (ident == "laptop") "backlight");
             };
 
             "network" = {
@@ -125,8 +137,16 @@ in {
                 hands-free = " ";
                 headset = "󰋌 ";
                 phone = " ";
-                "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink" = ["  " "  " "  "];
-                default = ["  " "  " "  "];
+                "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink" = [
+                  "  "
+                  "  "
+                  "  "
+                ];
+                default = [
+                  "  "
+                  "  "
+                  "  "
+                ];
               };
               on-click-right = lib.getExe pkgs.pavucontrol;
             };
@@ -184,11 +204,27 @@ in {
               format-charging = "{capacity}% 󰂄";
               format-plugged = "{capacity}% ";
               format-alt = "{time} {icon}";
-              format-icons = [" " " " " " " " " "];
+              format-icons = [
+                " "
+                " "
+                " "
+                " "
+                " "
+              ];
             };
             "backlight" = {
               format = "{percent}% {icon}";
-              format-icons = ["" "" "" "" "" "" "" "" ""];
+              format-icons = [
+                ""
+                ""
+                ""
+                ""
+                ""
+                ""
+                ""
+                ""
+                ""
+              ];
             };
             "temperature" = {
               # thermal-zone = 2;
@@ -196,9 +232,14 @@ in {
               critical-threshold = 80;
               # format-critical = "{temperatureC}°C {icon}";
               format = "{temperatureC}°C {icon}";
-              format-icons = ["" " "];
+              format-icons = [
+                ""
+                " "
+              ];
             };
-            "tray" = {spacing = 5;};
+            "tray" = {
+              spacing = 5;
+            };
 
             "cava" = {
               # cava_config = "/home/seeker/.config/cava/config_bar";
@@ -217,8 +258,19 @@ in {
               waves = false;
               noise_reduction = 0.77;
               input_delay = 2;
-              format-icons = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
-              actions = {on-click-right = "mode";};
+              format-icons = [
+                "▁"
+                "▂"
+                "▃"
+                "▄"
+                "▅"
+                "▆"
+                "▇"
+                "█"
+              ];
+              actions = {
+                on-click-right = "mode";
+              };
             };
           };
         };

@@ -1,5 +1,6 @@
 # Rename into rules
-{...}: {
+{ ... }:
+{
   home-manager.sharedModules = [
     {
       # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
@@ -9,8 +10,6 @@
       wayland.windowManager.hyprland.settings = {
         windowrulev2 = [
           # FIXME:move them out!!!
-
-
 
           # Fcitx / Input
           "pin, initialClass:(.*fcitx.*)"
