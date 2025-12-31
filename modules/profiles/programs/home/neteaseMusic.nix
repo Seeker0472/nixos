@@ -1,0 +1,27 @@
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
+  options.seeker.home.neteaseMusic.enable = lib.mkEnableOption "Netease Music";
+  config = lib.mkMerge [
+    (lib.mkIf config.seeker.home.neteaseMusic.enable {
+      home.packages = [
+        pkgs.netease-cloud-music-gtk
+      ];
+      wayland.windowManager.hyprland.settings = {
+        windowrulev2 = [
+          "workspace special:music, class:(com.gitee.gmg137.NeteaseCloudMusicGtk4)"
+        ];
+        workspace = [
+          "special:music, on-created-empty: [ ] netease-cloud-music-gtk4"
+        ];
+        bind = [
+          "$mainMod, N, togglespecialworkspace, music"
+        ];
+      };
+    })
+  ];
+}

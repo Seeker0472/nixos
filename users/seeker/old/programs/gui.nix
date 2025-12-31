@@ -43,6 +43,5 @@
     # FIXME:maintain one myself
     # pkgs.nur.repos.novel2430.wemeet-bin-bwrap-wayland-screenshare
     drawio # 流程图
-    zotero
   ];
 }

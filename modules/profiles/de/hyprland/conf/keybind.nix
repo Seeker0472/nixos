@@ -129,11 +129,8 @@ in
           # Special workspaces
           "$mainMod, C, workspace, 200"
           "$mainMod, V, workspace, 201"
-          "$mainMod, N, togglespecialworkspace, music"
 
-          "$mainMod, O, togglespecialworkspace, obsidian"
-          "$mainMod, G, togglespecialworkspace, waydroid"
-          "$mainMod, Z, togglespecialworkspace, zotero"
+          # "$mainMod, G, togglespecialworkspace, waydroid"
 
           # Move active window to a workspace
           "$mainMod SHIFT, 1, movetoworkspace, 1"

@@ -26,15 +26,12 @@
 
           # 其他
           "suppressevent maximize, class:.*"
-          "fullscreen, class:Waydroid"
-          "fullscreen, class:waydroid.*"
+          # "fullscreen, class:Waydroid"
+          # "fullscreen, class:waydroid.*"
 
           # 将特定应用分配到特殊工作区
-          "workspace special:music, class:(com.gitee.gmg137.NeteaseCloudMusicGtk4)"
-          "workspace special:obsidian, class:(obsidian)"
           # "workspace special:waydroid, class:(Waydroid)"
           # "workspace special:waydroid, class:(waydroid.*)"
-          "workspace special:zotero, class:(Zotero)"
         ];
 
         windowrule = [
@@ -56,10 +53,7 @@
           "200, defaultName:󰰷, on-created-empty: [ ] zen"
           "201, defaultName:󰨞, on-created-empty: [ ] code"
 
-          "special:music, on-created-empty: [ ] netease-cloud-music-gtk4"
-          "special:obsidian, on-created-empty: [ ] obsidian"
-          "special:waydroid, on-created-empty: [ ] waydroid show-full-ui"
-          "special:zotero, on-created-empty: [ ] zotero"
+          # "special:waydroid, on-created-empty: [ ] waydroid show-full-ui"
         ];
       };
     }

@@ -194,7 +194,6 @@ in
                   buffer_font_size = 15;
                   theme = "One Dark Pro";
 
-                  # 你的 TODO 注释:
                   # TODO: formatter
                   # TAB-space indicator
                   # inlay hints tasks miscellaneous->debuggers

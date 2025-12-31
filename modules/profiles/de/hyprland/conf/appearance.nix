@@ -54,7 +54,7 @@
 
         # https://wiki.hyprland.org/Configuring/Variables/#animations
         animations = {
-          enabled = true; # TODO:Nix will convert into yes/true?
+          enabled = true;
 
           # Default animations, see https://wiki.hyprland.org/Configuring/Animations/ for more
           bezier = [
