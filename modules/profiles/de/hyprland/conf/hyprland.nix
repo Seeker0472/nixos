@@ -1,9 +1,12 @@
-{...}: {
+{pkgs,...}: {
   home-manager.sharedModules = [
     {
+      home.packages = [ pkgs.nwg-displays ]; #set display for hyprland
+      wayland.windowManager.hyprland.extraConfig = ''
+        # source the nwg-displays generated config
+        source = ./monitors.conf
+      '';
       wayland.windowManager.hyprland.settings = {
-        "$terminal" = "kitty";
-        "$fileManager" = "thunar";
         "$menu" = "wofi --show drun -a";
 
         env = [

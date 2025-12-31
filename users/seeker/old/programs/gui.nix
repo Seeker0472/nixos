@@ -14,18 +14,11 @@
 
     # ------ Tools ------
 
-    xfce.thunar # file manager
-    xfce.xfconf # save preface for thunar
     # Note: using sudo -EH gparted to start
     # Reference https://wiki.archlinux.org/title/Running_GUI_applications_as_root
     gparted
     # clash-verge-rev
     flclash
-
-    # ------ communication ------
-    # qq
-    # wechat
-    # wechat-uos
 
     # ------ multimedia ------
     mpv
@@ -41,19 +34,13 @@
     # hmcl
 
     # ------ broswer ------
-    # google-chrome
-    # microsoft-edge
     chromium
 
     # ------ Productity ------
-    # weird !,adding wpsoffice will cause doc to it's default application nomatter what mime app set
-    # wpsoffice-cn
     libreoffice
     obsidian
-    # pkgs.nur.repos.linyinfeng.wemeet #腾讯会议
     # FIXME:maintain one myself
     # pkgs.nur.repos.novel2430.wemeet-bin-bwrap-wayland-screenshare
-    # feishu
     drawio # 流程图
     zotero
   ];

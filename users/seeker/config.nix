@@ -4,6 +4,7 @@
       qq.enable = true;
       wechat.enable = true;
       zed.enable = true;
+      thunar.enable = true;
     };
     programs = {
       fish.enable = true;

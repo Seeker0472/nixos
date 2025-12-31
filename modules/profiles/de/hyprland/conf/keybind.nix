@@ -51,7 +51,6 @@ in {
           "$mainMod, M, exec, systemctl suspend-then-hibernate"
           "$mainMod SHIFT, M, exec, systemctl hibernate"
           "$mainMod CONTROL, M, exec, ${pkgs.hyprlock}/bin/hyprlock"
-          "$mainMod, E, exec, $fileManager"
           "$mainMod, R, exec, $menu"
           "$mainMod, D, exec, $menu"
 

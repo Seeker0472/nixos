@@ -10,11 +10,7 @@
         windowrulev2 = [
           # FIXME:move them out!!!
 
-          # Thunar Float
-          "size 50% 20%, initialClass:^(Thunar)$,initialTitle:^(File Operation Progress)$"
-          "size 50% 50%, initialClass:^(Thunar)$,initialTitle:(.*Properties)"
-          "size 70% 70%, initialClass:^(Thunar)$"
-          "float, initialClass:^(Thunar)$"
+
 
           # Fcitx / Input
           "pin, initialClass:(.*fcitx.*)"

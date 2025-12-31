@@ -40,7 +40,9 @@
       '';
     };
 
-    wayland.windowManager.hyprland.settings.windowrulev2 = [
+    wayland.windowManager.hyprland.settings={
+      "$terminal" = "kitty";
+      windowrulev2 = [
       # float&pin kitty
       "float, initialClass:(.*F.*),initialTitle:^(kitty)$"
       "size 70% 70%, initialClass:(.*F.*),initialTitle:^(kitty)$"
@@ -51,5 +53,6 @@
       "float, initialClass:^(RT.*), initialTitle:^(kitty)$"
       "move 40% 30, initialClass:^(RT.*), initialTitle:^(kitty)$"
     ];
+    };
   };
 }

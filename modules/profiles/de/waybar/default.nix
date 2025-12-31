@@ -12,9 +12,11 @@
     ${pkgs.findutils}/bin/xargs -r kill -9
   '';
 
-  runInRTG = pkg: bin: args: "${killRTG}/bin/kill-rtg && ${pkgs.kitty}/bin/kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG ${
-    lib.getExe pkg
-  } ${args}";
+  #runInRTG = pkg: bin: args: "${killRTG}/bin/kill-rtg && ${pkgs.kitty}/bin/kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG ${
+  #  lib.getExe pkg
+  #} ${args}";
+
+  runInRTG = pkg: bin: args: "${killRTG}/bin/kill-rtg && ${pkgs.kitty}/bin/kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG ${pkg}/bin/${bin} ${args}";
 
   gotobedScript = pkgs.writeShellScriptBin "gotobed" ''
     start_hour=22

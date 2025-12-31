@@ -12,11 +12,12 @@
     gnumake
     lazygit
     #neovim & dependences
-    neovim
-    lua5_1
-    luarocks
-    ripgrep
-    python312Packages.ipython #TODO:python313:nix-ondroid error
+    # TODO:Neovim config using nix
+    # neovim
+    # lua5_1
+    # luarocks
+    # ripgrep
+    # python312Packages.ipython #TODO:python313:nix-ondroid error
     # coursier
 
     clang-tools
@@ -24,9 +25,7 @@
 
     # ------ Tools ------
     axel # Console app for parallel connection
-    wl-clip-persist
     wl-clipboard
-    cliphist
     ncdu # ----
     sops
     age
