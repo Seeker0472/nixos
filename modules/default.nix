@@ -1,5 +1,21 @@
-{lib, ...}: {
-  imports = [./profiles];
+{
+  lib,
+  inputs,
+  ...
+}: let
+  allFiles = lib.filesystem.listFilesRecursive ./profiles;
+
+  allProfiles = builtins.filter (file: let
+    name = toString file;
+  in
+    (lib.hasSuffix ".nix" name)
+    && !(lib.hasPrefix "_" (builtins.baseNameOf name))
+    # exclude '/programs/home'and'/hyprland/conf/'
+    && !(lib.hasInfix "/programs/home/" name)
+    && !(lib.hasInfix "/hyprland/conf/" name))
+  allFiles;
+in {
+  imports = allProfiles;
 
   # Some general options here,
   # Detailed options should resides in ./profiles,and /users or /hosts enables them.
