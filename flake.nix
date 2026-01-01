@@ -30,6 +30,7 @@
       inputs.nixpkgs.follows = "nixpkgs-2405";
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
+    git-hooks-nix.url = "github:cachix/git-hooks.nix";
   };
   # function as value
   # an attribute set
@@ -47,6 +48,7 @@
         # Optional: use external flake logic, e.g.
         # inputs.foo.flakeModules.default
         ./outputs
+        inputs.git-hooks-nix.flakeModule
       ];
       flake = {
         # Put your original flake attributes here.

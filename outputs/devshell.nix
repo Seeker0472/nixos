@@ -3,6 +3,7 @@
   perSystem =
     { config, pkgs, ... }:
     {
+      pre-commit.settings.hooks.nixfmt-rfc-style.enable = true;
       devShells.default = pkgs.mkShell {
         packages = with pkgs; [
           git
@@ -12,6 +13,7 @@
           sops
           age
         ];
+        shellHook = ''${config.pre-commit.shellHook}'';
       };
     };
 }
