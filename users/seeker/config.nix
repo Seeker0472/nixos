@@ -13,6 +13,8 @@
     programs = {
       fish.enable = true;
       kitty.enable = true;
+      yazi.enable = true;
+      direnv.enable = true;
     };
   };
 }

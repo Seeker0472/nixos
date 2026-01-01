@@ -10,7 +10,7 @@
     (lib.mkIf config.seeker.home.thunar.enable {
       home.packages = [
         pkgs.xfce.thunar
-        pkgs.xfce.xfconf
+        pkgs.xfconf
       ];
       wayland.windowManager.hyprland.settings = {
         "$fileManager" = "thunar";

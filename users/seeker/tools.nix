@@ -4,53 +4,6 @@
   ...
 }:
 {
-  programs.ssh = {
-    # FIXME: warring!
-    # evaluation warning: seeker profile: `programs.ssh` default values will be removed in the future.
-    #                 Consider setting `programs.ssh.enableDefaultConfig` to false,
-    #                 and manually set the default values you want to keep at
-    #                 `programs.ssh.matchBlocks."*"`.
-    enable = true;
-    extraConfig = ''
-      IdentityFile ${config.sops.secrets."id_ed25519".path}
-
-      Host github.com
-        Hostname ssh.github.com
-        Port 443
-        User git
-        ProxyCommand nc -X connect -x 127.0.0.1:7890 %h %p
-    '';
-    # identityFile = [config.sops.secrets."id_ed25519".path];
-  };
-  # FIXME: add more keys-GPG machine specific key
-  sops.secrets."id_ed25519" = {
-    sopsFile = ./ssh.secrets.yaml;
-    key = "ssh_id_ed25519_private_key";
-    path = "${config.home.homeDirectory}/.ssh/id_seeker";
-  };
-  sops.secrets."id_ed25519-public" = {
-    sopsFile = ./ssh.secrets.yaml;
-    key = "ssh_id_ed25519_public_key";
-    path = "${config.home.homeDirectory}/.ssh/id_seeker.pub";
-  };
-  sops.secrets."nix_config" = {
-    sopsFile = ./ssh.secrets.yaml;
-    key = "nix_config";
-    path = "${config.home.homeDirectory}/.config/my_nix.conf";
-  };
-  programs.direnv = {
-    enable = true;
-    # enableBashIntegration =true;
-    # enableFishIntegration = true;
-    nix-direnv.enable = true;
-    config = {
-      hide_env_diff = true;
-    };
-  };
-
-  # 通过 home.packages 安装一些常用的软件
-  # 这些软件将仅在当前用户下可用，不会影响系统级别的配置
-  # 所有 GUI 软件，以及与 OS 关系不大的 CLI 软件，都通过 home.packages 安装
   home.packages = with pkgs; [
     neofetch
     fastfetch
@@ -127,20 +80,38 @@
     ranger # fileExpo
 
     fzf # amazing tool to find things!
+
+    # ----- Develop ------
+    # programming/ysyx/learning
+    gcc
+    gdb
+    gnumake
+    lazygit
+    #neovim & dependences
+    # TODO:Neovim config using nix
+    # neovim
+    # lua5_1
+    # luarocks
+    # ripgrep
+    # python312Packages.ipython #TODO:python313:nix-ondroid error
+    # coursier
+
+    clang-tools
+    nixfmt-classic
+
+    # ------ Tools ------
+    axel # Console app for parallel connection
+    wl-clipboard
+    ncdu # ----
+    sops
+    age
+    tty-clock
+
+    # ------ Productivity ------
+    pandoc # 文档
+    ffmpeg
+    marp-cli
+
   ];
-  programs.yazi = {
-    enable = true;
-    settings = {
-      tasks = {
-        micro_workers = 5;
-        macro_workers = 10;
-        bizarre_retry = 5;
-        image_alloc = 4096;
-        image_bound = [
-          15720
-          8640
-        ];
-      };
-    };
-  };
+
 }
