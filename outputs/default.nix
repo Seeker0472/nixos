@@ -1,4 +1,7 @@
 { inputs, ... }:
 {
-  imports = [ ./nixos-configurations.nix ];
+  imports = [
+    ./nixos-configurations.nix
+    ./devshell.nix
+  ];
 }

@@ -12,6 +12,10 @@
     machine_type = "laptop";
     cpu = "intel";
     programs = {
+      mihomo = {
+        enable = true;
+        tun.enable = true;
+      };
       kdeconnect.enable = true;
     };
   };
