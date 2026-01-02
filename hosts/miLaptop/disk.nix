@@ -39,6 +39,9 @@
     # remains empty for now
     users.seeker = {
       directories = [
+        ".zen"
+        "nixos-config"
+        "age"
       ];
     };
   };

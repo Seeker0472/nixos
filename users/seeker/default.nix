@@ -2,7 +2,7 @@
 {
   imports = [
     inputs.home-manager.nixosModules.home-manager
-    inputs.impermanence.homeManagerModules.impermanence
+    #    inputs.impermanence.homeManagerModules.impermanence
   ];
 
   home-manager = {
@@ -15,6 +15,7 @@
     sharedModules = [
       inputs.sops-nix.homeManagerModules.sops
       inputs.zen-browser.homeModules.beta
+      inputs.impermanence.homeManagerModules.impermanence
     ];
   };
 }
