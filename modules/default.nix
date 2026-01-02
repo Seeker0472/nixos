@@ -49,5 +49,6 @@ in
       default = "others";
       description = "the cpu of this machine";
     };
+    impermanence.enable = lib.mkEnableOption "impermanence";
   };
 }

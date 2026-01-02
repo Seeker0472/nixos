@@ -31,6 +31,11 @@
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
     git-hooks-nix.url = "github:cachix/git-hooks.nix";
+    impermanence.url = "github:nix-community/impermanence";
+    disko = {
+      url = "github:nix-community/disko/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   # function as value
   # an attribute set
