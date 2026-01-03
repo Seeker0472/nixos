@@ -3,8 +3,16 @@
   pkgs,
   ...
 }:
+let
+  username = "seeker";
+  keyRelativePath = "age/keys";
+in
 {
-  sops.age.keyFile = "${config.users.users.seeker.home}/.config/age/keys";
+  sops.age.keyFile =
+    if config.seeker.impermanence.enable then
+      "/persist/home/${username}/${keyRelativePath}"
+    else
+      "/home/${username}/${keyRelativePath}";
 
   sops.secrets."rclone" = {
     sopsFile = ./webdav.secrets.yaml;
@@ -36,6 +44,8 @@
       Type = "simple";
       User = "root";
       Group = "root";
+
+      ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /mnt/123PAN";
 
       ExecStart = ''
         ${pkgs.rclone}/bin/rclone mount \

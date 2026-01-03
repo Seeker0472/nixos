@@ -16,6 +16,7 @@
     ./git.nix
     ./old
     ./config.nix
+    ./ssh.nix
   ];
 
   # This value determines the Home Manager release that your

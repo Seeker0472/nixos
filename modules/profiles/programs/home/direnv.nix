@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  osConfig,
+  lib,
+  ...
+}:
 {
   programs.direnv = {
     # enable = true;
@@ -9,4 +14,8 @@
       hide_env_diff = true;
     };
   };
+  home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
+    [
+      ".local/share/direnv"
+    ];
 }

@@ -22,7 +22,6 @@
       controlPath = "~/.ssh/master-%r@%n:%p";
       controlPersist = "no";
       identityFile = [ config.sops.secrets."id_ed25519".path ];
-
     };
   };
   # FIXME: add more keys-GPG machine specific key

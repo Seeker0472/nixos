@@ -26,12 +26,19 @@ in
             lib,
             config,
             pkgs,
+            osConfig,
             ...
           }:
           {
             options.seeker.home.zed.enable = lib.mkEnableOption "Enable zed-editor";
+
             # Note: the following config are ai-generated
             config = lib.mkIf config.seeker.home.zed.enable {
+              home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
+                [
+                  ".local/share/keyrings"
+                  ".local/share/zed"
+                ];
               programs.zed-editor = {
                 enable = true;
 
@@ -40,6 +47,7 @@ in
                   "nix"
                   "scala"
                 ];
+
                 userSettings = {
                   lsp = {
                     # --- C / C++ ---

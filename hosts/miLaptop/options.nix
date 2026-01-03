@@ -18,5 +18,6 @@
       };
       kdeconnect.enable = true;
     };
+    impermanence.enable = true;
   };
 }

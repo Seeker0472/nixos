@@ -6,7 +6,6 @@
   ...
 }:
 {
-  programs.zen-browser.enable = true;
   home.packages = with pkgs; [
     # ------ Develop ------
     vscode

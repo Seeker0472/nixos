@@ -1,10 +1,19 @@
 { config, ... }:
+let
+  username = "seeker";
+  keyRelativePath = "age/keys";
+  keyFilePath =
+    if config.seeker.impermanence.enable then
+      "/persist/home/${username}/${keyRelativePath}"
+    else
+      "/home/${username}/${keyRelativePath}";
+in
 {
   home-manager.sharedModules = [
     (
       { config, ... }:
       {
-        sops.age.keyFile = "${config.xdg.configHome}/age/keys";
+        sops.age.keyFile = keyFilePath;
         systemd.user.services.mbsync.unitConfig.After = [ "sops-nix.service" ];
       }
     )

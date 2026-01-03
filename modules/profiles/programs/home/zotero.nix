@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  osConfig,
   ...
 }:
 {
@@ -23,5 +24,12 @@
         ];
       };
     })
+    {
+      home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
+        [
+          ".zotero"
+          "Zotero"
+        ];
+    }
   ];
 }
