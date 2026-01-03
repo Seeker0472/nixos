@@ -29,8 +29,8 @@
       "exfat"
     ];
 
-    fileSystems."/persist".neededForBoot = true;
-    environment.persistence."/persist" = {
+    fileSystems."${config.seeker.btrfs.impermanence.persistdir}".neededForBoot = true;
+    environment.persistence."${config.seeker.btrfs.impermanence.persistdir}" = {
       hideMounts = true;
       directories = [
         "/var/log"

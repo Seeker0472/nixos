@@ -4,7 +4,7 @@ let
   keyRelativePath = "age/keys";
   keyFilePath =
     if config.seeker.impermanence.enable then
-      "/persist/home/${username}/${keyRelativePath}"
+      "${config.seeker.btrfs.impermanence.persistdir}/home/${username}/${keyRelativePath}"
     else
       "/home/${username}/${keyRelativePath}";
 in

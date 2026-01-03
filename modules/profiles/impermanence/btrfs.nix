@@ -95,8 +95,8 @@ in
                       "noatime"
                     ];
                   };
-                  "/persist" = {
-                    mountpoint = "/persist";
+                  "${config.seeker.btrfs.impermanence.persistdir}" = {
+                    mountpoint = "${config.seeker.btrfs.impermanence.persistdir}";
                     mountOptions = [
                       "compress=zstd"
                       "noatime"
