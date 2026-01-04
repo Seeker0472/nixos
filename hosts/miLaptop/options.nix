@@ -25,6 +25,11 @@
     };
     secrets = {
       webdav.enable = true;
+      ageKeyPath = "/persist/home/seeker/age/keys";
+    };
+    virtualization = {
+      docker.enable = true;
+      virtualbox.enable = true;
     };
   };
 }

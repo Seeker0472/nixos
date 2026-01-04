@@ -1,8 +1,13 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }:
+let
+  cfg = config.seeker.secrets.webdav;
+in
+with lib;
 {
   options.seeker.secrets.webdav = {
     enable = lib.mkOption {
@@ -10,8 +15,18 @@
       default = true;
       description = "Enable WebDAV(123PAN)";
     };
+    extraArgs = lib.mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "Extra arguments for rclone mount";
+    };
+    mountPoint = lib.mkOption {
+      type = types.path;
+      default = "/mnt/123PAN";
+      description = "Mount point for WebDAV";
+    };
   };
-  config = lib.mkIf config.seeker.secrets.webdav.enable {
+  config = lib.mkIf cfg.enable {
     sops.secrets."rclone" = {
       sopsFile = ./sys.secrets.yaml;
       key = "rclone_conf";
@@ -33,7 +48,7 @@
         User = "root";
         Group = "root";
 
-        ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /mnt/123PAN";
+        ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p ${cfg.mountPoint}";
 
         ExecStart = ''
           ${pkgs.rclone}/bin/rclone mount \
@@ -41,10 +56,11 @@
             --allow-other \
             --vfs-cache-mode full \
             --log-level INFO \
-            123PAN: /mnt/123PAN
+            ${lib.escapeShellArgs cfg.extraArgs}\
+            123PAN: ${cfg.mountPoint}
         '';
 
-        ExecStop = "${pkgs.fuse}/bin/fusermount -u /mnt/123PAN";
+        ExecStop = "${pkgs.fuse}/bin/fusermount -u ${cfg.mountPoint}";
         Restart = "always";
         RestartSec = "10s";
       };

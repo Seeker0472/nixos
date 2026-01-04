@@ -1,19 +1,10 @@
 { config, ... }:
-let
-  username = "seeker";
-  keyRelativePath = "age/keys";
-  keyFilePath =
-    if config.seeker.impermanence.enable then
-      "${config.seeker.btrfs.impermanence.persistdir}/home/${username}/${keyRelativePath}"
-    else
-      "/home/${username}/${keyRelativePath}";
-in
 {
   home-manager.sharedModules = [
     (
-      { config, ... }:
+      { config, osConfig, ... }:
       {
-        sops.age.keyFile = keyFilePath;
+        sops.age.keyFile = osConfig.seeker.secrets.ageKeyPath;
         systemd.user.services.mbsync.unitConfig.After = [ "sops-nix.service" ];
       }
     )

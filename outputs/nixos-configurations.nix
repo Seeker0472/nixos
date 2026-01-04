@@ -6,23 +6,31 @@
       specialArgs = { inherit inputs; }; # 只传 inputs 即可
       modules = [
         ../hosts/miLaptop
-        ./common/nixpkgs-settings.nix
+        ./common
         ../modules
-        ../users/seeker
-        inputs.sops-nix.nixosModules.sops
-        inputs.disko.nixosModules.disko
-        inputs.impermanence.nixosModule
-      ];
-    };
-
-    LTG = inputs.nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = { inherit inputs; };
-      modules = [
-        ../nixos
-        ./nixpkgs-settings.nix
         ../users/seeker
       ];
     };
   };
+  perSystem =
+    {
+      config,
+      pkgs,
+      system,
+      ...
+    }:
+    {
+      packages = {
+        GringottsVault713 = inputs.nixos-generators.nixosGenerate {
+          system = system;
+          format = "proxmox-lxc";
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./common
+            ../hosts/GringottsVault713
+            ../modules
+          ];
+        };
+      };
+    };
 }
