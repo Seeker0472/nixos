@@ -5,7 +5,6 @@
       qq.enable = true;
       wechat.enable = true;
       zed.enable = true;
-      thunar.enable = true;
       zotero.enable = true;
       neteaseMusic.enable = true;
       obsidian.enable = true;

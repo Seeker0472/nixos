@@ -12,7 +12,10 @@
     };
     # Enable CUPS to print documents.
     services.printing.enable = true;
-    environment.systemPackages = [ pkgs.powertop ];
+    environment.systemPackages = [
+      pkgs.powertop
+      pkgs.pulseaudioFull
+    ];
     boot.supportedFilesystems = [ "exfat" ];
 
     #mirror and allfirmware

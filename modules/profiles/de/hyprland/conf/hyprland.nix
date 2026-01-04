@@ -2,7 +2,7 @@
 {
   home-manager.sharedModules = [
     (
-      { config, ... }:
+      { config, osConfig, ... }:
       {
         home.packages = [ pkgs.nwg-displays ]; # set display for hyprland
         wayland.windowManager.hyprland.extraConfig = ''
@@ -30,7 +30,7 @@
             force_zero_scaling = true;
           };
         };
-        home.persistence."${config.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
+        home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
           [
             ".config/hypr"
             ".local/share/hyprland"

@@ -6,8 +6,9 @@
   ...
 }:
 {
+  # TODO: manage by nix and persist it
   programs.gnupg.agent = {
-    enable = true;
+    enable = lib.mkDefault true;
     pinentryPackage = pkgs.pinentry-qt;
   };
 }
