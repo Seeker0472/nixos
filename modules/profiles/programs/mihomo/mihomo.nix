@@ -106,26 +106,43 @@ let
         interval: 3600
         health-check: { enable: true, interval: 600, url: http://www.gstatic.com/generate_204 }
 
+      airport_ikuuu:
+        type: http
+        url: "${config.sops.placeholder.airport_ikuuu_url}"
+        path: ./providers/airport_c.yaml
+        interval: 3600
+        health-check: { enable: true, interval: 600, url: http://www.gstatic.com/generate_204 }
+
     proxy-groups:
-      - name: "Auto-Fast"
+      - name: "Auto-Fast-ALL"
         type: url-test
         url: 'http://www.gstatic.com/generate_204'
         interval: 300
-        tolerance: 50
-        use: [airport_mojie, airport_dingji]
+        tolerance: 30
+        use: [airport_mojie, airport_dingji, airport_ikuuu]
+
+      - name: "Auto-Fast-ikuuu"
+        type: url-test
+        url: 'http://www.gstatic.com/generate_204'
+        interval: 300
+        tolerance: 30
+        exclude-filter: "免费"
+        use: [airport_ikuuu]
 
       - name: "Gemini-Group"
         type: url-test
         url: 'http://www.gstatic.com/generate_204'
         interval: 300
         tolerance: 50
-        filter: "(?i)美国|日本|台湾|新加坡|Gemini"
+        filter: "(?i)(日本|新加坡)"
+        exclude-filter: "免费"
+        # filter: "(?i)美国|日本|台湾|新加坡|Gemini"
         # filter: "(?i)Gemini"
-        use: [airport_mojie, airport_dingji]
+        use: [airport_ikuuu]
 
       - name: "Proxy"
         type: select
-        proxies: ["Auto-Fast", "Gemini-Group", DIRECT]
+        proxies: ["Auto-Fast-ikuuu", "Auto-Fast-ALL", "Gemini-Group", DIRECT]
 
     rules:
       - DOMAIN,gemini.google.com,Gemini-Group
@@ -134,7 +151,7 @@ let
 
       - GEOSITE,cn,DIRECT
       - GEOIP,cn,DIRECT
-      - MATCH,Auto-Fast
+      - MATCH,Proxy
       - DOMAIN-KEYWORD,subscribe,DIRECT
       - GEOSITE,category-ads-all,REJECT
   '';
@@ -168,6 +185,9 @@ in
       sopsFile = ./mihomo.secrets.yaml;
     };
     sops.secrets.airport_dingji_url = {
+      sopsFile = ./mihomo.secrets.yaml;
+    };
+    sops.secrets.airport_ikuuu_url = {
       sopsFile = ./mihomo.secrets.yaml;
     };
     sops.secrets.mihomo_secret = {

@@ -31,6 +31,7 @@
   };
   # enable tailscale
   services.tailscale.enable = true;
+
   # fix dns issue https://github.com/tailscale/tailscale/issues/4254
   # TODO!
   services.resolved.enable =

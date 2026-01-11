@@ -22,6 +22,7 @@
       };
       thunar.enable = true;
       kdeconnect.enable = true;
+      steam.enable = true;
     };
     secrets = {
       webdav.enable = true;

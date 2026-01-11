@@ -46,6 +46,8 @@ in
                   "one-dark-pro"
                   "nix"
                   "scala"
+                  "neocmake"
+                  "make"
                 ];
 
                 userSettings = {
@@ -192,7 +194,7 @@ in
                     thumb_border = "left_open";
                     show = "auto";
                   };
-                  relative_line_numbers = true;
+                  relative_line_numbers = "enabled";
                   auto_signature_help = true;
                   autosave = "on_window_change";
                   ui_font_weight = 500.0;
@@ -206,6 +208,24 @@ in
                   # TAB-space indicator
                   # inlay hints tasks miscellaneous->debuggers
                   # language servers
+                  language_models = {
+                    deepseek = {
+                      api_url = "https://api.deepseek.com";
+                      available_models = [
+                        {
+                          name = "deepseek-chat";
+                          display_name = "DeepSeek Chat";
+                          max_tokens = 64000;
+                        }
+                        {
+                          name = "deepseek-reasoner";
+                          display_name = "DeepSeek Reasoner";
+                          max_tokens = 64000;
+                          max_output_tokens = 4096;
+                        }
+                      ];
+                    };
+                  };
                 };
               };
             };

@@ -4,6 +4,7 @@
     ./disk.nix
     ./hardware-configuration.nix
     ./options.nix
+    ./programs.nix
   ];
   networking.hostName = "miLaptop";
   system.stateVersion = "24.05"; # DoNot change
