@@ -34,11 +34,10 @@ in
 
             # Note: the following config are ai-generated
             config = lib.mkIf config.seeker.home.zed.enable {
-              home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
-                [
-                  ".local/share/keyrings"
-                  ".local/share/zed"
-                ];
+              home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
+                ".local/share/keyrings"
+                ".local/share/zed"
+              ];
               programs.zed-editor = {
                 enable = true;
 
@@ -112,7 +111,7 @@ in
                       language_servers = [ "nil" ];
                       formatter = {
                         external = {
-                          command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
+                          command = "${pkgs.nixfmt}/bin/nixfmt";
                         };
                       };
                     };
@@ -125,14 +124,29 @@ in
                     # Scala / Chisel 设置
                     "Scala" = {
                       language_servers = [ "metals" ];
+                      formatter = {
+                        language_server = {
+                          name = "metals";
+                        };
+                      };
                     };
 
                     # C++ 设置
                     "C++" = {
                       language_servers = [ "clangd" ];
+                      formatter = {
+                        language_server = {
+                          name = "clangd";
+                        };
+                      };
                     };
                     "C" = {
                       language_servers = [ "clangd" ];
+                      formatter = {
+                        language_server = {
+                          name = "clangd";
+                        };
+                      };
                     };
                   };
                   git = {

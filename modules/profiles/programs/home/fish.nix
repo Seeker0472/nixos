@@ -5,10 +5,9 @@
   ...
 }:
 {
-  home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
-    [
-      ".local/share/fish"
-    ];
+  home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
+    ".local/share/fish"
+  ];
   programs.fish = {
     # enable = true;
     interactiveShellInit = ''

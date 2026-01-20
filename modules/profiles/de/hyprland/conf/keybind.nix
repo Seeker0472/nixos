@@ -54,7 +54,6 @@ in
           "$mainMod SHIFT, M, exec, systemctl hibernate"
           "$mainMod CONTROL, M, exec, ${pkgs.hyprlock}/bin/hyprlock"
           "$mainMod, R, exec, $menu"
-          "$mainMod, D, exec, $menu"
 
           # Hitokoto & Wallpaper (Refactored to stable service)
           '', XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://hitokoto.mayx.eu.org/ | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''

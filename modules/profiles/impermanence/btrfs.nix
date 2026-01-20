@@ -11,21 +11,38 @@ let
   cfg = config.seeker.btrfs.impermanence;
 in
 {
+  # TODO :hibrnate don't work
   config = mkIf cfg.enable {
-    # 1. 基础引导配置
     boot.initrd.systemd.enable = true;
     boot.initrd.supportedFilesystems = [ "btrfs" ];
+    # boot.initrd.supportedFilesystems = lib.mkForce [ ];
+    boot.initrd.availableKernelModules = [
+      "btrfs"
+      "crc32c"
+    ];
+    boot.initrd.kernelModules = [
+      # "dm-snapshot"
+    ];
     boot.initrd.luks.devices."${cfg.luksName}".crypttabExtraOpts = [ "tpm2-device=auto" ];
+    boot.resumeDevice = "/dev/mapper/crypted";
+    boot.kernelParams = [ "resume_offset=533760" ];
+    boot.initrd.systemd.services.create-needed-for-boot-dirs.after = [ "local-fs-pre.target" ];
 
     # 2. 回滚逻辑 (提取出来的通用脚本)
     boot.initrd.systemd.services.rollback = {
       description = "Rollback BTRFS root subvolume to a pristine state";
       wantedBy = [ "initrd.target" ];
-      after = [ "systemd-cryptsetup@${cfg.luksName}.service" ];
+      after = [
+        "systemd-cryptsetup@${cfg.luksName}.service"
+        "systemd-hibernate-resume.service"
+      ];
       before = [ "sysroot.mount" ];
       unitConfig.DefaultDependencies = "no";
       serviceConfig.Type = "oneshot";
       script = ''
+        # manually modprobe btrfs as we don't use boot.supportedFilesystems
+        # modprobe btrfs
+
         mkdir -p /btrfs_tmp
         mount /dev/mapper/${cfg.luksName} /btrfs_tmp
 

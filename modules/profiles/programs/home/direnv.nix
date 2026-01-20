@@ -14,8 +14,7 @@
       hide_env_diff = true;
     };
   };
-  home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
-    [
-      ".local/share/direnv"
-    ];
+  home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
+    ".local/share/direnv"
+  ];
 }

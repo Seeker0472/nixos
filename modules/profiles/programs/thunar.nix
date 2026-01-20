@@ -10,7 +10,7 @@
   config = lib.mkIf config.seeker.programs.thunar.enable {
     programs.thunar = {
       enable = true;
-      plugins = with pkgs.xfce; [
+      plugins = with pkgs; [
         thunar-archive-plugin
         thunar-volman
       ];

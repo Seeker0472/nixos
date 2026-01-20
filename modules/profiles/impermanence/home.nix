@@ -8,8 +8,8 @@ in
       (
         { osConfig, config, ... }:
         {
-          home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}" = {
-            allowOther = true;
+          home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}" = {
+            # allowOther = true;
             directories = [
               "Downloads"
               "Documents"
@@ -23,6 +23,6 @@ in
       )
     ];
     # must enable aloneside allowOther
-    programs.fuse.userAllowOther = true;
+    # programs.fuse.userAllowOther = true;
   };
 }

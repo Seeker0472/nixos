@@ -30,11 +30,10 @@
             force_zero_scaling = true;
           };
         };
-        home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
-          [
-            ".config/hypr"
-            ".local/share/hyprland"
-          ];
+        home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
+          ".config/hypr"
+          ".local/share/hyprland"
+        ];
       }
     )
   ];

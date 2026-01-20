@@ -12,11 +12,10 @@ in
       (
         { config, osConfig, ... }:
         {
-          home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}/home/${config.home.username}".directories =
-            [
-              ".local/share/fcitx5"
-              ".config/fcitx5"
-            ];
+          home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
+            ".local/share/fcitx5"
+            ".config/fcitx5"
+          ];
           home.file = {
             ".local/share/fcitx5/themes/Nord-Dark".source = ./fcitx5-nord/Nord-Dark;
             ".local/share/fcitx5/themes/Nord-Light".source = ./fcitx5-nord/Nord-Light;

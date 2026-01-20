@@ -8,9 +8,15 @@
   config = lib.mkMerge [
     (lib.mkIf config.seeker.programs.kdeconnect.enable {
       home-manager.sharedModules = [
-        {
-          services.kdeconnect.enable = true;
-        }
+        (
+          { osConfig, ... }:
+          {
+            services.kdeconnect.enable = true;
+            home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
+              ".config/kdeconnect/"
+            ];
+          }
+        )
       ];
 
       networking.firewall = rec {

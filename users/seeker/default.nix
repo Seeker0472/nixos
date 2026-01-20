@@ -15,7 +15,7 @@
     sharedModules = [
       inputs.sops-nix.homeManagerModules.sops
       inputs.zen-browser.homeModules.beta
-      inputs.impermanence.homeManagerModules.impermanence
+      # inputs.impermanence.homeManagerModules.impermanence
     ];
   };
 }

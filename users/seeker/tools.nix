@@ -97,7 +97,7 @@
     # coursier
 
     clang-tools
-    nixfmt-classic
+    nixfmt
 
     # ------ Tools ------
     axel # Console app for parallel connection

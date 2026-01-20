@@ -3,17 +3,17 @@
   perSystem =
     { config, pkgs, ... }:
     {
-      pre-commit.settings.hooks.nixfmt-rfc-style.enable = true;
+      pre-commit.settings.hooks.nixfmt.enable = true;
       devShells.default = pkgs.mkShell {
         packages = with pkgs; [
           git
           vim
           neovim
-          nixfmt-rfc-style
+          nixfmt
           sops
           age
         ];
-        shellHook = ''${config.pre-commit.shellHook}'';
+        shellHook = "${config.pre-commit.shellHook}";
       };
     };
 }
