@@ -25,7 +25,7 @@
     cava
     netease-cloud-music-gtk
     obs-studio
-    kdePackages.kdenlive
+    # kdePackages.kdenlive
     viewnior # image viewer
     gimp3-with-plugins # 图片处理
     evince # pdf viewer

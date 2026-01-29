@@ -126,7 +126,7 @@ let
         url: 'http://www.gstatic.com/generate_204'
         interval: 300
         tolerance: 30
-        exclude-filter: "免费"
+        exclude-filter: "免费|下载专用"
         use: [airport_ikuuu]
 
       - name: "Gemini-Group"
@@ -135,7 +135,7 @@ let
         interval: 300
         tolerance: 50
         filter: "(?i)(日本|新加坡)"
-        exclude-filter: "免费"
+        exclude-filter: "免费|下载专用"
         # filter: "(?i)美国|日本|台湾|新加坡|Gemini"
         # filter: "(?i)Gemini"
         use: [airport_ikuuu]

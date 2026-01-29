@@ -39,7 +39,6 @@
     python3
     fish
     rclone
-    tailscale
   ];
 
   # 启用 OpenSSH 后台服务
