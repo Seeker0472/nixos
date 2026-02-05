@@ -43,16 +43,21 @@
 
     wayland.windowManager.hyprland.settings = {
       "$terminal" = "kitty";
-      windowrulev2 = [
+      windowrule = [
         # float&pin kitty
-        "float, initialClass:(.*F.*),initialTitle:^(kitty)$"
-        "size 70% 70%, initialClass:(.*F.*),initialTitle:^(kitty)$"
-        "pin, initialClass:(.*G.*),initialTitle:^(kitty)$"
+        "tag +float_term,match:initial_class (.*F.*) ,match:initial_title ^(kitty)$"
+        "float on, match:tag float_term*"
+        "center on, match:tag float_term*"
+        "size (monitor_w*0.7) (monitor_h*0.7), match:tag float_term*"
+
+        "tag +global_term ,match:initial_class (.*G.*), match:initial_title ^(kitty)$"
+        "pin on, match:tag global_term*"
 
         # kitty: right-Up of screen
-        "size 60% 60%, initialClass:^(RT.*), initialTitle:^(kitty)$"
-        "float, initialClass:^(RT.*), initialTitle:^(kitty)$"
-        "move 40% 30, initialClass:^(RT.*), initialTitle:^(kitty)$"
+        "tag +right_top_term, match:initial_class (RT.*), match:initial_title ^(kitty)$"
+        "size (monitor_w*0.6) (monitor_h*0.7), match:tag right_top_term*"
+        "float on, match:tag right_top_term*"
+        "move (monitor_w-window_w) 30, match:tag right_top_term*"
       ];
     };
   };

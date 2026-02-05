@@ -12,8 +12,8 @@
         pkgs.netease-cloud-music-gtk
       ];
       wayland.windowManager.hyprland.settings = {
-        windowrulev2 = [
-          "workspace special:music, class:(com.gitee.gmg137.NeteaseCloudMusicGtk4)"
+        windowrule = [
+          "workspace special:music, match:class (com.gitee.gmg137.NeteaseCloudMusicGtk4)"
         ];
         workspace = [
           "special:music, on-created-empty: [ ] netease-cloud-music-gtk4"

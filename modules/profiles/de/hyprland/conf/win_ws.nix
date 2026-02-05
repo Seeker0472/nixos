@@ -10,15 +10,11 @@
       wayland.windowManager.hyprland.settings = {
         windowrulev2 = [
           # FIXME:move them out!!!
-
-          # Fcitx / Input
-          "pin, initialClass:(.*fcitx.*)"
-
           # 无边框/阴影规则 (HMCL, Wemeet)
 
-          "noborder, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
-          "noshadow, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
-          "noblur, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
+          # "noborder, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
+          # "noshadow, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
+          # "noblur, initialClass:^(org\\.jackhuang\\.hmcl\\.Launcher)$"
           # "noborder, initialClass:^(wemeetapp)$"
           # "noshadow, initialClass:^(wemeetapp)$"
           # "noblur, initialClass:^(wemeetapp)$"
@@ -35,6 +31,10 @@
         ];
 
         windowrule = [
+
+          # Fcitx / Input
+          "pin on,  match:initial_class (.*fcitx.*)"
+
           # "noinitialfocus, class:(jetbrains-.*), title:^win(.*)"
           # "noinitialfocus, class:(org.jackhuang.hmcl.Launcher)"
         ];

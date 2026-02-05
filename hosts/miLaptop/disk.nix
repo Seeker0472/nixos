@@ -40,6 +40,7 @@
         "/etc/NetworkManager/system-connections"
         "/var/lib/docker"
         "/var/lib/private/mihomo"
+        "/etc/ssh"
       ];
       files = [
         "/etc/machine-id"

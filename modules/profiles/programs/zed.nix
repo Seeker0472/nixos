@@ -239,6 +239,9 @@ in
                         }
                       ];
                     };
+                    chatglm = [
+
+                    ];
                   };
                 };
               };
@@ -247,7 +250,7 @@ in
         )
         {
           wayland.windowManager.hyprland.settings = {
-            windowrulev2 = [ "workspace special:zed,class:(dev.zed.Zed)" ];
+            windowrule = [ "workspace special:zed,match:class (dev.zed.Zed)" ];
             workspace = [ "special:zed, on-created-empty:[ ] zeditor" ];
             bind = [ "$mainMod,X, togglespecialworkspace,zed" ];
           };

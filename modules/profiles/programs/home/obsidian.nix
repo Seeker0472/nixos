@@ -13,8 +13,8 @@
         pkgs.obsidian
       ];
       wayland.windowManager.hyprland.settings = {
-        windowrulev2 = [
-          "workspace special:obsidian, class:(obsidian)"
+        windowrule = [
+          "workspace special:obsidian, match:class (obsidian)"
         ];
         workspace = [
           "special:obsidian, on-created-empty: [ ] obsidian"

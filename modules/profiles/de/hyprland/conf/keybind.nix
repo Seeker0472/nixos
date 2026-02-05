@@ -56,10 +56,10 @@ in
           "$mainMod, R, exec, $menu"
 
           # Hitokoto & Wallpaper (Refactored to stable service)
-          '', XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://hitokoto.mayx.eu.org/ | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
-          ''SHIFT, XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://hitokoto.mayx.eu.org/?c=a | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
-          "CONTROL, XF86Launch1, exec, ${wpaperctl} next-wallpaper"
-          ''CONTROL SHIFT, XF86Launch1, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://v1.hitokoto.mangofanfan.cn/?c=a | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
+          '', XF86Tools, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://hitokoto.mayx.eu.org/ | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
+          ''SHIFT, XF86Tools, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://hitokoto.mayx.eu.org/?c=a | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
+          "CONTROL, XF86Tools, exec, ${wpaperctl} next-wallpaper"
+          ''CONTROL SHIFT, XF86Tools, exec, ${wpaperctl} next-wallpaper; notify-send --category=hitokoto -t 1 "$(curl -sk https://v1.hitokoto.mangofanfan.cn/?c=a | jq -r '"\(.hitokoto)\n—— 《\(.from)》"')"''
 
           ", mouse:275, workspace, e+1"
           ", mouse:276, workspace, e-1"

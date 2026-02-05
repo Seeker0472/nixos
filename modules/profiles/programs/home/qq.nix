@@ -10,10 +10,12 @@
     (lib.mkIf config.seeker.home.qq.enable {
       home.packages = [ pkgs.qq ];
       wayland.windowManager.hyprland.settings = {
-        windowrulev2 = [
-          "size 70% 70%, initialClass:^(QQ)$, initialTitle:^(图片查看器)$"
-          "float, initialClass:^(QQ)$, initialTitle:^(图片查看器)$"
-          "workspace special:qq, class:(QQ)"
+        windowrule = [
+          "tag +qq_pic, match:initial_class ^(QQ)$, match:initial_title ^(图片查看器)$"
+          "size (monitor_w*0.7) (monitor_h*0.7), match:tag qq_pic*"
+          "float on, match:tag qq_pic*"
+          "center on, match:tag qq_pic*"
+          "workspace special:qq, match:class ^(QQ)$"
         ];
         workspace = [ "special:qq, on-created-empty: [ ] qq" ];
         bind = [

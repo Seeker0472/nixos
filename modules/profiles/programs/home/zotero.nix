@@ -13,8 +13,8 @@
         pkgs.zotero
       ];
       wayland.windowManager.hyprland.settings = {
-        windowrulev2 = [
-          "workspace special:zotero, class:(Zotero)"
+        windowrule = [
+          "workspace special:zotero, match:class (Zotero)"
         ];
         workspace = [
           "special:zotero, on-created-empty: [ ] zotero"

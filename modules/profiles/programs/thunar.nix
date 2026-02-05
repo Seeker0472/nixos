@@ -25,11 +25,13 @@
       {
         wayland.windowManager.hyprland.settings = {
           "$fileManager" = "thunar";
-          windowrulev2 = [
-            "float, class:^(thunar)$"
-            "size 70% 70%, class:^(thunar)$"
-            "size 50% 20%, class:^(thunar)$,title:^(File Operation Progress)$"
-            "size 50% 50%, class:^(thunar)$,title:(.*Properties)"
+          windowrule = [
+            "tag +thunar, match:class (thunar)"
+            "float on, match:tag thunar*"
+            "center on, match:tag thunar*"
+            "size (monitor_w*0.7) (monitor_h*0.7), match:tag thunar*"
+            "size (monitor_w*0.5) (monitor_h*0.5), match:tag thunar*,match:title ^(File Operation Progress)$"
+            "size (monitor_w*0.5) (monitor_h*0.5), match:tag thunar*,match:title (.*Properties)"
           ];
           bind = [
             "$mainMod, E, exec, $fileManager"

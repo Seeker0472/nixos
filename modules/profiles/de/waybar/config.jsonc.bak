@@ -106,7 +106,7 @@
         "format-linked": "{ifname} (No IP) 󰛵 ",
         "format-disconnected": "Disconnected  ",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
-        "on-click-right": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&& nmcli device wifi rescan &&kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG nmtui-connect",
+        "on-click-right": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&& nmcli device wifi rescan &&kitty -o fo
     },
     "cpu": {
         "states": {
@@ -193,10 +193,10 @@
         "on-click-right": "hyprctl clients | grep 'class: RTG$' -A 5 | grep 'pid:' | awk '{print $2}'|xargs -r kill -9&&kitty -o font_size=14  -o confirm_os_window_close=0 --class RTG bluetuith"
     },
     "custom/gotobed": {
-        "format": "{}", 
+        "format": "{}",
         "return-type": "json",
-        "interval": 60, 
-        "exec": "~/scripts/gotobed.sh", 
+        "interval": 60,
+        "exec": "~/scripts/gotobed.sh",
         // "tooltip": false, // 如果脚本输出中包含 tooltip，可以设为 false，避免 Waybar 默认行为干扰
         // "escape": true, // 如果你的文本包含特殊字符，可能需要开启
     },
