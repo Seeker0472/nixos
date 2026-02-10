@@ -21,7 +21,7 @@
           # "pin, initialClass:^(wemeetapp)$"
 
           # 其他
-          "suppressevent maximize, class:.*"
+          # "suppressevent maximize, class:.*"
           # "fullscreen, class:Waydroid"
           # "fullscreen, class:waydroid.*"
 

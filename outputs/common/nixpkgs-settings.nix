@@ -12,6 +12,13 @@
           echo "dummy" > $out/lib/firmware/xow_placeholder.bin
           echo "This is a dummy firmware to bypass download errors" > $out/README
         '';
+        xone-dongle-firmware = prev.runCommand "dummy-xone-firmware" { } ''
+          mkdir -p $out/lib/firmware
+
+          echo "dummy" > $out/lib/firmware/xow_placeholder.bin
+          echo "This is a dummy firmware to bypass download errors" > $out/README
+        '';
+
       })
     ];
   };
