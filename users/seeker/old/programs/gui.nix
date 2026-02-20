@@ -8,9 +8,9 @@
 {
   home.packages = with pkgs; [
     # ------ Develop ------
-    vscode
     gtkwave
     surfer # better wav
+    neovim
 
     # ------ Tools ------
 

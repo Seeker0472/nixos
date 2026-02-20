@@ -17,6 +17,9 @@ in
               "Videos"
               ".ssh"
               ".gnupg"
+              #TODO:move it out!
+              ".vscode"
+              ".config/Code"
             ];
           };
         }

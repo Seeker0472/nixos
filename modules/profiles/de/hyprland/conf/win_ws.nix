@@ -50,8 +50,7 @@
           "8, defaultName:󰭠 8"
           "9, defaultName:󰭠 9"
 
-          "200, defaultName:󰰷, on-created-empty: [ ] zen"
-          "201, defaultName:󰨞, on-created-empty: [ ] code"
+          "200, defaultName:󰰷, on-created-empty: [ ] zen-beta"
 
           # "special:waydroid, on-created-empty: [ ] waydroid show-full-ui"
         ];

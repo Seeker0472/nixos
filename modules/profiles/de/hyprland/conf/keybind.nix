@@ -127,7 +127,6 @@ in
 
           # Special workspaces
           "$mainMod, C, workspace, 200"
-          "$mainMod, V, workspace, 201"
 
           # "$mainMod, G, togglespecialworkspace, waydroid"
 

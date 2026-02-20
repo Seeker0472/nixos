@@ -19,19 +19,6 @@ in
       (import ./conf/win_ws.nix moduleArgs)
       (import ./conf/hypridle.nix moduleArgs)
       (import ./conf/autostart.nix moduleArgs)
-      (import ./conf/xdg.nix moduleArgs)
-      ({
-        # config xdg-desktop-portal service (front-end)
-        xdg.portal = {
-          enable = true;
-          extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
-          config = {
-            common = {
-              default = [ "hyprland" ];
-            };
-          };
-        };
-      })
     ]
   );
 }

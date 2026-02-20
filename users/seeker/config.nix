@@ -8,6 +8,9 @@
       zotero.enable = true;
       neteaseMusic.enable = true;
       obsidian.enable = true;
+      vscode.enable = true;
+      zen.enable = true;
+
     };
     programs = {
       fish.enable = true;
