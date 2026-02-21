@@ -1,21 +1,13 @@
 { inputs, ... }:
 {
   imports = [
-
-    #    inputs.impermanence.homeManagerModules.impermanence
   ];
 
+  #FIXME: this should be moved to a common module
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup";
     users.seeker = import ./home.nix;
-
-    # 将通用的 HM 模块
-    sharedModules = [
-      inputs.sops-nix.homeManagerModules.sops
-      inputs.zen-browser.homeModules.beta
-      # inputs.impermanence.homeManagerModules.impermanence
-    ];
   };
 }

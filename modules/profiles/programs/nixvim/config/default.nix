@@ -1,0 +1,6 @@
+{ lib, ... }:
+{
+  opts = {
+    clipboard = "unnamedplus";
+  };
+}

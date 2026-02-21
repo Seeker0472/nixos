@@ -16,6 +16,7 @@ let
     # exclude '/programs/home'and'/hyprland/conf/'
     && !(lib.hasInfix "/programs/home/" name)
     && !(lib.hasInfix "/hyprland/conf/" name)
+    && !(lib.hasInfix "/nixvim/config/" name)
   ) allFiles;
 in
 {

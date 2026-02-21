@@ -10,7 +10,6 @@
     # ------ Develop ------
     gtkwave
     surfer # better wav
-    neovim
 
     # ------ Tools ------
 
