@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   ####################################################
   #
@@ -7,8 +12,8 @@
   ####################################################
 
   # 用户名与用户目录
-  home.username = "seeker";
-  home.homeDirectory = "/home/seeker";
+  home.username = lib.mkDefault "seeker";
+  home.homeDirectory = lib.mkDefault "/home/${config.home.username}";
 
   imports = [
     ./xdg_default.nix

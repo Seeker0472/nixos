@@ -1,4 +1,7 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
+let
+  host = import ./home.nix;
+in
 {
   imports = [
     ./disk.nix
@@ -6,8 +9,8 @@
     ./options.nix
     ./programs.nix
   ];
-  networking.hostName = "miLaptop";
-  system.stateVersion = "24.05"; # DoNot change
+  networking.hostName = host.hostName;
+  system.stateVersion = host.stateVersion; # DoNot change
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_PATH}=="platform-i8042-serio-0", RUN+="${pkgs.kbd}/bin/setkeycodes e072 183"
   '';

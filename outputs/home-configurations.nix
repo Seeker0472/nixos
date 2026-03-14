@@ -2,108 +2,70 @@
 let
   lib = inputs.nixpkgs.lib;
   nixpkgsConfig = import ./common/nixpkgs-config.nix { inherit inputs; };
-  mkPkgs =
-    system:
-    import inputs.nixpkgs (
-      {
-        inherit system;
-      }
-      // nixpkgsConfig
-    );
-
-  allHomeProfiles =
-    let
-      allFiles = lib.filesystem.listFilesRecursive ../modules/profiles/programs/home;
-    in
-    builtins.filter (
-      file:
-      let
-        name = toString file;
-      in
-      lib.hasSuffix ".nix" name && !(lib.hasPrefix "_" (builtins.baseNameOf name))
-    ) allFiles;
-
-  extractSharedModules =
-    {
-      pkgs,
-      syntheticConfig,
-    }:
-    module:
-    let
-      evaluated = import module {
-        inherit lib pkgs;
-        config = syntheticConfig;
-      };
-    in
-    lib.attrByPath
-      [
-        "home-manager"
-        "sharedModules"
-      ]
-      [ ]
-      evaluated
-    ++
-      lib.attrByPath
-        [
-          "config"
-          "home-manager"
-          "sharedModules"
-        ]
-        [ ]
-        evaluated;
-
   mkStandaloneHome =
-    {
-      host,
-      userModule,
-      baseModules ? [ ],
-      sharedModuleSources ? [ ],
-    }:
+    { host, userModule }:
     let
-      pkgs = mkPkgs host.system;
-      sharedModules =
-        baseModules
-        ++ lib.concatMap (extractSharedModules {
-          inherit pkgs;
-          syntheticConfig = host.standalone.syntheticConfig;
-        }) sharedModuleSources;
+      pkgs = import inputs.nixpkgs (
+        {
+          inherit (host) system;
+        }
+        // nixpkgsConfig
+      );
+
+      hostContext = lib.nixosSystem {
+        inherit (host) system;
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./common
+          ../modules
+          (
+            {
+              lib,
+              ...
+            }:
+            {
+              networking.hostName = host.hostName;
+              system.stateVersion = host.stateVersion;
+              machine = host.machine;
+              home-manager.users = { };
+            }
+            // lib.attrByPath [
+              "standalone"
+              "extraConfig"
+            ] { } host
+          )
+        ];
+      };
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
       extraSpecialArgs = {
-        osConfig = host.standalone.osConfig;
+        osConfig = hostContext.config;
+        hostMeta = host;
       };
-      modules = sharedModules ++ [ userModule ];
+      modules = hostContext.config.home-manager.sharedModules ++ [ userModule ];
     };
-
-  miLaptopHost = import ../hosts/miLaptop/home.nix;
-  serverHost = import ../hosts/GringottsVault713/home.nix;
-in
-{
-  flake.homeConfigurations = {
-    "seeker@miLaptop" = mkStandaloneHome {
-      host = miLaptopHost;
+  homeTargets = {
+    "seeker@miLaptop" = {
+      host = import ../hosts/miLaptop/home.nix;
       userModule = ../users/seeker/home.nix;
-      baseModules = [
-        inputs.sops-nix.homeManagerModules.sops
-        inputs.zen-browser.homeModules.beta
-        inputs.nixvim.homeModules.nixvim
-      ]
-      ++ allHomeProfiles;
-      sharedModuleSources = [
-        ../modules/profiles/sops/default.nix
-        ../modules/profiles/de/options.nix
-        ../modules/profiles/de/map.nix
-        ../modules/profiles/de/hyprland/default.nix
-        ../modules/profiles/de/waybar/default.nix
-        ../modules/profiles/input/map.nix
-        ../modules/profiles/programs/kde-connect.nix
-      ];
     };
-
-    "hagrid@GringottsVault713" = mkStandaloneHome {
-      host = serverHost;
+    "seeker4721@gpu02" = {
+      host = import ../hosts/gpu02/home.nix;
+      userModule = {
+        imports = [
+          ../users/seeker/home.nix
+          ../users/seeker/server.nix
+          ../users/seeker/gpu02.nix
+        ];
+      };
+    };
+    "hagrid@GringottsVault713" = {
+      host = import ../hosts/GringottsVault713/home.nix;
       userModule = ../users/hagrid/home.nix;
     };
   };
+in
+{
+  flake.homeConfigurations = lib.mapAttrs (_: spec: mkStandaloneHome spec) homeTargets;
 }
