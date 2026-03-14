@@ -21,7 +21,7 @@
           "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store"
           # "ydotoold"
         ]
-        ++ lib.lists.optional config.seeker.de.waybar.enable "${pkgs.waybar}/bin/waybar";
+        ++ lib.lists.optional config.machine.de.waybar.enable "${pkgs.waybar}/bin/waybar";
       };
     }
   ];

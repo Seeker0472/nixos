@@ -5,20 +5,25 @@
   ...
 }:
 let
-  cfg = config.seeker.de.hyprland;
+  cfg = config.machine.de.hyprland;
   moduleArgs = { inherit config lib pkgs; };
+  hyprlandModule = import ./conf/hyprland.nix moduleArgs;
 in
 {
-  # some hack for infinite recursion
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
-      (import ./conf/appearance.nix moduleArgs)
-      (import ./conf/hyprland.nix moduleArgs)
-      (import ./conf/input.nix moduleArgs)
-      (import ./conf/keybind.nix moduleArgs)
-      (import ./conf/win_ws.nix moduleArgs)
-      (import ./conf/hypridle.nix moduleArgs)
-      (import ./conf/autostart.nix moduleArgs)
+      {
+        home-manager.sharedModules = lib.concatLists [
+          (import ./conf/appearance.nix moduleArgs).home-manager.sharedModules
+          hyprlandModule.home-manager.sharedModules
+          (import ./conf/input.nix moduleArgs).home-manager.sharedModules
+          (import ./conf/keybind.nix moduleArgs).home-manager.sharedModules
+          (import ./conf/win_ws.nix moduleArgs).home-manager.sharedModules
+          (import ./conf/hypridle.nix moduleArgs).home-manager.sharedModules
+          (import ./conf/autostart.nix moduleArgs).home-manager.sharedModules
+        ];
+      }
+      (removeAttrs hyprlandModule [ "home-manager" ])
     ]
   );
 }

@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.seeker.home.wechat.enable = lib.mkEnableOption "Wechat";
+  options.machine.home.wechat.enable = lib.mkEnableOption "Wechat";
   config = lib.mkMerge [
-    (lib.mkIf config.seeker.home.wechat.enable {
+    (lib.mkIf config.machine.home.wechat.enable {
       home.packages = [ pkgs.wechat ];
       wayland.windowManager.hyprland.settings = {
         windowrule = [

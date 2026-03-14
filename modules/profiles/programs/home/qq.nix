@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.seeker.home.qq.enable = lib.mkEnableOption "QQ";
+  options.machine.home.qq.enable = lib.mkEnableOption "QQ";
   config = lib.mkMerge [
-    (lib.mkIf config.seeker.home.qq.enable {
+    (lib.mkIf config.machine.home.qq.enable {
       home.packages = [ pkgs.qq ];
       wayland.windowManager.hyprland.settings = {
         windowrule = [

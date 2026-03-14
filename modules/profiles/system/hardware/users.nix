@@ -1,9 +1,9 @@
 { config, lib, ... }:
 let
-  cfg = config.seeker.users;
+  cfg = config.machine.users;
 in
 {
-  options.seeker.users = {
+  options.machine.users = {
     seeker = {
       enable = lib.mkOption {
         type = lib.types.bool;

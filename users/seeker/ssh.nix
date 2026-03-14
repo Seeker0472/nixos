@@ -2,26 +2,31 @@
 {
   programs.ssh = {
     enable = true;
-    extraConfig = ''
-      Host github.com
-        Hostname ssh.github.com
-        Port 443
-        User git
-    '';
     # ProxyCommand nc -X connect -x 127.0.0.1:7890 %h %p
     enableDefaultConfig = false;
-    matchBlocks."*" = {
-      forwardAgent = true;
-      addKeysToAgent = "yes";
-      compression = false;
-      serverAliveInterval = 0;
-      serverAliveCountMax = 3;
-      hashKnownHosts = false;
-      userKnownHostsFile = "~/.ssh/known_hosts";
-      controlMaster = "no";
-      controlPath = "~/.ssh/master-%r@%n:%p";
-      controlPersist = "no";
-      identityFile = [ config.sops.secrets."id_ed25519".path ];
+    matchBlocks = {
+      "*" = {
+        forwardAgent = true;
+        addKeysToAgent = "yes";
+        compression = false;
+        serverAliveInterval = 0;
+        serverAliveCountMax = 3;
+        hashKnownHosts = false;
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        controlMaster = "no";
+        controlPath = "~/.ssh/master-%r@%n:%p";
+        controlPersist = "no";
+        identityFile = [ config.sops.secrets."id_ed25519".path ];
+      };
+      "github.com" = {
+        hostname = "ssh.github.com";
+        port = 443;
+        user = "git";
+      };
+      "ecos" = {
+        hostname = "10.19.20.2";
+        user = "seeker4721";
+      };
     };
   };
   # FIXME: add more keys-GPG machine specific key

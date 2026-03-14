@@ -14,7 +14,7 @@
       "d /share 0777 root root -"
       "d /share/webdav 0777 root root -"
     ];
-    seeker.secrets.webdav = {
+    machine.secrets.webdav = {
       mountPoint = "/share/webdav";
       extraArgs = [
         "--vfs-cache-max-size=100G"

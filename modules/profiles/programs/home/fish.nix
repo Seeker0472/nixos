@@ -2,12 +2,18 @@
   pkgs,
   osConfig,
   config,
+  lib,
   ...
 }:
+let
+  persistDir = lib.attrByPath [
+    "machine"
+    "btrfs"
+    "impermanence"
+    "persistdir"
+  ] null osConfig;
+in
 {
-  home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
-    ".local/share/fish"
-  ];
   programs.fish = {
     # enable = true;
     interactiveShellInit = ''
@@ -356,3 +362,13 @@
     grc
   ];
 }
+// (
+  if persistDir != null then
+    {
+      home.persistence."${persistDir}".directories = [
+        ".local/share/fish"
+      ];
+    }
+  else
+    { }
+)

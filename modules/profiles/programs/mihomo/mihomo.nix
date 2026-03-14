@@ -7,7 +7,7 @@
 with lib;
 
 let
-  cfg = config.seeker.programs.mihomo;
+  cfg = config.machine.programs.mihomo;
 
   baseConfig = ''
     port: 7890
@@ -158,7 +158,7 @@ let
 
 in
 {
-  options.seeker.programs = {
+  options.machine.programs = {
     mihomo = {
       enable = lib.mkEnableOption "mihomo";
       tun.enable = lib.mkEnableOption "mihomo tun";

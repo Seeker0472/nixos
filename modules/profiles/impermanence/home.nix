@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  cfg = config.seeker.btrfs.impermanence;
+  cfg = config.machine.btrfs.impermanence;
 in
 {
   config = lib.mkIf cfg.enable {
@@ -8,7 +8,7 @@ in
       (
         { osConfig, config, ... }:
         {
-          home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}" = {
+          home.persistence."${osConfig.machine.btrfs.impermanence.persistdir}" = {
             # allowOther = true;
             directories = [
               "Downloads"
@@ -20,6 +20,8 @@ in
               #TODO:move it out!
               ".vscode"
               ".config/Code"
+              ".codex"
+              ".gemini"
             ];
           };
         }

@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.seeker.secrets.webdav;
+  cfg = config.machine.secrets.webdav;
 in
 with lib;
 {
-  options.seeker.secrets.webdav = {
+  options.machine.secrets.webdav = {
     enable = lib.mkOption {
       type = types.bool;
       default = true;

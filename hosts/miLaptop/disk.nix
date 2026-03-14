@@ -8,7 +8,7 @@
 {
 
   config = {
-    seeker.btrfs.impermanence = {
+    machine.btrfs.impermanence = {
       enable = true;
       luksName = "crypted";
       device = "/dev/disk/by-id/nvme-SAMSUNG_MZVL21T0HCLR-00B00_S676NU0W123827";
@@ -29,8 +29,8 @@
       "exfat"
     ];
 
-    fileSystems."${config.seeker.btrfs.impermanence.persistdir}".neededForBoot = true;
-    environment.persistence."${config.seeker.btrfs.impermanence.persistdir}" = {
+    fileSystems."${config.machine.btrfs.impermanence.persistdir}".neededForBoot = true;
+    environment.persistence."${config.machine.btrfs.impermanence.persistdir}" = {
       hideMounts = true;
       directories = [
         "/var/log"

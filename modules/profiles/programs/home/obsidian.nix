@@ -5,10 +5,18 @@
   osConfig,
   ...
 }:
+let
+  persistDir = lib.attrByPath [
+    "machine"
+    "btrfs"
+    "impermanence"
+    "persistdir"
+  ] null osConfig;
+in
 {
-  options.seeker.home.obsidian.enable = lib.mkEnableOption "Obsidian";
+  options.machine.home.obsidian.enable = lib.mkEnableOption "Obsidian";
   config = lib.mkMerge [
-    (lib.mkIf config.seeker.home.obsidian.enable {
+    (lib.mkIf config.machine.home.obsidian.enable {
       home.packages = [
         pkgs.obsidian
       ];
@@ -25,10 +33,15 @@
         ];
       };
     })
-    {
-      home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
-        ".config/obsidian"
-      ];
-    }
+    (
+      if persistDir != null then
+        {
+          home.persistence."${persistDir}".directories = [
+            ".config/obsidian"
+          ];
+        }
+      else
+        { }
+    )
   ];
 }

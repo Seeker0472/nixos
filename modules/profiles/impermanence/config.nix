@@ -1,7 +1,7 @@
 { lib, ... }:
 with lib;
 {
-  options.seeker.btrfs.impermanence = {
+  options.machine.btrfs.impermanence = {
     enable = mkEnableOption "Btrfs Impermanence setup";
 
     device = mkOption {

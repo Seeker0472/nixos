@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf (config.seeker.cpu == "intel") {
+  config = lib.mkIf (config.machine.cpu == "intel") {
     #HardWare AccelerationConfig
     #https://nixos.wiki/wiki/Accelerated_Video_Playback
     hardware.graphics = {

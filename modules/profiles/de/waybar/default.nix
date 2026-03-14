@@ -5,8 +5,8 @@
   ...
 }:
 let
-  cfg = config.seeker.de;
-  ident = config.seeker.machine_type;
+  cfg = config.machine.de;
+  ident = config.machine.type;
   killRTG = pkgs.writeShellScriptBin "kill-rtg" ''
     ${pkgs.hyprland}/bin/hyprctl clients -j | \
     ${pkgs.jq}/bin/jq -r '.[] | select(.class == "RTG") | .pid' | \
@@ -37,245 +37,243 @@ let
   '';
 in
 {
-  config = lib.mkIf cfg.waybar.enable {
-    home-manager.sharedModules = [
-      {
-        xdg.configFile."waybar/style.css".source = ./style.css;
+  home-manager.sharedModules = lib.optionals cfg.waybar.enable [
+    {
+      xdg.configFile."waybar/style.css".source = ./style.css;
 
-        programs.waybar = {
-          enable = true;
-          settings.mainBar = {
-            layer = "top";
-            position = "top";
-            height = 32;
+      programs.waybar = {
+        enable = true;
+        settings.mainBar = {
+          layer = "top";
+          position = "top";
+          height = 32;
 
-            modules-left = [
-              "hyprland/workspaces"
-              "hyprland/window"
+          modules-left = [
+            "hyprland/workspaces"
+            "hyprland/window"
+          ];
+          # modules-center = [ "custom/lrc" ];
+          modules-right = [
+            "cava"
+            "custom/gotobed"
+            "group/sysinfo"
+            "group/control"
+            "pulseaudio"
+            "clock"
+            "tray"
+          ];
+
+          "group/sysinfo" = {
+            orientation = "inherit";
+            drawer = {
+              transition-duration = 500;
+              transition-left-to-right = false;
+            };
+            modules = (lib.optional (ident == "laptop") "battery") ++ [
+              "temperature"
+              "cpu"
+              "memory"
             ];
-            # modules-center = [ "custom/lrc" ];
-            modules-right = [
-              "cava"
-              "custom/gotobed"
-              "group/sysinfo"
-              "group/control"
-              "pulseaudio"
-              "clock"
-              "tray"
+          };
+
+          "group/control" = {
+            orientation = "inherit";
+            drawer = {
+              transition-duration = 500;
+              transition-left-to-right = false;
+            };
+            modules = [
+              "network"
+              "custom/wallpaper"
+              "bluetooth"
+            ]
+            ++ (lib.optional (ident == "laptop") "backlight");
+          };
+
+          "network" = {
+            # interface = "wlp2*"; # (Optional) To force the use of this interface
+            format-wifi = "{essid} ({signalStrength}%)  ";
+            format-ethernet = "{ipaddr}/{cidr}  ";
+            tooltip-format = "{ifname} via {gwaddr} 󰩠 {ipaddr}";
+            format-linked = "{ifname} (No IP) 󰛵 ";
+            format-disconnected = "Disconnected  ";
+            format-alt = "{ifname}: {ipaddr}/{cidr}";
+            on-click-right = runInRTG pkgs.networkmanager "nmtui-connect" "";
+          };
+
+          "cpu" = {
+            states = {
+              warning = 50;
+              high = 80;
+            };
+            format = "{usage}%  ";
+            on-click-right = runInRTG pkgs.btop "btop" "";
+          };
+
+          "memory" = {
+            states = {
+              warning = 50;
+              high = 80;
+            };
+            format = "{}%  ";
+            tooltip-format = ''
+              {used:0.1f}/{total:0.1f}GiB Mem
+              {swapUsed:0.1f}/{swapTotal:0.1f}GiB Swap'';
+            on-click-right = runInRTG pkgs.btop "btop" "";
+          };
+
+          "pulseaudio" = {
+            scroll-step = 1;
+            format = "{volume}% {icon}";
+            format-alt = "{format_source}";
+            format-bluetooth = "{volume}% {icon} {format_source}";
+            format-bluetooth-muted = "  {icon} {format_source}";
+            format-muted = "  {format_source}";
+            format-source = "{volume}% ";
+            format-source-muted = " ";
+            format-icons = {
+              headphone = " ";
+              hands-free = " ";
+              headset = "󰋌 ";
+              phone = " ";
+              "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink" = [
+                "  "
+                "  "
+                "  "
+              ];
+              default = [
+                "  "
+                "  "
+                "  "
+              ];
+            };
+            on-click-right = lib.getExe pkgs.pavucontrol;
+          };
+
+          "bluetooth" = {
+            format = " {status}";
+            format-connected = " {num_connections}";
+            format-alt = " {device_alias}";
+            # format-connected-battery = " {device_alias} {device_battery_percentage}%";
+            # format-device-preference = [ "device1" "device2" ]; # preference list deciding the displayed device
+            tooltip-format = ''
+              {controller_alias}	{controller_address}
+
+              {num_connections} connected'';
+            tooltip-format-connected = ''
+              {controller_alias}	{controller_address}
+
+              {num_connections} connected
+
+              {device_enumerate}'';
+            tooltip-format-enumerate-connected = "{device_alias}	{device_address}";
+            tooltip-format-enumerate-connected-battery = "{device_alias}	{device_address}	{device_battery_percentage}%";
+            on-click-right = runInRTG pkgs.bluetuith "bluetuith" "";
+          };
+
+          "clock" = {
+            # timezone = "America/New_York";
+            tooltip-format = ''
+              <big>{:%Y %B}</big>
+              <tt><small>{calendar}</small></tt>'';
+            format-alt = "{:%Y-%m-%d}";
+            on-click-right = runInRTG pkgs.neovim "nvim" "~/Documents/todo.md";
+          };
+
+          "custom/gotobed" = {
+            format = "{}";
+            return-type = "json";
+            interval = 60;
+            exec = lib.getExe gotobedScript;
+          };
+
+          "custom/wallpaper" = {
+            format = "󰸉 ";
+            on-click = "${pkgs.wpaperd}/bin/wpaperctl next-wallpaper";
+          };
+
+          # 电池与亮度模块 (仅在需要时配置)
+          "battery" = {
+            states = {
+              warning = 40;
+              critical = 15;
+            };
+            format = "{capacity}% {icon}";
+            format-full = "{capacity}% {icon}";
+            format-charging = "{capacity}% 󰂄";
+            format-plugged = "{capacity}% ";
+            format-alt = "{time} {icon}";
+            format-icons = [
+              " "
+              " "
+              " "
+              " "
+              " "
             ];
+          };
+          "backlight" = {
+            format = "{percent}% {icon}";
+            format-icons = [
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+              ""
+            ];
+          };
+          "temperature" = {
+            # thermal-zone = 2;
+            # hwmon-path = "/sys/class/hwmon/hwmon2/temp1_input";
+            critical-threshold = 80;
+            # format-critical = "{temperatureC}°C {icon}";
+            format = "{temperatureC}°C {icon}";
+            format-icons = [
+              ""
+              " "
+            ];
+          };
+          "tray" = {
+            spacing = 5;
+          };
 
-            "group/sysinfo" = {
-              orientation = "inherit";
-              drawer = {
-                transition-duration = 500;
-                transition-left-to-right = false;
-              };
-              modules = (lib.optional (ident == "laptop") "battery") ++ [
-                "temperature"
-                "cpu"
-                "memory"
-              ];
-            };
-
-            "group/control" = {
-              orientation = "inherit";
-              drawer = {
-                transition-duration = 500;
-                transition-left-to-right = false;
-              };
-              modules = [
-                "network"
-                "custom/wallpaper"
-                "bluetooth"
-              ]
-              ++ (lib.optional (ident == "laptop") "backlight");
-            };
-
-            "network" = {
-              # interface = "wlp2*"; # (Optional) To force the use of this interface
-              format-wifi = "{essid} ({signalStrength}%)  ";
-              format-ethernet = "{ipaddr}/{cidr}  ";
-              tooltip-format = "{ifname} via {gwaddr} 󰩠 {ipaddr}";
-              format-linked = "{ifname} (No IP) 󰛵 ";
-              format-disconnected = "Disconnected  ";
-              format-alt = "{ifname}: {ipaddr}/{cidr}";
-              on-click-right = runInRTG pkgs.networkmanager "nmtui-connect" "";
-            };
-
-            "cpu" = {
-              states = {
-                warning = 50;
-                high = 80;
-              };
-              format = "{usage}%  ";
-              on-click-right = runInRTG pkgs.btop "btop" "";
-            };
-
-            "memory" = {
-              states = {
-                warning = 50;
-                high = 80;
-              };
-              format = "{}%  ";
-              tooltip-format = ''
-                {used:0.1f}/{total:0.1f}GiB Mem
-                {swapUsed:0.1f}/{swapTotal:0.1f}GiB Swap'';
-              on-click-right = runInRTG pkgs.btop "btop" "";
-            };
-
-            "pulseaudio" = {
-              scroll-step = 1;
-              format = "{volume}% {icon}";
-              format-alt = "{format_source}";
-              format-bluetooth = "{volume}% {icon} {format_source}";
-              format-bluetooth-muted = "  {icon} {format_source}";
-              format-muted = "  {format_source}";
-              format-source = "{volume}% ";
-              format-source-muted = " ";
-              format-icons = {
-                headphone = " ";
-                hands-free = " ";
-                headset = "󰋌 ";
-                phone = " ";
-                "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink" = [
-                  "  "
-                  "  "
-                  "  "
-                ];
-                default = [
-                  "  "
-                  "  "
-                  "  "
-                ];
-              };
-              on-click-right = lib.getExe pkgs.pavucontrol;
-            };
-
-            "bluetooth" = {
-              format = " {status}";
-              format-connected = " {num_connections}";
-              format-alt = " {device_alias}";
-              # format-connected-battery = " {device_alias} {device_battery_percentage}%";
-              # format-device-preference = [ "device1" "device2" ]; # preference list deciding the displayed device
-              tooltip-format = ''
-                {controller_alias}	{controller_address}
-
-                {num_connections} connected'';
-              tooltip-format-connected = ''
-                {controller_alias}	{controller_address}
-
-                {num_connections} connected
-
-                {device_enumerate}'';
-              tooltip-format-enumerate-connected = "{device_alias}	{device_address}";
-              tooltip-format-enumerate-connected-battery = "{device_alias}	{device_address}	{device_battery_percentage}%";
-              on-click-right = runInRTG pkgs.bluetuith "bluetuith" "";
-            };
-
-            "clock" = {
-              # timezone = "America/New_York";
-              tooltip-format = ''
-                <big>{:%Y %B}</big>
-                <tt><small>{calendar}</small></tt>'';
-              format-alt = "{:%Y-%m-%d}";
-              on-click-right = runInRTG pkgs.neovim "nvim" "~/Documents/todo.md";
-            };
-
-            "custom/gotobed" = {
-              format = "{}";
-              return-type = "json";
-              interval = 60;
-              exec = lib.getExe gotobedScript;
-            };
-
-            "custom/wallpaper" = {
-              format = "󰸉 ";
-              on-click = "${pkgs.wpaperd}/bin/wpaperctl next-wallpaper";
-            };
-
-            # 电池与亮度模块 (仅在需要时配置)
-            "battery" = {
-              states = {
-                warning = 40;
-                critical = 15;
-              };
-              format = "{capacity}% {icon}";
-              format-full = "{capacity}% {icon}";
-              format-charging = "{capacity}% 󰂄";
-              format-plugged = "{capacity}% ";
-              format-alt = "{time} {icon}";
-              format-icons = [
-                " "
-                " "
-                " "
-                " "
-                " "
-              ];
-            };
-            "backlight" = {
-              format = "{percent}% {icon}";
-              format-icons = [
-                ""
-                ""
-                ""
-                ""
-                ""
-                ""
-                ""
-                ""
-                ""
-              ];
-            };
-            "temperature" = {
-              # thermal-zone = 2;
-              # hwmon-path = "/sys/class/hwmon/hwmon2/temp1_input";
-              critical-threshold = 80;
-              # format-critical = "{temperatureC}°C {icon}";
-              format = "{temperatureC}°C {icon}";
-              format-icons = [
-                ""
-                " "
-              ];
-            };
-            "tray" = {
-              spacing = 5;
-            };
-
-            "cava" = {
-              # cava_config = "/home/seeker/.config/cava/config_bar";
-              framerate = 30;
-              autosens = 1;
-              sensitivity = 5;
-              bars = 14;
-              lower_cutoff_freq = 100;
-              higher_cutoff_freq = 1000;
-              method = "pulse";
-              source = "auto";
-              stereo = true;
-              reverse = false;
-              bar_delimiter = 0;
-              monstercat = false;
-              waves = false;
-              noise_reduction = 0.77;
-              input_delay = 2;
-              format-icons = [
-                "▁"
-                "▂"
-                "▃"
-                "▄"
-                "▅"
-                "▆"
-                "▇"
-                "█"
-              ];
-              actions = {
-                on-click-right = "mode";
-              };
+          "cava" = {
+            # cava_config = "/home/seeker/.config/cava/config_bar";
+            framerate = 30;
+            autosens = 1;
+            sensitivity = 5;
+            bars = 14;
+            lower_cutoff_freq = 100;
+            higher_cutoff_freq = 1000;
+            method = "pulse";
+            source = "auto";
+            stereo = true;
+            reverse = false;
+            bar_delimiter = 0;
+            monstercat = false;
+            waves = false;
+            noise_reduction = 0.77;
+            input_delay = 2;
+            format-icons = [
+              "▁"
+              "▂"
+              "▃"
+              "▄"
+              "▅"
+              "▆"
+              "▇"
+              "█"
+            ];
+            actions = {
+              on-click-right = "mode";
             };
           };
         };
-      }
-      # TODO:add lrc
-    ];
-  };
+      };
+    }
+    # TODO:add lrc
+  ];
 }

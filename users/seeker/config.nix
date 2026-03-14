@@ -1,9 +1,9 @@
 { pkgs, ... }:
 {
   config = {
-    seeker.home = {
+    machine.home = {
       qq.enable = true;
-      wechat.enable = true;
+      # wechat.enable = true;
       zed.enable = true;
       zotero.enable = true;
       neteaseMusic.enable = true;

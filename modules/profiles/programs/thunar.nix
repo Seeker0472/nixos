@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.seeker.programs.thunar.enable = lib.mkEnableOption "Thunar";
+  options.machine.programs.thunar.enable = lib.mkEnableOption "Thunar";
 
-  config = lib.mkIf config.seeker.programs.thunar.enable {
+  config = lib.mkIf config.machine.programs.thunar.enable {
     programs.thunar = {
       enable = true;
       plugins = with pkgs; [

@@ -44,6 +44,10 @@
       url = "github:nix-community/nixvim";
       # If using a stable channel you can use `url = "github:nix-community/nixvim/nixos-<version>"`
     };
+    winapps = {
+      url = "github:winapps-org/winapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   # function as value
   # an attribute set

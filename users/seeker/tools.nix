@@ -5,7 +5,6 @@
 }:
 {
   home.packages = with pkgs; [
-    neofetch
     fastfetch
 
     # archives

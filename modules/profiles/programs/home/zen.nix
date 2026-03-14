@@ -4,16 +4,31 @@
   lib,
   ...
 }:
+let
+  persistDir = lib.attrByPath [
+    "machine"
+    "btrfs"
+    "impermanence"
+    "persistdir"
+  ] null osConfig;
+in
 {
   # FIXME:add An Option
-  options.seeker.home.zen.enable = lib.mkEnableOption "Zen Browser";
+  options.machine.home.zen.enable = lib.mkEnableOption "Zen Browser";
   config = lib.mkMerge [
-    (lib.mkIf config.seeker.home.zen.enable {
+    (lib.mkIf config.machine.home.zen.enable {
       programs.zen-browser.enable = true;
-      home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
-        # ".zen"
-        ".config/zen"
-      ];
     })
+    (lib.mkIf config.machine.home.zen.enable (
+      if persistDir != null then
+        {
+          home.persistence."${persistDir}".directories = [
+            # ".zen"
+            ".config/zen"
+          ];
+        }
+      else
+        { }
+    ))
   ];
 }

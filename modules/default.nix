@@ -24,8 +24,8 @@ in
 
   # Some general options here,
   # Detailed options should resides in ./profiles,and /users or /hosts enables them.
-  options.seeker = {
-    machine_type = lib.mkOption {
+  options.machine = {
+    type = lib.mkOption {
       type = lib.types.enum [
         "others"
         "container"

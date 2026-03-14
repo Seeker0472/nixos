@@ -2,7 +2,15 @@
 {
   home-manager.sharedModules = [
     (
-      { config, osConfig, ... }:
+      { lib, osConfig, ... }:
+      let
+        persistDir = lib.attrByPath [
+          "machine"
+          "btrfs"
+          "impermanence"
+          "persistdir"
+        ] null osConfig;
+      in
       {
         home.packages = [ pkgs.nwg-displays ]; # set display for hyprland
         wayland.windowManager.hyprland = {
@@ -33,11 +41,18 @@
             };
           };
         };
-        home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
-          ".config/hypr"
-          ".local/share/hyprland"
-        ];
       }
+      // (
+        if persistDir != null then
+          {
+            home.persistence."${persistDir}".directories = [
+              ".config/hypr"
+              ".local/share/hyprland"
+            ];
+          }
+        else
+          { }
+      )
     )
   ];
   programs.hyprland = {

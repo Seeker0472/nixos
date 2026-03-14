@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf (config.seeker.machine_type == "laptop") {
+  config = lib.mkIf (config.machine.type == "laptop") {
     services.logind.settings.Login = {
       # don't shutdown when power button is short-pressed
       HandlePowerKey = "ignore";

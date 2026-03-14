@@ -1,7 +1,8 @@
 { ... }:
 {
-  config.seeker = {
-    machine_type = "container";
+  config.machine = {
+    type = "container";
+    mainUser = "hagrid";
     cpu = "others";
     users = {
       seeker.enable = false;

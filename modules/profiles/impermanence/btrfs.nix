@@ -8,7 +8,7 @@
 with lib;
 
 let
-  cfg = config.seeker.btrfs.impermanence;
+  cfg = config.machine.btrfs.impermanence;
 in
 {
   # TODO :hibrnate don't work
@@ -112,8 +112,8 @@ in
                       "noatime"
                     ];
                   };
-                  "${config.seeker.btrfs.impermanence.persistdir}" = {
-                    mountpoint = "${config.seeker.btrfs.impermanence.persistdir}";
+                  "${config.machine.btrfs.impermanence.persistdir}" = {
+                    mountpoint = "${config.machine.btrfs.impermanence.persistdir}";
                     mountOptions = [
                       "compress=zstd"
                       "noatime"

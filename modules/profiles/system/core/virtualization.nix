@@ -1,6 +1,6 @@
 { config, lib, ... }:
 {
-  options.seeker.virtualization = {
+  options.machine.virtualization = {
     virtualbox = {
       enable = lib.mkEnableOption "VirtualBox";
     };
@@ -9,11 +9,11 @@
     };
   };
   config = lib.mkMerge [
-    (lib.mkIf config.seeker.virtualization.virtualbox.enable {
+    (lib.mkIf config.machine.virtualization.virtualbox.enable {
       virtualisation.virtualbox.host.enable = true;
-      users.extraGroups.vboxusers.members = [ "seeker" ];
+      users.extraGroups.vboxusers.members = [ config.machine.mainUser ];
     })
-    (lib.mkIf config.seeker.virtualization.docker.enable {
+    (lib.mkIf config.machine.virtualization.docker.enable {
       virtualisation.docker = {
         enable = true;
         # speed-up boot process ,maybe `--restart=always` won't work

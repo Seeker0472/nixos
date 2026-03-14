@@ -5,12 +5,12 @@
   ...
 }:
 {
-  options.seeker.secrets = {
+  options.machine.secrets = {
     ageKeyPath = lib.mkOption {
       type = lib.types.path;
-      default = "/home/${config.users.users.seeker.home}/age/keys";
+      default = "/home/${config.machine.mainUser}/age/keys";
       description = "Path to the age key file";
     };
   };
-  config.sops.age.keyFile = config.seeker.secrets.ageKeyPath;
+  config.sops.age.keyFile = config.machine.secrets.ageKeyPath;
 }

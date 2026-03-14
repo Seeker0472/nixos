@@ -32,5 +32,5 @@
   # enable tailscale
 
   # services.resolved.enable =
-  #   !(config.seeker.programs.mihomo.tun.enable && config.seeker.programs.mihomo.enable);
+  #   !(config.machine.programs.mihomo.tun.enable && config.machine.programs.mihomo.enable);
 }

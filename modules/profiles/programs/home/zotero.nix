@@ -5,10 +5,18 @@
   osConfig,
   ...
 }:
+let
+  persistDir = lib.attrByPath [
+    "machine"
+    "btrfs"
+    "impermanence"
+    "persistdir"
+  ] null osConfig;
+in
 {
-  options.seeker.home.zotero.enable = lib.mkEnableOption "Zotero";
+  options.machine.home.zotero.enable = lib.mkEnableOption "Zotero";
   config = lib.mkMerge [
-    (lib.mkIf config.seeker.home.zotero.enable {
+    (lib.mkIf config.machine.home.zotero.enable {
       home.packages = [
         pkgs.zotero
       ];
@@ -24,11 +32,16 @@
         ];
       };
     })
-    {
-      home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
-        ".zotero"
-        "Zotero"
-      ];
-    }
+    (
+      if persistDir != null then
+        {
+          home.persistence."${persistDir}".directories = [
+            ".zotero"
+            "Zotero"
+          ];
+        }
+      else
+        { }
+    )
   ];
 }

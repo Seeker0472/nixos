@@ -4,21 +4,37 @@
   ...
 }:
 {
-  options.seeker.programs.kdeconnect.enable = lib.mkEnableOption "ked-connect";
+  options.machine.programs.kdeconnect.enable = lib.mkEnableOption "ked-connect";
   config = lib.mkMerge [
-    (lib.mkIf config.seeker.programs.kdeconnect.enable {
-      home-manager.sharedModules = [
+    {
+      home-manager.sharedModules = lib.optionals config.machine.programs.kdeconnect.enable [
         (
-          { osConfig, ... }:
+          { lib, osConfig, ... }:
+          let
+            persistDir = lib.attrByPath [
+              "machine"
+              "btrfs"
+              "impermanence"
+              "persistdir"
+            ] null osConfig;
+          in
           {
             services.kdeconnect.enable = true;
-            home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
-              ".config/kdeconnect/"
-            ];
           }
+          // (
+            if persistDir != null then
+              {
+                home.persistence."${persistDir}".directories = [
+                  ".config/kdeconnect/"
+                ];
+              }
+            else
+              { }
+          )
         )
       ];
-
+    }
+    (lib.mkIf config.machine.programs.kdeconnect.enable {
       networking.firewall = rec {
         allowedTCPPortRanges = [
           {

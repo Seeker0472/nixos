@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.seeker.home.neteaseMusic.enable = lib.mkEnableOption "Netease Music";
+  options.machine.home.neteaseMusic.enable = lib.mkEnableOption "Netease Music";
   config = lib.mkMerge [
-    (lib.mkIf config.seeker.home.neteaseMusic.enable {
+    (lib.mkIf config.machine.home.neteaseMusic.enable {
       home.packages = [
         pkgs.netease-cloud-music-gtk
       ];

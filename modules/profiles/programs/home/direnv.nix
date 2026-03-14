@@ -4,6 +4,14 @@
   lib,
   ...
 }:
+let
+  persistDir = lib.attrByPath [
+    "machine"
+    "btrfs"
+    "impermanence"
+    "persistdir"
+  ] null osConfig;
+in
 {
   programs.direnv = {
     # enable = true;
@@ -14,7 +22,14 @@
       hide_env_diff = true;
     };
   };
-  home.persistence."${osConfig.seeker.btrfs.impermanence.persistdir}".directories = [
-    ".local/share/direnv"
-  ];
 }
+// (
+  if persistDir != null then
+    {
+      home.persistence."${persistDir}".directories = [
+        ".local/share/direnv"
+      ];
+    }
+  else
+    { }
+)

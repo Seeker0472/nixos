@@ -2,9 +2,16 @@
 {
   home-manager.sharedModules = [
     (
-      { config, osConfig, ... }:
-      {
-        sops.age.keyFile = osConfig.seeker.secrets.ageKeyPath;
+      { lib, osConfig, ... }:
+      let
+        ageKeyPath = lib.attrByPath [
+          "machine"
+          "secrets"
+          "ageKeyPath"
+        ] null osConfig;
+      in
+      lib.optionalAttrs (ageKeyPath != null) {
+        sops.age.keyFile = ageKeyPath;
         systemd.user.services.mbsync.unitConfig.After = [ "sops-nix.service" ];
       }
     )

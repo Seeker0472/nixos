@@ -6,7 +6,7 @@
   ...
 }:
 let
-  cfg = config.seeker.de;
+  cfg = config.machine.de;
   custom_cursor = {
     name = "Bibata-Modern-Amber";
     package = pkgs.bibata-cursors;
@@ -14,7 +14,7 @@ let
   };
 in
 {
-  options.seeker.de = {
+  options.machine.de = {
     hyprland.enable = lib.mkEnableOption "Hyprland, a dynamic tiling Wayland compositor that doesn't sacrifice on looks";
     waybar.enable = lib.mkEnableOption "Waybar, a highly customizable Wayland bar";
     wofi.enable = lib.mkEnableOption "wofi, a launcher and menu program for Wayland compositors";
@@ -22,24 +22,9 @@ in
     wpaperd.enable = lib.mkEnableOption "wpaperd, a modern wallpaper daemon for Wayland";
   };
   config = lib.mkMerge [
-    (lib.mkIf cfg.hyprland.enable {
-      seeker.de = {
-        waybar.enable = lib.mkDefault true;
-        wofi.enable = lib.mkDefault true;
-        mako.enable = lib.mkDefault true;
-        wpaperd.enable = lib.mkDefault true;
-      };
-      environment.systemPackages = with pkgs; [
-        libnotify
-        acpi
-      ];
-
-      home-manager.sharedModules = [
+    {
+      home-manager.sharedModules = lib.optionals cfg.hyprland.enable [
         {
-          # home.packages = lib.flatten [
-          #   (lib.optional cfg.wpaperd.enable pkgs.wpaperd)
-          # ];
-
           wayland.windowManager.hyprland = {
             enable = true;
             settings.exec-once = [
@@ -67,6 +52,18 @@ in
 
           services.mako.enable = cfg.mako.enable;
         }
+      ];
+    }
+    (lib.mkIf cfg.hyprland.enable {
+      machine.de = {
+        waybar.enable = lib.mkDefault true;
+        wofi.enable = lib.mkDefault true;
+        mako.enable = lib.mkDefault true;
+        wpaperd.enable = lib.mkDefault true;
+      };
+      environment.systemPackages = with pkgs; [
+        libnotify
+        acpi
       ];
     })
   ];
