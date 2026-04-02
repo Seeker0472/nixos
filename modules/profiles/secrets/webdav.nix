@@ -26,7 +26,7 @@ with lib;
       description = "Mount point for WebDAV";
     };
   };
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && config.machine.secrets.deploy) {
     sops.secrets."rclone" = {
       sopsFile = ./sys.secrets.yaml;
       key = "rclone_conf";

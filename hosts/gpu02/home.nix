@@ -13,6 +13,7 @@
     };
 
     secrets = {
+      deploy = false;
       ageKeyPath = "/home/seeker4721/.config/sops/age/keys.txt";
     };
   };

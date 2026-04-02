@@ -50,6 +50,15 @@ let
       host = import ../hosts/miLaptop/home.nix;
       userModule = ../users/seeker/home.nix;
     };
+    "seeker@devContainer" = {
+      host = import ../hosts/devContainer/home.nix;
+      userModule = {
+        imports = [
+          ../users/seeker/home.nix
+          ../users/seeker/server.nix
+        ];
+      };
+    };
     "seeker4721@gpu02" = {
       host = import ../hosts/gpu02/home.nix;
       userModule = {

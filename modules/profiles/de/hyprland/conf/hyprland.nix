@@ -4,6 +4,11 @@
     (
       { lib, osConfig, ... }:
       let
+        impermanenceEnabled = lib.attrByPath [
+          "machine"
+          "impermanence"
+          "enable"
+        ] false osConfig;
         persistDir = lib.attrByPath [
           "machine"
           "btrfs"
@@ -43,7 +48,7 @@
         };
       }
       // (
-        if persistDir != null then
+        if impermanenceEnabled && persistDir != null then
           {
             home.persistence."${persistDir}".directories = [
               ".config/hypr"

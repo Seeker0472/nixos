@@ -6,8 +6,17 @@ in
   config = lib.mkIf cfg.enable {
     home-manager.sharedModules = [
       (
-        { osConfig, config, ... }:
         {
+          osConfig,
+          config,
+          pkgs,
+          ...
+        }:
+        {
+          home.packages = with pkgs; [
+            codex
+            ripgrep
+          ];
           home.persistence."${osConfig.machine.btrfs.impermanence.persistdir}" = {
             # allowOther = true;
             directories = [
@@ -22,6 +31,10 @@ in
               ".config/Code"
               ".codex"
               ".gemini"
+              ".factorio"
+            ];
+            files = [
+              ".gtkwaverc"
             ];
           };
         }

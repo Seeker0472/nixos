@@ -8,6 +8,7 @@ with lib;
 
 let
   cfg = config.machine.programs.mihomo;
+  deploySecrets = config.machine.secrets.deploy;
 
   baseConfig = ''
     port: 7890
@@ -164,7 +165,7 @@ in
       tun.enable = lib.mkEnableOption "mihomo tun";
     };
   };
-  config = mkIf cfg.enable {
+  config = mkIf (cfg.enable && deploySecrets) {
     users.users.mihomo = {
       group = "mihomo";
       isSystemUser = true;

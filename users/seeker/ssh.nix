@@ -1,4 +1,16 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  osConfig,
+  ...
+}:
+let
+  deploySecrets = lib.attrByPath [
+    "machine"
+    "secrets"
+    "deploy"
+  ] true osConfig;
+in
 {
   programs.ssh = {
     enable = true;
@@ -9,13 +21,15 @@
         forwardAgent = true;
         addKeysToAgent = "yes";
         compression = false;
-        serverAliveInterval = 0;
+        serverAliveInterval = 30;
         serverAliveCountMax = 3;
         hashKnownHosts = false;
         userKnownHostsFile = "~/.ssh/known_hosts";
         controlMaster = "no";
         controlPath = "~/.ssh/master-%r@%n:%p";
         controlPersist = "no";
+      }
+      // lib.optionalAttrs deploySecrets {
         identityFile = [ config.sops.secrets."id_ed25519".path ];
       };
       "github.com" = {
@@ -29,6 +43,8 @@
       };
     };
   };
+}
+// lib.optionalAttrs deploySecrets {
   # FIXME: add more keys-GPG machine specific key
   sops.secrets."id_ed25519" = {
     sopsFile = ./ssh.secrets.yaml;

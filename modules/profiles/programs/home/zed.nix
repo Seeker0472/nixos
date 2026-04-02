@@ -6,6 +6,11 @@
   ...
 }:
 let
+  impermanenceEnabled = lib.attrByPath [
+    "machine"
+    "impermanence"
+    "enable"
+  ] false osConfig;
   persistDir = lib.attrByPath [
     "machine"
     "btrfs"
@@ -20,7 +25,7 @@ in
   config = lib.mkIf config.machine.home.zed.enable (
     lib.mkMerge [
       (
-        if persistDir != null then
+        if impermanenceEnabled && persistDir != null then
           {
             home.persistence."${persistDir}".directories = [
               ".local/share/keyrings"
