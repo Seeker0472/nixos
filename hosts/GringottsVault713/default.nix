@@ -1,15 +1,9 @@
-{ ... }:
-let
-  host = import ./home.nix;
-in
-{
-  imports = [
-    ./options.nix
+import ../lib/mk-host-module.nix {
+  hostFile = ./home.nix;
+  extraModules = [
     ./samba.nix
+    {
+      boot.isContainer = true;
+    }
   ];
-
-  networking.hostName = host.hostName;
-  system.stateVersion = host.stateVersion;
-
-  boot.isContainer = true;
 }

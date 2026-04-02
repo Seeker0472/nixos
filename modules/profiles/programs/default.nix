@@ -1,19 +1,26 @@
 {
-  pkgs,
-  lib,
   ...
 }:
 let
-  allFiles = lib.filesystem.listFilesRecursive ./home;
-
-  allHomeProfiles = builtins.filter (
-    file:
-    let
-      name = toString file;
-    in
-    (lib.hasSuffix ".nix" name) && !(lib.hasPrefix "_" (builtins.baseNameOf name))
-  ) allFiles;
+  homeProfiles = [
+    ./home/bash.nix
+    ./home/claude/default.nix
+    ./home/direnv.nix
+    ./home/fish.nix
+    ./home/geminicli/default.nix
+    ./home/kitty.nix
+    ./home/neteaseMusic.nix
+    ./home/obsidian.nix
+    ./home/qq.nix
+    ./home/tmux/default.nix
+    ./home/vscode.nix
+    ./home/wechat.nix
+    ./home/yazi.nix
+    ./home/zed.nix
+    ./home/zen.nix
+    ./home/zotero.nix
+  ];
 in
 {
-  home-manager.sharedModules = allHomeProfiles;
+  home-manager.sharedModules = homeProfiles;
 }
