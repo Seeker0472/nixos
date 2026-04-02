@@ -31,5 +31,23 @@ with lib;
       default = true;
       description = "Enable TRIM support on LUKS.";
     };
+
+    resumeDevice = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Resume device to configure for hibernation, if any.";
+    };
+
+    resumeOffset = mkOption {
+      type = types.nullOr types.int;
+      default = null;
+      description = "Swap file resume offset to append to kernel params, if any.";
+    };
+
+    luksKeyFile = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Optional bootstrap key file for Disko-managed LUKS.";
+    };
   };
 }

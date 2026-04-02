@@ -14,6 +14,9 @@
       device = "/dev/disk/by-id/nvme-SAMSUNG_MZVL21T0HCLR-00B00_S676NU0W123827";
       retentionDays = 30;
       allowDiscards = true;
+      resumeDevice = "/dev/mapper/crypted";
+      resumeOffset = 533760;
+      luksKeyFile = "/tmp/secret.key";
     };
     boot.loader = {
       systemd-boot.enable = true;
