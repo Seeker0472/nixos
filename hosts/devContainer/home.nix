@@ -16,5 +16,11 @@
       ageKeyPath = "/home/seeker/.config/sops/age/keys.txt";
       webdav.enable = true;
     };
+
+    services.openssh = {
+      enable = false;
+      passwordAuthentication = false;
+      openFirewall = false;
+    };
   };
 }

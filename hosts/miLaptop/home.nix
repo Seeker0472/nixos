@@ -36,6 +36,12 @@
       webdav.enable = true;
     };
 
+    services.openssh = {
+      enable = true;
+      passwordAuthentication = false;
+      openFirewall = true;
+    };
+
     virtualization = {
       docker.enable = true;
       virtualbox.enable = true;

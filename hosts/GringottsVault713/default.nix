@@ -12,6 +12,4 @@ in
   system.stateVersion = host.stateVersion;
 
   boot.isContainer = true;
-
-  services.openssh.enable = true;
 }

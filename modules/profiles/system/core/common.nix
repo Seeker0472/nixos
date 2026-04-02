@@ -41,17 +41,6 @@
     rclone
   ];
 
-  # 启用 OpenSSH 后台服务
-  services.openssh = {
-    enable = true;
-    settings = {
-      X11Forwarding = true;
-      PermitRootLogin = "no"; # disable root login
-      PasswordAuthentication = true; # enable password login
-    };
-    openFirewall = true;
-  };
-
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"

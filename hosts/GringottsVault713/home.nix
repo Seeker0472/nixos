@@ -16,5 +16,11 @@
       webdav.enable = true;
       ageKeyPath = "/root/age/keys";
     };
+
+    services.openssh = {
+      enable = true;
+      passwordAuthentication = false;
+      openFirewall = true;
+    };
   };
 }
