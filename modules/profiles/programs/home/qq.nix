@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.machine.home.qq.enable = lib.mkEnableOption "QQ";
+  options.homeProfiles.apps.qq.enable = lib.mkEnableOption "QQ";
   config = lib.mkMerge [
-    (lib.mkIf config.machine.home.qq.enable {
+    (lib.mkIf config.homeProfiles.apps.qq.enable {
       home.packages = [ pkgs.qq ];
       wayland.windowManager.hyprland.settings = {
         windowrule = [

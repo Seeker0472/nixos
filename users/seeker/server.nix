@@ -2,7 +2,7 @@
 {
   seeker.gui.enable = false;
 
-  machine.home = {
+  homeProfiles.apps = {
     qq.enable = false;
     zed.enable = false;
     zotero.enable = false;

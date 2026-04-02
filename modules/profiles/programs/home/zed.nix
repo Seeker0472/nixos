@@ -19,10 +19,10 @@ let
   ] null osConfig;
 in
 {
-  options.machine.home.zed.enable = lib.mkEnableOption "Enable zed-editor";
+  options.homeProfiles.apps.zed.enable = lib.mkEnableOption "Enable zed-editor";
 
   # Note: the following config are ai-generated
-  config = lib.mkIf config.machine.home.zed.enable (
+  config = lib.mkIf config.homeProfiles.apps.zed.enable (
     lib.mkMerge [
       (
         if impermanenceEnabled && persistDir != null then

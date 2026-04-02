@@ -43,7 +43,17 @@ let
         osConfig = hostContext.config;
         hostMeta = host;
       };
-      modules = hostContext.config.home-manager.sharedModules ++ [ userModule ];
+      modules = [
+        inputs.sops-nix.homeManagerModules.sops
+        inputs.zen-browser.homeModules.beta
+        inputs.nixvim.homeModules.nixvim
+        "${inputs.impermanence}/home-manager.nix"
+        {
+          home._nixosModuleImported = true;
+        }
+        ../modules/home
+        userModule
+      ];
     };
   homeTargets = {
     "seeker@miLaptop" = {

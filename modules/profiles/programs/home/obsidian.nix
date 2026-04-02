@@ -19,9 +19,9 @@ let
   ] null osConfig;
 in
 {
-  options.machine.home.obsidian.enable = lib.mkEnableOption "Obsidian";
+  options.homeProfiles.apps.obsidian.enable = lib.mkEnableOption "Obsidian";
   config = lib.mkMerge [
-    (lib.mkIf config.machine.home.obsidian.enable {
+    (lib.mkIf config.homeProfiles.apps.obsidian.enable {
       home.packages = [
         pkgs.obsidian
       ];

@@ -1,12 +1,18 @@
 {
-  config,
   lib,
   pkgs,
+  osConfig,
   ...
 }:
 let
-  cfg = config.machine.de;
-  ident = config.machine.type;
+  cfg = lib.attrByPath [
+    "machine"
+    "de"
+  ] { } osConfig;
+  ident = lib.attrByPath [
+    "machine"
+    "type"
+  ] "others" osConfig;
   killRTG = pkgs.writeShellScriptBin "kill-rtg" ''
     ${pkgs.hyprland}/bin/hyprctl clients -j | \
     ${pkgs.jq}/bin/jq -r '.[] | select(.class == "RTG") | .pid' | \
@@ -37,13 +43,13 @@ let
   '';
 in
 {
-  home-manager.sharedModules = lib.optionals cfg.waybar.enable [
-    {
-      xdg.configFile."waybar/style.css".source = ./style.css;
+  config = lib.mkIf (cfg.waybar.enable or false) {
+    xdg.configFile."waybar/style.css".source = ./style.css;
 
-      programs.waybar = {
-        enable = true;
-        settings.mainBar = {
+    programs.waybar = {
+      enable = true;
+      settings = {
+        mainBar = {
           layer = "top";
           position = "top";
           height = 32;
@@ -273,7 +279,6 @@ in
           };
         };
       };
-    }
-    # TODO:add lrc
-  ];
+    };
+  };
 }

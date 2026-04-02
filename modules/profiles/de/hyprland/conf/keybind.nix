@@ -1,10 +1,16 @@
 {
   pkgs,
   lib,
-  config,
+  osConfig,
   ...
 }:
 let
+  hyprlandEnabled = lib.attrByPath [
+    "machine"
+    "de"
+    "hyprland"
+    "enable"
+  ] false osConfig;
   slurp = "${pkgs.slurp}/bin/slurp";
   grim = "${pkgs.grim}/bin/grim";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
@@ -42,13 +48,12 @@ let
   wpaperctl = "${pkgs.wpaperd}/bin/wpaperctl";
 in
 {
-  home-manager.sharedModules = [
-    {
-      wayland.windowManager.hyprland.settings = {
-        "$mainMod" = "SUPER"; # Sets "Windows" key as main modifier
+  config = lib.mkIf hyprlandEnabled {
+    wayland.windowManager.hyprland.settings = {
+      "$mainMod" = "SUPER"; # Sets "Windows" key as main modifier
 
-        # Binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
-        bind = [
+    # Binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
+    bind = [
           "$mainMod CONTROL SHIFT, M, exit"
           "$mainMod, M, exec, systemctl suspend-then-hibernate"
           "$mainMod SHIFT, M, exec, systemctl hibernate"
@@ -192,33 +197,34 @@ in
           ", Print, exec, ${lib.getExe screenshootScript}"
         ];
 
-        # Mouse bindings
-        bindm = [
-          "$mainMod, mouse:272, movewindow"
-          "$mainMod, mouse:273, resizewindow"
-        ];
+      # Mouse bindings
+      bindm = [
+        "$mainMod, mouse:272, movewindow"
+        "$mainMod, mouse:273, resizewindow"
+      ];
 
-        # Laptop multimedia keys for volume and LCD brightness
-        bindel = [
-          ", XF86AudioRaiseVolume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-          ", XF86AudioLowerVolume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ", XF86AudioMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle"
-          ", XF86AudioMicMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+      # Laptop multimedia keys for volume and LCD brightness
+      bindel = [
+        ", XF86AudioRaiseVolume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, ${wpctl} set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86AudioMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioMicMute, exec, ${wpctl} set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
 
-          ", XF86MonBrightnessUp, exec, ${brightnessctl} s 10%+"
-          ", XF86MonBrightnessDown, exec, ${brightnessctl} s 10%-"
-        ]; # Media keys & Lid Switch
-        bindl = [
-          ", XF86AudioNext, exec, ${playerctl} next"
-          ", XF86AudioPause, exec, ${playerctl} play-pause"
-          ", XF86AudioPlay, exec, ${playerctl} play-pause"
-          ", XF86AudioPrev, exec, ${playerctl} previous"
-        ]
-        ++ (lib.optionals (config.networking.hostName == "miLaptop") [
+        ", XF86MonBrightnessUp, exec, ${brightnessctl} s 10%+"
+        ", XF86MonBrightnessDown, exec, ${brightnessctl} s 10%-"
+      ]; # Media keys & Lid Switch
+      bindl = [
+        ", XF86AudioNext, exec, ${playerctl} next"
+        ", XF86AudioPause, exec, ${playerctl} play-pause"
+        ", XF86AudioPlay, exec, ${playerctl} play-pause"
+        ", XF86AudioPrev, exec, ${playerctl} previous"
+      ]
+      ++ (
+        lib.optionals (osConfig.networking.hostName == "miLaptop") [
           '', switch:off:Lid Switch, execr, [ $(hyprctl monitors | grep -c "eDP-1") -ne 1 ] && hyprctl keyword monitor eDP-1,2560x1600@120.0,0x237,1.33''
           '', switch:on:Lid Switch, execr, [ $(hyprctl monitors | grep -c "ID") -ne 1 ] && hyprctl keyword monitor eDP-1,disable''
-        ]);
-      };
-    }
-  ];
+        ]
+      );
+    };
+  };
 }

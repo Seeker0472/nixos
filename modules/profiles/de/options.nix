@@ -22,38 +22,6 @@ in
     wpaperd.enable = lib.mkEnableOption "wpaperd, a modern wallpaper daemon for Wayland";
   };
   config = lib.mkMerge [
-    {
-      home-manager.sharedModules = lib.optionals cfg.hyprland.enable [
-        {
-          wayland.windowManager.hyprland = {
-            enable = true;
-            settings.exec-once = [
-              "hyprctl setcursor ${custom_cursor.name} ${builtins.toString custom_cursor.size}"
-            ];
-          };
-
-          home.pointerCursor = {
-            inherit (custom_cursor) name package size;
-            gtk.enable = true;
-            x11.enable = true;
-          };
-
-          gtk = {
-            enable = true;
-            theme = {
-              package = pkgs.kdePackages.breeze-gtk;
-              name = "Breeze";
-            };
-            iconTheme = {
-              package = pkgs.kdePackages.breeze-icons;
-              name = "breeze";
-            };
-          };
-
-          services.mako.enable = cfg.mako.enable;
-        }
-      ];
-    }
     (lib.mkIf cfg.hyprland.enable {
       machine.de = {
         waybar.enable = lib.mkDefault true;

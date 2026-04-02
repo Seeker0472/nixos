@@ -19,9 +19,9 @@ let
   ] null osConfig;
 in
 {
-  options.machine.home.zotero.enable = lib.mkEnableOption "Zotero";
+  options.homeProfiles.apps.zotero.enable = lib.mkEnableOption "Zotero";
   config = lib.mkMerge [
-    (lib.mkIf config.machine.home.zotero.enable {
+    (lib.mkIf config.homeProfiles.apps.zotero.enable {
       home.packages = [
         pkgs.zotero
       ];

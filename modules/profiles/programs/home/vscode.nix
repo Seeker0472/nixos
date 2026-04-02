@@ -5,9 +5,9 @@
   ...
 }:
 {
-  options.machine.home.vscode.enable = lib.mkEnableOption "VSCode";
+  options.homeProfiles.apps.vscode.enable = lib.mkEnableOption "VSCode";
   config = lib.mkMerge [
-    (lib.mkIf config.machine.home.vscode.enable {
+    (lib.mkIf config.homeProfiles.apps.vscode.enable {
       home.packages = [ pkgs.vscode ];
       wayland.windowManager.hyprland.settings = {
         bind = [ "$mainMod, V, workspace, 201" ];

@@ -14,6 +14,14 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup";
-    users.seeker = import ./home.nix;
+    users.seeker = {
+      imports = [
+        inputs.sops-nix.homeManagerModules.sops
+        inputs.zen-browser.homeModules.beta
+        inputs.nixvim.homeModules.nixvim
+        ../../modules/home
+        ./home.nix
+      ];
+    };
   };
 }

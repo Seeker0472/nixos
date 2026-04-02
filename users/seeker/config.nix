@@ -13,7 +13,7 @@
   config = {
     seeker.gui.enable = lib.mkDefault true;
 
-    machine.home = lib.mkIf config.seeker.gui.enable {
+    homeProfiles.apps = lib.mkIf config.seeker.gui.enable {
       qq.enable = lib.mkDefault true;
       # wechat.enable = true;
       zed.enable = lib.mkDefault true;

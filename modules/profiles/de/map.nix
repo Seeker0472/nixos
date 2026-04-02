@@ -1,23 +1,22 @@
 {
-  config,
   lib,
+  osConfig,
   ...
 }:
 let
-  cfg = config.machine.de;
+  cfg = lib.attrByPath [
+    "machine"
+    "de"
+  ] { } osConfig;
 in
 {
-  home-manager.sharedModules = lib.optionals cfg.hyprland.enable [
-    {
-      xdg.configFile = {
-        "wofi".source = lib.mkIf cfg.wofi.enable ./wofi;
-        "mako".source = lib.mkIf cfg.mako.enable ./mako;
-        "wpaperd".source = lib.mkIf cfg.wpaperd.enable ./wpaperd;
-      };
+  config = lib.mkIf (cfg.hyprland.enable or false) {
+    xdg.configFile = {
+      "wofi".source = lib.mkIf (cfg.wofi.enable or false) ./wofi;
+      "mako".source = lib.mkIf (cfg.mako.enable or false) ./mako;
+      "wpaperd".source = lib.mkIf (cfg.wpaperd.enable or false) ./wpaperd;
+    };
 
-      home.file = {
-        "Pictures/wallpaper/default".source = ./wallpaper;
-      };
-    }
-  ];
+    home.file."Pictures/wallpaper/default".source = ./wallpaper;
+  };
 }

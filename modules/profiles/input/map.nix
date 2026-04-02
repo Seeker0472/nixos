@@ -1,28 +1,36 @@
 {
-  config,
   lib,
+  osConfig,
   ...
 }:
 let
-  fcitx5_enable = config.i18n.inputMethod.enable && config.i18n.inputMethod.type == "fcitx5";
+  fcitx5Enable =
+    (lib.attrByPath [
+      "i18n"
+      "inputMethod"
+      "enable"
+    ] false osConfig)
+    && (lib.attrByPath [
+      "i18n"
+      "inputMethod"
+      "type"
+    ] "" osConfig)
+    == "fcitx5";
+  impermanenceEnabled = lib.attrByPath [
+    "machine"
+    "impermanence"
+    "enable"
+  ] false osConfig;
+  persistDir = lib.attrByPath [
+    "machine"
+    "btrfs"
+    "impermanence"
+    "persistdir"
+  ] null osConfig;
 in
 {
-  home-manager.sharedModules = lib.optionals fcitx5_enable [
-    (
-      { lib, osConfig, ... }:
-      let
-        impermanenceEnabled = lib.attrByPath [
-          "machine"
-          "impermanence"
-          "enable"
-        ] false osConfig;
-        persistDir = lib.attrByPath [
-          "machine"
-          "btrfs"
-          "impermanence"
-          "persistdir"
-        ] null osConfig;
-      in
+  config =
+    lib.mkIf fcitx5Enable (
       {
         home.file = {
           ".local/share/fcitx5/themes/Nord-Dark".source = ./fcitx5-nord/Nord-Dark;
@@ -41,6 +49,5 @@ in
         else
           { }
       )
-    )
-  ];
+    );
 }

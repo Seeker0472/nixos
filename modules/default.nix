@@ -6,13 +6,9 @@ let
   profileModules = [
     ./profiles/de/de_kde.nix
     ./profiles/de/hyprland/default.nix
-    ./profiles/de/map.nix
     ./profiles/de/options.nix
-    ./profiles/de/waybar/default.nix
     ./profiles/impermanence/btrfs.nix
     ./profiles/impermanence/config.nix
-    ./profiles/impermanence/home.nix
-    ./profiles/input/map.nix
     ./profiles/programs/default.nix
     ./profiles/programs/kde-connect.nix
     ./profiles/programs/mihomo/mihomo.nix
@@ -27,7 +23,6 @@ let
     ./profiles/secrets/sops.nix
     ./profiles/secrets/webdav.nix
     ./profiles/shell/default.nix
-    ./profiles/sops/default.nix
     ./profiles/system/core/common.nix
     ./profiles/system/core/networking.nix
     ./profiles/system/core/openssh.nix
