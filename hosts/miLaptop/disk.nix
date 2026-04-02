@@ -48,7 +48,7 @@
       files = [
         "/etc/machine-id"
       ];
-      users.seeker = {
+      users.${config.machine.mainUser} = {
         directories = [
           "nixos-config"
           "age"

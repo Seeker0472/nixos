@@ -10,7 +10,7 @@
     (lib.mkIf config.machine.impermanence.enable {
       environment.persistence."${config.machine.btrfs.impermanence.persistdir}" = {
         # TODO:maybe enable all users
-        users.seeker.directories = [
+        users.${config.machine.mainUser}.directories = [
           ".steam"
           ".local/share/Steam"
         ];

@@ -22,7 +22,7 @@ in
     })
     (lib.mkIf (cfg.enable && config.machine.impermanence.enable) {
       environment.persistence."${config.machine.btrfs.impermanence.persistdir}" = {
-        users.seeker.directories = [
+        users.${config.machine.mainUser}.directories = [
           ".config/winapps"
         ];
       };
