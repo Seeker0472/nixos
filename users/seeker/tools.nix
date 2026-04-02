@@ -1,116 +1,135 @@
 {
   pkgs,
   config,
+  lib,
   ...
 }:
 {
-  home.packages = with pkgs; [
-    fastfetch
+  home.packages =
+    (with pkgs; [
+      fastfetch
 
-    # archives
-    zip
-    xz
-    unzip
-    p7zip
+      # archives
+      zip
+      xz
+      unzip
+      p7zip
 
-    # system tools
-    sysstat
-    lm_sensors # for `sensors` command
-    ethtool
-    pciutils # lspci
-    usbutils # lsusb
+      # system tools
+      sysstat
+      lm_sensors # for `sensors` command
+      ethtool
+      pciutils # lspci
+      usbutils # lsusb
 
-    #TODOS
-    # networking tools
-    mtr # A network diagnostic tool
-    iperf3
-    dnsutils # `dig` + `nslookup`
-    ldns # replacement of `dig`, it provide the command `drill`
-    aria2 # A lightweight multi-protocol & multi-source command-line download utility
-    socat # replacement of openbsd-netcat
-    nmap # A utility for network discovery and security auditing
-    ipcalc # it is a calculator for the IPv4/v6 addresses
+      #TODOS
+      # networking tools
+      mtr # A network diagnostic tool
+      iperf3
+      dnsutils # `dig` + `nslookup`
+      ldns # replacement of `dig`, it provide the command `drill`
+      aria2 # A lightweight multi-protocol & multi-source command-line download utility
+      socat # replacement of openbsd-netcat
+      nmap # A utility for network discovery and security auditing
+      ipcalc # it is a calculator for the IPv4/v6 addresses
 
-    # misc
-    cowsay
-    file
-    which
-    tree
-    gnused
-    gnutar
-    gawk
-    zstd
-    gnupg
+      # misc
+      cowsay
+      file
+      which
+      tree
+      gnused
+      gnutar
+      gawk
+      zstd
+      gnupg
 
-    jq # JSON parser
-    file-rename
+      jq # JSON parser
+      file-rename
 
-    # nix related
-    #
-    # it provides the command `nom` works just like `nix`
-    # with more details log output
-    nix-output-monitor
+      # nix related
+      #
+      # it provides the command `nom` works just like `nix`
+      # with more details log output
+      nix-output-monitor
 
-    # productivity
-    hugo # static site generator
-    glow # markdown previewer in terminal
+      # productivity
+      hugo # static site generator
+      glow # markdown previewer in terminal
 
-    btop # replacement of htop/nmon
-    iotop # io monitoring
-    iftop # network monitoring
+      btop # replacement of htop/nmon
+      iotop # io monitoring
+      iftop # network monitoring
 
-    # system call monitoring
-    strace # system call monitoring
-    ltrace # library call monitoring
-    lsof # list open files
+      # system call monitoring
+      strace # system call monitoring
+      ltrace # library call monitoring
+      lsof # list open files
 
-    #make NVIM happy
-    nodejs_22
-    cargo
-    zulu17
-    nixpkgs-fmt
+      #make NVIM happy
+      nodejs_22
+      cargo
+      zulu17
+      nixpkgs-fmt
 
-    nixd
-    coursier
-    jdt-language-server
-    ocamlPackages.junit # ai class
+      nixd
+      coursier
+      jdt-language-server
+      ocamlPackages.junit # ai class
 
-    ddcutil # brightness
-    ranger # fileExpo
+      ddcutil # brightness
+      ranger # fileExpo
 
-    fzf # amazing tool to find things!
+      fzf # amazing tool to find things!
 
-    # ----- Develop ------
-    # programming/ysyx/learning
-    gcc
-    gdb
-    gnumake
-    lazygit
-    #neovim & dependences
-    # TODO:Neovim config using nix
-    # neovim
-    # lua5_1
-    # luarocks
-    # ripgrep
-    # python312Packages.ipython #TODO:python313:nix-ondroid error
-    # coursier
+      # ----- Develop ------
+      # programming/ysyx/learning
+      gcc
+      gdb
+      gnumake
+      lazygit
+      #neovim & dependences
+      # TODO:Neovim config using nix
+      # neovim
+      # lua5_1
+      # luarocks
+      # ripgrep
+      # python312Packages.ipython #TODO:python313:nix-ondroid error
+      # coursier
 
-    clang-tools
-    nixfmt
+      clang-tools
+      nixfmt
 
-    # ------ Tools ------
-    axel # Console app for parallel connection
-    wl-clipboard
-    ncdu # ----
-    sops
-    age
-    tty-clock
+      # ------ Tools ------
+      axel # Console app for parallel connection
+      wl-clipboard
+      ncdu # ----
+      sops
+      age
+      tty-clock
 
-    # ------ Productivity ------
-    pandoc # 文档
-    ffmpeg
-    marp-cli
-
-  ];
+      # ------ Productivity ------
+      pandoc # 文档
+      ffmpeg
+      marp-cli
+    ])
+    ++ lib.optionals config.seeker.gui.enable (
+      with pkgs;
+      [
+        gtkwave
+        surfer
+        gparted
+        flclash
+        evince
+        mpv
+        cava
+        obs-studio
+        libreoffice
+        viewnior
+        gimp3-with-plugins
+        chromium
+        drawio
+      ]
+    );
 
 }

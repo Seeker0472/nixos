@@ -4,12 +4,6 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    # seems the nod project supports until 24.05
-    nixpkgs-2405.url = "github:NixOS/nixpkgs/nixos-24.05";
-    nix-on-droid = {
-      url = "github:nix-community/nix-on-droid";
-      inputs.nixpkgs.follows = "nixpkgs-2405";
-    };
     nur.url = "github:nix-community/NUR";
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -24,10 +18,6 @@
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    home-manager-2405 = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-2405";
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
     git-hooks-nix.url = "github:cachix/git-hooks.nix";

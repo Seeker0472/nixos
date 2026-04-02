@@ -19,7 +19,6 @@
     ./xdg_default.nix
     ./tools.nix
     ./git.nix
-    ./old
     ./config.nix
     ./ssh.nix
   ];
