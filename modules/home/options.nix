@@ -39,18 +39,4 @@
       office.enable = lib.mkEnableOption "Office and document package bundle";
     };
   };
-
-  config = {
-    homeProfiles.ai.gemini.enable = lib.mkDefault true;
-
-    homeProfiles.cli = {
-      bash.enable = lib.mkDefault true;
-      direnv.enable = lib.mkDefault true;
-      fish.enable = lib.mkDefault true;
-      tmux.enable = lib.mkDefault true;
-      yazi.enable = lib.mkDefault true;
-    };
-
-    homeProfiles.terminals.kitty.enable = lib.mkDefault true;
-  };
 }
