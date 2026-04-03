@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "aloha": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775196726,
+        "narHash": "sha256-mPKoq7VcbziZd7g9vJYmQmYhSONHGCWsiALkNxO78IU=",
+        "path": "/home/seeker/Develop/aloha",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/seeker/Develop/aloha",
+        "type": "path"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -402,6 +422,7 @@
     },
     "root": {
       "inputs": {
+        "aloha": "aloha",
         "disko": "disko",
         "flake-parts": "flake-parts",
         "git-hooks-nix": "git-hooks-nix",

@@ -1,4 +1,9 @@
-{ inputs, ... }:
+{
+  config,
+  inputs,
+  lib,
+  ...
+}:
 {
   imports = [
   ];
@@ -19,9 +24,11 @@
         inputs.sops-nix.homeManagerModules.sops
         inputs.zen-browser.homeModules.beta
         inputs.nixvim.homeModules.nixvim
+        inputs.aloha.homeManagerModules.default
         ../../modules/home
         ./home.nix
-      ];
+      ]
+      ++ lib.optionals (config.networking.hostName == "miLaptop") [ ./miLaptop.nix ];
     };
   };
 }

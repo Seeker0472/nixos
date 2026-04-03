@@ -34,6 +34,11 @@
       url = "github:winapps-org/winapps";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    aloha = {
+      url = "path:/home/seeker/Develop/aloha";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
   # function as value
   # an attribute set

@@ -47,6 +47,7 @@ let
         inputs.sops-nix.homeManagerModules.sops
         inputs.zen-browser.homeModules.beta
         inputs.nixvim.homeModules.nixvim
+        inputs.aloha.homeManagerModules.default
         "${inputs.impermanence}/home-manager.nix"
         {
           home._nixosModuleImported = true;
@@ -58,7 +59,12 @@ let
   homeTargets = {
     "seeker@miLaptop" = {
       host = import ../hosts/miLaptop/home.nix;
-      userModule = ../users/seeker/home.nix;
+      userModule = {
+        imports = [
+          ../users/seeker/home.nix
+          ../users/seeker/miLaptop.nix
+        ];
+      };
     };
     "seeker@devContainer" = {
       host = import ../hosts/devContainer/home.nix;
