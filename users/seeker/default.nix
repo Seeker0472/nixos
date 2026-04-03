@@ -19,6 +19,9 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup";
+    extraSpecialArgs = {
+      inherit inputs;
+    };
     users.seeker = {
       imports = [
         inputs.sops-nix.homeManagerModules.sops

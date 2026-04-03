@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   osConfig,
   pkgs,
@@ -6,6 +7,7 @@
 }:
 let
   isMiLaptop = osConfig.networking.hostName == "miLaptop";
+  system = pkgs.stdenv.hostPlatform.system;
   hyprlandEnabled = lib.attrByPath [
     "machine"
     "de"
@@ -19,6 +21,7 @@ in
       {
         programs.aloha = {
           enable = true;
+          package = inputs.aloha.packages.${system}.default;
 
           kitty = {
             title = "Aloha";
