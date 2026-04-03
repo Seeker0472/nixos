@@ -30,6 +30,11 @@
     };
 
     terminals.kitty.enable = lib.mkEnableOption "Kitty terminal";
+    terminals.command = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "Resolved terminal command for launcher integrations.";
+    };
 
     packages = {
       ai.enable = lib.mkEnableOption "AI-related support packages";

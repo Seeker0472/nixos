@@ -1,5 +1,6 @@
 {
   inputs,
+  config,
   lib,
   osConfig,
   pkgs,
@@ -49,7 +50,7 @@ in
                     id = "command-terminal";
                     label = "Terminal";
                     action = "exec";
-                    command = "${pkgs.kitty}/bin/kitty";
+                    command = config.homeProfiles.terminals.command;
                   }
                   {
                     id = "command-display-settings";

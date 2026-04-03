@@ -13,6 +13,8 @@ in
 {
   config = lib.mkMerge [
     {
+      homeProfiles.terminals.command = terminalCommand;
+      home.packages = lib.optionals (!kittyEnabled) [ pkgs.foot ];
       wayland.windowManager.hyprland.settings = {
         "$terminal" = terminalCommand;
         "$floatTerminal" = floatTerminalCommand;
