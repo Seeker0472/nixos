@@ -2,6 +2,14 @@
 let
   enabledUsers = lib.filterAttrs (_: userCfg: userCfg.enable) config.machine.users;
   enabledUserNames = builtins.attrNames enabledUsers;
+  mkMissingFieldAssertion = field: messagePrefix: {
+    assertion = builtins.filter (name: enabledUsers.${name}.${field} == null) enabledUserNames == [ ];
+    message =
+      messagePrefix
+      + lib.concatStringsSep ", " (
+        builtins.filter (name: enabledUsers.${name}.${field} == null) enabledUserNames
+      );
+  };
   missingUidUsers = builtins.filter (name: enabledUsers.${name}.uid == null) enabledUserNames;
   missingPasswordUsers = builtins.filter (
     name: enabledUsers.${name}.hashedPassword == null
@@ -11,22 +19,12 @@ in
 {
   config = {
     assertions = [
-      {
-        assertion = missingUidUsers == [ ];
-        message =
-          "Enabled machine.users entries must define a unique uid when no built-in default exists: "
-          + lib.concatStringsSep ", " missingUidUsers;
-      }
+      (mkMissingFieldAssertion "uid" "Enabled machine.users entries must define a unique uid when no built-in default exists: ")
       {
         assertion = builtins.length enabledUids == builtins.length (lib.unique enabledUids);
         message = "Enabled machine.users entries must use unique UIDs.";
       }
-      {
-        assertion = missingPasswordUsers == [ ];
-        message =
-          "Enabled machine.users entries must define a hashedPassword when no built-in default exists: "
-          + lib.concatStringsSep ", " missingPasswordUsers;
-      }
+      (mkMissingFieldAssertion "hashedPassword" "Enabled machine.users entries must define a hashedPassword when no built-in default exists: ")
     ];
     users.mutableUsers = lib.mkDefault false;
     users.users = {

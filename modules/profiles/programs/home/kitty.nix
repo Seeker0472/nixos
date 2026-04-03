@@ -6,17 +6,17 @@
 }:
 let
   kittyEnabled = config.homeProfiles.terminals.kitty.enable;
-  terminalCommand = if kittyEnabled then "${pkgs.kitty}/bin/kitty" else "${pkgs.foot}/bin/foot";
+  terminalBin = if kittyEnabled then "${pkgs.kitty}/bin/kitty" else "${pkgs.foot}/bin/foot";
   floatTerminalCommand =
-    if kittyEnabled then "${pkgs.kitty}/bin/kitty --class FG" else "${pkgs.foot}/bin/foot --app-id FG";
+    if kittyEnabled then "${terminalBin} --class FG" else "${terminalBin} --app-id FG";
 in
 {
   config = lib.mkMerge [
     {
-      homeProfiles.terminals.command = terminalCommand;
+      homeProfiles.terminals.command = terminalBin;
       home.packages = lib.optionals (!kittyEnabled) [ pkgs.foot ];
       wayland.windowManager.hyprland.settings = {
-        "$terminal" = terminalCommand;
+        "$terminal" = terminalBin;
         "$floatTerminal" = floatTerminalCommand;
       };
     }
