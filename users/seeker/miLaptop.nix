@@ -16,7 +16,7 @@ in
 {
   config = lib.mkIf (launcherCfg.enable or false) {
     homeProfiles.launchers.aloha = {
-      enable = true;
+      enable = lib.mkDefault true;
       package = inputs.aloha.packages.${pkgs.stdenv.hostPlatform.system}.default;
       settings = {
         kitty = {

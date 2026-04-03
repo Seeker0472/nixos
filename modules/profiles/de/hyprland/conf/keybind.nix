@@ -87,7 +87,7 @@ in
 
         # Terminals
         "$mainMod, RETURN, exec, $terminal"
-        "$mainMod, SPACE, exec, $terminal --class FG"
+        "$mainMod, SPACE, exec, $floatTerminal"
 
         # Window Actions
         "$mainMod SHIFT, Q, killactive"

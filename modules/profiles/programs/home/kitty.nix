@@ -7,11 +7,16 @@
 let
   kittyEnabled = config.homeProfiles.terminals.kitty.enable;
   terminalCommand = if kittyEnabled then "${pkgs.kitty}/bin/kitty" else "${pkgs.foot}/bin/foot";
+  floatTerminalCommand =
+    if kittyEnabled then "${pkgs.kitty}/bin/kitty --class FG" else "${pkgs.foot}/bin/foot --app-id FG";
 in
 {
   config = lib.mkMerge [
     {
-      wayland.windowManager.hyprland.settings."$terminal" = terminalCommand;
+      wayland.windowManager.hyprland.settings = {
+        "$terminal" = terminalCommand;
+        "$floatTerminal" = floatTerminalCommand;
+      };
     }
     (lib.mkIf kittyEnabled {
       programs.kitty = {
@@ -69,6 +74,14 @@ in
         "size (monitor_w*0.6) (monitor_h*0.7), match:tag right_top_term*"
         "float on, match:tag right_top_term*"
         "move (monitor_w-window_w) 30, match:tag right_top_term*"
+      ];
+    })
+    (lib.mkIf (!kittyEnabled) {
+      wayland.windowManager.hyprland.settings.windowrule = [
+        "tag +float_term, match:initial_class ^(FG)$"
+        "float on, match:tag float_term*"
+        "center on, match:tag float_term*"
+        "size (monitor_w*0.7) (monitor_h*0.7), match:tag float_term*"
       ];
     })
   ];
