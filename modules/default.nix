@@ -30,6 +30,7 @@ let
     ./profiles/system/dev/default.nix
     ./profiles/system/hardware/intel.nix
     ./profiles/system/hardware/laptop.nix
+    ./profiles/system/hardware/user-accounts.nix
     ./profiles/system/hardware/users.nix
   ];
 in
