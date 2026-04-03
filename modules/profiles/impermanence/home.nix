@@ -10,13 +10,14 @@ let
     "btrfs"
     "impermanence"
   ] { } osConfig;
+  impermanenceEnabled = lib.attrByPath [
+    "machine"
+    "impermanence"
+    "enable"
+  ] false osConfig;
 in
 {
-  config = lib.mkIf (cfg.enable or false) {
-    home.packages = with pkgs; [
-      codex
-      ripgrep
-    ];
+  config = lib.mkIf impermanenceEnabled {
     home.persistence."${cfg.persistdir}" = {
       # allowOther = true;
       directories = [
@@ -26,11 +27,6 @@ in
         "Videos"
         ".ssh"
         ".gnupg"
-        #TODO:move it out!
-        ".vscode"
-        ".config/Code"
-        ".codex"
-        ".gemini"
         ".factorio"
       ];
       files = [

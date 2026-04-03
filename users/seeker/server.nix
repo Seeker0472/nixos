@@ -1,6 +1,8 @@
 { ... }:
 {
   seeker.gui.enable = false;
+  homeProfiles.launchers.aloha.enable = false;
+  homeProfiles.terminals.kitty.enable = false;
 
   homeProfiles.apps = {
     qq.enable = false;
@@ -11,6 +13,4 @@
     vscode.enable = false;
     zen.enable = false;
   };
-
-  programs.kitty.enable = false;
 }

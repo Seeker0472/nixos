@@ -12,6 +12,7 @@ let
 in
 {
   imports = [
+    ./options.nix
     ../profiles/de/map.nix
     ../profiles/de/waybar/default.nix
     ../profiles/de/hyprland/conf/appearance.nix
@@ -24,8 +25,10 @@ in
     ../profiles/impermanence/home.nix
     ../profiles/input/map.nix
     ../profiles/sops/default.nix
+    ../profiles/programs/home/aloha.nix
     ../profiles/programs/home/bash.nix
     ../profiles/programs/home/claude/default.nix
+    ../profiles/programs/home/codex.nix
     ../profiles/programs/home/direnv.nix
     ../profiles/programs/home/fish.nix
     ../profiles/programs/home/geminicli/default.nix

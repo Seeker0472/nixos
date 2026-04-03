@@ -1,8 +1,13 @@
-{ pkgs, ... }:
 {
-  config = {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  config = lib.mkIf config.homeProfiles.terminals.kitty.enable {
     programs.kitty = {
-      # enable = true;
+      enable = true;
       themeFile = "Catppuccin-Mocha";
       font = {
         name = "Maple Mono NF CN";

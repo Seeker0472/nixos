@@ -6,6 +6,7 @@
   ...
 }:
 let
+  cfg = config.homeProfiles.ai.claude;
   deploySecrets = lib.attrByPath [
     "machine"
     "secrets"
@@ -13,7 +14,7 @@ let
   ] true osConfig;
 in
 {
-  config = lib.mkIf deploySecrets {
+  config = lib.mkIf (cfg.enable && deploySecrets) {
     sops.secrets.zhipu = {
       sopsFile = ./claude.secrets.yaml;
     };
@@ -33,16 +34,8 @@ in
     };
 
     programs.claude-code = {
-      enable = false; # todo: make it a config
-      settings = {
-        #  env = {
-        #    ANTHROPIC_AUTH_TOKEN = "${config.sops.placeholder.zhipu.path}";
-
-        #    ANTHROPIC_BASE_URL = "https://open.bigmodel.cn/api/anthropic";
-        #    API_TIMEOUT_MS = "3000000";
-        #    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = 1;
-        #  };
-      };
+      enable = true;
+      settings = { };
     };
 
     home.activation.initClaudeConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

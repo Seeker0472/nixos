@@ -1,0 +1,44 @@
+{ pkgs }:
+with pkgs;
+[
+  fastfetch
+  zip
+  xz
+  unzip
+  p7zip
+  sysstat
+  lm_sensors
+  ethtool
+  pciutils
+  usbutils
+  mtr
+  iperf3
+  dnsutils
+  ldns
+  aria2
+  socat
+  nmap
+  ipcalc
+  cowsay
+  file
+  which
+  tree
+  gnused
+  gnutar
+  gawk
+  zstd
+  gnupg
+  nix-output-monitor
+  btop
+  iotop
+  iftop
+  strace
+  ltrace
+  lsof
+  axel
+  wl-clipboard
+  ncdu
+  sops
+  age
+  tty-clock
+]

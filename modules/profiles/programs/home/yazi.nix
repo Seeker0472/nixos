@@ -1,19 +1,21 @@
-{ ... }:
+{ config, lib, ... }:
 {
-  programs.yazi = {
-    # enable = true;
-    settings = {
-      tasks = {
-        micro_workers = 5;
-        macro_workers = 10;
-        bizarre_retry = 5;
-        image_alloc = 4096;
-        image_bound = [
-          15720
-          8640
-        ];
+  config = lib.mkIf config.homeProfiles.cli.yazi.enable {
+    programs.yazi = {
+      enable = true;
+      settings = {
+        tasks = {
+          micro_workers = 5;
+          macro_workers = 10;
+          bizarre_retry = 5;
+          image_alloc = 4096;
+          image_bound = [
+            15720
+            8640
+          ];
+        };
       };
+      shellWrapperName = "y";
     };
-    shellWrapperName = "y";
   };
 }

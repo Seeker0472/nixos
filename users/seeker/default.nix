@@ -18,7 +18,7 @@ in
         extraModules = [
           ./home.nix
         ]
-        ++ lib.optionals (config.networking.hostName == "miLaptop") [ ./miLaptop.nix ];
+        ++ lib.optionals (config.machine.features.launcher.aloha.enable or false) [ ./miLaptop.nix ];
       };
     };
   };

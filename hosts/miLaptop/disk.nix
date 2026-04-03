@@ -9,7 +9,6 @@
 
   config = {
     machine.btrfs.impermanence = {
-      enable = true;
       luksName = "crypted";
       device = "/dev/disk/by-id/nvme-SAMSUNG_MZVL21T0HCLR-00B00_S676NU0W123827";
       retentionDays = 30;

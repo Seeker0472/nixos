@@ -5,6 +5,7 @@
   ...
 }:
 let
+  cfg = config.homeProfiles.cli.direnv;
   impermanenceEnabled = lib.attrByPath [
     "machine"
     "impermanence"
@@ -17,24 +18,21 @@ let
     "persistdir"
   ] null osConfig;
 in
-{
-  programs.direnv = {
-    # enable = true;
-    # enableBashIntegration =true;
-    # enableFishIntegration = true;
-    nix-direnv.enable = true;
-    config = {
-      hide_env_diff = true;
+lib.mkMerge [
+  (lib.mkIf cfg.enable {
+    programs.direnv = {
+      enable = true;
+      # enableBashIntegration =true;
+      # enableFishIntegration = true;
+      nix-direnv.enable = true;
+      config = {
+        hide_env_diff = true;
+      };
     };
-  };
-}
-// (
-  if impermanenceEnabled && persistDir != null then
-    {
-      home.persistence."${persistDir}".directories = [
-        ".local/share/direnv"
-      ];
-    }
-  else
-    { }
-)
+  })
+  (lib.mkIf (cfg.enable && impermanenceEnabled && persistDir != null) {
+    home.persistence."${persistDir}".directories = [
+      ".local/share/direnv"
+    ];
+  })
+]

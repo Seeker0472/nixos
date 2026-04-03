@@ -2,8 +2,6 @@
 with lib;
 {
   options.machine.btrfs.impermanence = {
-    enable = mkEnableOption "Btrfs Impermanence setup";
-
     device = mkOption {
       type = types.str;
       description = "The path to the physical disk device.";

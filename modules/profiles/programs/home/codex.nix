@@ -2,10 +2,11 @@
   config,
   lib,
   osConfig,
+  pkgs,
   ...
 }:
 let
-  cfg = config.homeProfiles.ai.gemini;
+  cfg = config.homeProfiles.ai.codex;
   impermanenceEnabled = lib.attrByPath [
     "machine"
     "impermanence"
@@ -21,14 +22,11 @@ in
 {
   config = lib.mkMerge [
     (lib.mkIf cfg.enable {
-      programs.gemini-cli = {
-        enable = true;
-        settings = { };
-      };
+      home.packages = [ pkgs.codex ];
     })
     (lib.mkIf (cfg.enable && impermanenceEnabled && persistDir != null) {
       home.persistence."${persistDir}".directories = [
-        ".gemini"
+        ".codex"
       ];
     })
   ];

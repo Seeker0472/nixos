@@ -11,6 +11,17 @@ let
     "hyprland"
     "enable"
   ] false osConfig;
+  alohaLauncher = lib.attrByPath [
+    "machine"
+    "features"
+    "launcher"
+    "aloha"
+  ] { } osConfig;
+  lidSwitch = lib.attrByPath [
+    "machine"
+    "features"
+    "lidSwitch"
+  ] { } osConfig;
   slurp = "${pkgs.slurp}/bin/slurp";
   grim = "${pkgs.grim}/bin/grim";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
@@ -46,6 +57,8 @@ let
     fi
   '';
   wpaperctl = "${pkgs.wpaperd}/bin/wpaperctl";
+  commandsLauncher = alohaLauncher.commandsCommand or ''${notify-send} "TODO"'';
+  powerLauncher = alohaLauncher.powerCommand or ''${notify-send} "TODO"'';
 in
 {
   config = lib.mkIf hyprlandEnabled {
@@ -182,15 +195,8 @@ in
         # --- Other Binds ---
 
         # launcher
-        "$mainMod, P, exec, ${
-          if osConfig.networking.hostName == "miLaptop" then
-            "aloha --root commands"
-          else
-            ''notify-send "TODO"''
-        }"
-        "$mainMod SHIFT, P, exec, ${
-          if osConfig.networking.hostName == "miLaptop" then "aloha --root power" else ''notify-send "TODO"''
-        }"
+        "$mainMod, P, exec, ${commandsLauncher}"
+        "$mainMod SHIFT, P, exec, ${powerLauncher}"
         ''$mainMod CONTROL SHIFT, P, exec, notify-send "TODO"''
 
         # screenshot
@@ -221,9 +227,9 @@ in
         ", XF86AudioPlay, exec, ${playerctl} play-pause"
         ", XF86AudioPrev, exec, ${playerctl} previous"
       ]
-      ++ (lib.optionals (osConfig.networking.hostName == "miLaptop") [
-        '', switch:off:Lid Switch, execr, [ $(hyprctl monitors | grep -c "eDP-1") -ne 1 ] && hyprctl keyword monitor eDP-1,2560x1600@120.0,0x237,1.33''
-        '', switch:on:Lid Switch, execr, [ $(hyprctl monitors | grep -c "ID") -ne 1 ] && hyprctl keyword monitor eDP-1,disable''
+      ++ (lib.optionals (lidSwitch.enable or false) [
+        ", switch:off:Lid Switch, execr, ${lidSwitch.switchOffCommand}"
+        ", switch:on:Lid Switch, execr, ${lidSwitch.switchOnCommand}"
       ]);
     };
   };

@@ -1,14 +1,16 @@
-{ ... }:
+{ config, lib, ... }:
 {
-  programs.bash = {
-    enable = true;
-    enableCompletion = true;
-    # bashrcExtra = "";
+  config = lib.mkIf config.homeProfiles.cli.bash.enable {
+    programs.bash = {
+      enable = true;
+      enableCompletion = true;
+      # bashrcExtra = "";
 
-    #     shellAliases = {
-    #       k = "kubectl";
-    #       urldecode = "python3 -c 'import sys, urllib.parse as ul; print(ul.unquote_plus(sys.stdin.read()))'";
-    #       urlencode = "python3 -c 'import sys, urllib.parse as ul; print(ul.quote_plus(sys.stdin.read()))'";
-    #     };
+      #     shellAliases = {
+      #       k = "kubectl";
+      #       urldecode = "python3 -c 'import sys, urllib.parse as ul; print(ul.unquote_plus(sys.stdin.read()))'";
+      #       urlencode = "python3 -c 'import sys, urllib.parse as ul; print(ul.quote_plus(sys.stdin.read()))'";
+      #     };
+    };
   };
 }
