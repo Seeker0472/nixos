@@ -3,7 +3,8 @@ with lib;
 {
   options.machine.btrfs.impermanence = {
     device = mkOption {
-      type = types.str;
+      type = types.nullOr types.str;
+      default = null;
       description = "The path to the physical disk device.";
     };
 

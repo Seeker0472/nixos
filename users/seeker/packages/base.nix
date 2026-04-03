@@ -28,6 +28,7 @@ with pkgs;
   gawk
   zstd
   gnupg
+  jq
   nix-output-monitor
   btop
   iotop
@@ -41,4 +42,6 @@ with pkgs;
   sops
   age
   tty-clock
+  fzf
+  ripgrep
 ]

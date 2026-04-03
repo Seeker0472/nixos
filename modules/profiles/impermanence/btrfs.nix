@@ -9,11 +9,10 @@ with lib;
 
 let
   cfg = config.machine.btrfs.impermanence;
-  impermanenceEnabled = config.machine.impermanence.enable;
 in
 {
   # TODO :hibrnate don't work
-  config = mkIf impermanenceEnabled (mkMerge [
+  config = mkIf (config.machine.impermanence.enable && cfg.device != null) (mkMerge [
     {
       boot.initrd.systemd.enable = true;
       boot.initrd.supportedFilesystems = [ "btrfs" ];
