@@ -7,7 +7,7 @@
         enable = true;
       };
     })
-    (lib.mkIf config.machine.impermanence.enable {
+    (lib.mkIf (config.machine.programs.steam.enable && config.machine.impermanence.enable) {
       environment.persistence."${config.machine.btrfs.impermanence.persistdir}" = {
         # TODO:maybe enable all users
         users.${config.machine.mainUser}.directories = [
