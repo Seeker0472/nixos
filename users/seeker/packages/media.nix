@@ -8,5 +8,4 @@ with pkgs;
   obs-studio
   viewnior
   gimp3-with-plugins
-  ffmpeg
 ]

@@ -30,6 +30,8 @@ with pkgs;
   gnupg
   jq
   nix-output-monitor
+  hugo
+  glow
   btop
   iotop
   iftop
@@ -43,5 +45,8 @@ with pkgs;
   age
   tty-clock
   fzf
+  ffmpeg
+  pandoc
+  marp-cli
   ripgrep
 ]
