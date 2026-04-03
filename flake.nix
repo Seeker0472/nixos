@@ -35,7 +35,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     aloha = {
-      url = "path:/home/seeker/Develop/aloha";
+      url = "github:Seeker0472/aloha";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };

@@ -10,14 +10,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1775196726,
-        "narHash": "sha256-mPKoq7VcbziZd7g9vJYmQmYhSONHGCWsiALkNxO78IU=",
-        "path": "/home/seeker/Develop/aloha",
-        "type": "path"
+        "lastModified": 1775193910,
+        "narHash": "sha256-Pk4/5ibSv7cLs7pdvnSeE6SQtiUKy8SGJQcNwTfMdR4=",
+        "owner": "Seeker0472",
+        "repo": "aloha",
+        "rev": "e07bcde8d7ec50153e9601d8106d639675c9d4cb",
+        "type": "github"
       },
       "original": {
-        "path": "/home/seeker/Develop/aloha",
-        "type": "path"
+        "owner": "Seeker0472",
+        "repo": "aloha",
+        "type": "github"
       }
     },
     "disko": {
