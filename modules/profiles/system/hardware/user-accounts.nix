@@ -3,6 +3,9 @@ let
   enabledUsers = lib.filterAttrs (_: userCfg: userCfg.enable) config.machine.users;
   enabledUserNames = builtins.attrNames enabledUsers;
   missingUidUsers = builtins.filter (name: enabledUsers.${name}.uid == null) enabledUserNames;
+  missingPasswordUsers = builtins.filter (
+    name: enabledUsers.${name}.hashedPassword == null
+  ) enabledUserNames;
   enabledUids = map (name: enabledUsers.${name}.uid) enabledUserNames;
 in
 {
@@ -17,6 +20,12 @@ in
       {
         assertion = builtins.length enabledUids == builtins.length (lib.unique enabledUids);
         message = "Enabled machine.users entries must use unique UIDs.";
+      }
+      {
+        assertion = missingPasswordUsers == [ ];
+        message =
+          "Enabled machine.users entries must define a hashedPassword when no built-in default exists: "
+          + lib.concatStringsSep ", " missingPasswordUsers;
       }
     ];
     users.mutableUsers = lib.mkDefault false;

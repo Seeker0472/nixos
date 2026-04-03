@@ -47,14 +47,14 @@ let
           description = "Extra groups for ${name}";
         };
         hashedPassword = lib.mkOption {
-          type = lib.types.str;
+          type = lib.types.nullOr lib.types.str;
           default =
             if name == "seeker" then
               "$6$3nvVWJDicXst2Wtt$EdriZ4ylx/y7yEVEINT3k3JdrjF1MQG6ysITGmTR5pDiiceX2t8RjJiDutZyez2TQ/WeX1BB34/hMwF.s1m4L."
             else if name == "hagrid" then
               "$6$74rDAv.XBN1ij1Im$9jaF6TIqkwT1M6BTD2C8Q.yETKyAlz39gzwBrvSNDwCI47CcJIYu3QVNa8L/H1HPJQusoI3eArN99gAiasRCz."
             else
-              "";
+              null;
           description = "Hashed password for ${name}";
         };
         authorizedKeys = lib.mkOption {

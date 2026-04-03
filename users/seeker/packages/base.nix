@@ -21,6 +21,7 @@ with pkgs;
   ipcalc
   cowsay
   file
+  file-rename
   which
   tree
   gnused
