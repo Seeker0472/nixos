@@ -128,6 +128,7 @@
         viewnior
         gimp3-with-plugins
         chromium
+        firefox
         drawio
       ]
     );
