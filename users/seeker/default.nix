@@ -4,34 +4,22 @@
   lib,
   ...
 }:
+let
+  hmShared = import ../../outputs/common/home-manager-shared.nix { inherit inputs; };
+in
 {
   imports = [
+    ./home-manager-base.nix
   ];
-
-  #FIXME: this should be moved to a common module
-  environment.pathsToLink = [
-    "/share/applications"
-    "/share/xdg-desktop-portal"
-  ];
-  programs.dconf.enable = true;
 
   home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    backupFileExtension = "backup";
-    extraSpecialArgs = {
-      inherit inputs;
-    };
     users.seeker = {
-      imports = [
-        inputs.sops-nix.homeManagerModules.sops
-        inputs.zen-browser.homeModules.beta
-        inputs.nixvim.homeModules.nixvim
-        inputs.aloha.homeManagerModules.default
-        ../../modules/home
-        ./home.nix
-      ]
-      ++ lib.optionals (config.networking.hostName == "miLaptop") [ ./miLaptop.nix ];
+      imports = hmShared.mkModuleList {
+        extraModules = [
+          ./home.nix
+        ]
+        ++ lib.optionals (config.networking.hostName == "miLaptop") [ ./miLaptop.nix ];
+      };
     };
   };
 }

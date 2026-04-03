@@ -1,25 +1,20 @@
 { inputs, ... }:
+let
+  hmShared = import ../../outputs/common/home-manager-shared.nix { inherit inputs; };
+in
 {
-  # Keep portal definitions available for NixOS HM installations that use user packages.
-  environment.pathsToLink = [
-    "/share/applications"
-    "/share/xdg-desktop-portal"
+  imports = [
+    ./home-manager-base.nix
   ];
-  programs.dconf.enable = true;
 
   home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    backupFileExtension = "backup";
     users.seeker = {
-      imports = [
-        inputs.sops-nix.homeManagerModules.sops
-        inputs.zen-browser.homeModules.beta
-        inputs.nixvim.homeModules.nixvim
-        ../../modules/home
-        ./home.nix
-        ./server.nix
-      ];
+      imports = hmShared.mkModuleList {
+        extraModules = [
+          ./home.nix
+          ./server.nix
+        ];
+      };
     };
   };
 }

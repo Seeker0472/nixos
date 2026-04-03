@@ -1,6 +1,7 @@
 { inputs, ... }:
 let
   lib = inputs.nixpkgs.lib;
+  hmShared = import ./common/home-manager-shared.nix { inherit inputs; };
   nixpkgsConfig = import ./common/nixpkgs-config.nix { inherit inputs; };
   mkStandaloneHome =
     { host, userModule }:
@@ -39,23 +40,14 @@ let
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
-      extraSpecialArgs = {
-        inherit inputs;
+      extraSpecialArgs = hmShared.extraSpecialArgs // {
         osConfig = hostContext.config;
         hostMeta = host;
       };
-      modules = [
-        inputs.sops-nix.homeManagerModules.sops
-        inputs.zen-browser.homeModules.beta
-        inputs.nixvim.homeModules.nixvim
-        inputs.aloha.homeManagerModules.default
-        "${inputs.impermanence}/home-manager.nix"
-        {
-          home._nixosModuleImported = true;
-        }
-        ../modules/home
-        userModule
-      ];
+      modules = hmShared.mkModuleList {
+        standalone = true;
+        extraModules = [ userModule ];
+      };
     };
   homeTargets = {
     "seeker@miLaptop" = {
