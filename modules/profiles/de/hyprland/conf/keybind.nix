@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   osConfig,
@@ -57,8 +58,10 @@ let
     fi
   '';
   wpaperctl = "${pkgs.wpaperd}/bin/wpaperctl";
-  commandsLauncher = alohaLauncher.commandsCommand or ''${notify-send} "TODO"'';
-  powerLauncher = alohaLauncher.powerCommand or ''${notify-send} "TODO"'';
+  alohaEnabled = (alohaLauncher.enable or false) && config.homeProfiles.launchers.aloha.enable;
+  commandsLauncher =
+    if alohaEnabled then alohaLauncher.commandsCommand else ''${notify-send} "TODO"'';
+  powerLauncher = if alohaEnabled then alohaLauncher.powerCommand else ''${notify-send} "TODO"'';
 in
 {
   config = lib.mkIf hyprlandEnabled {

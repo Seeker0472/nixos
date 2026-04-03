@@ -6,8 +6,14 @@ let
       options = {
         enable = lib.mkEnableOption "${name} user";
         uid = lib.mkOption {
-          type = lib.types.int;
-          default = if name == "hagrid" then 1001 else 1000;
+          type = lib.types.nullOr lib.types.int;
+          default =
+            if name == "seeker" then
+              1000
+            else if name == "hagrid" then
+              1001
+            else
+              null;
           description = "UID for ${name}";
         };
         description = lib.mkOption {
