@@ -3,7 +3,25 @@
   options.homeProfiles = {
     ai = {
       claude.enable = lib.mkEnableOption "Claude Code";
-      codex.enable = lib.mkEnableOption "Codex CLI";
+      codex = {
+        enable = lib.mkEnableOption "Codex CLI";
+        model = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "Optional default Codex model rendered into ~/.codex/config.toml.";
+        };
+        enableHooks = lib.mkEnableOption "Codex native hooks";
+        reviewModel = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "Optional default Codex review model rendered into ~/.codex/config.toml.";
+        };
+        settings = lib.mkOption {
+          type = lib.types.attrs;
+          default = { };
+          description = "Additional Codex settings merged verbatim into ~/.codex/config.toml.";
+        };
+      };
       gemini.enable = lib.mkEnableOption "Gemini CLI";
     };
 

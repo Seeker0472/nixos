@@ -4,3 +4,10 @@ result
 .pre-commit-config.yaml
 .worktrees
 docs
+.humanize/auto-rlcr-cache/
+.humanize/bitlesson.md
+.humanize/.pending-session-id
+.humanize/plan_qa/
+.humanize/pr-loop/
+.humanize/rlcr/
+.humanize/skill/

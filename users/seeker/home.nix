@@ -14,6 +14,7 @@
   # 用户名与用户目录
   home.username = lib.mkDefault "seeker";
   home.homeDirectory = lib.mkDefault "/home/${config.home.username}";
+  home.sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
 
   imports = [
     ./xdg_default.nix

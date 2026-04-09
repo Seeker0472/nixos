@@ -17,6 +17,12 @@ let
     "impermanence"
     "enable"
   ] false osConfig;
+  persistDir = lib.attrByPath [
+    "machine"
+    "btrfs"
+    "impermanence"
+    "persistdir"
+  ] null osConfig;
 in
 {
   options.seeker.gui.enable =
@@ -31,7 +37,27 @@ in
     homeProfiles = {
       ai = {
         claude.enable = lib.mkDefault false;
-        codex.enable = lib.mkDefault impermanenceEnabled;
+        codex = {
+          enable = lib.mkDefault impermanenceEnabled;
+          model = lib.mkDefault "gpt-5.4";
+          reviewModel = lib.mkDefault "gpt-5.4";
+          enableHooks = lib.mkDefault true;
+          settings = lib.mkDefault {
+            model_provider = "OpenAI";
+            model_reasoning_effort = "high";
+            disable_response_storage = true;
+            network_access = "enabled";
+            windows_wsl_setup_acknowledged = true;
+            model_context_window = 1000000;
+            model_auto_compact_token_limit = 900000;
+            model_providers.OpenAI = {
+              name = "OpenAI";
+              base_url = "https://rust.cat";
+              wire_api = "responses";
+              requires_openai_auth = true;
+            };
+          };
+        };
         gemini.enable = lib.mkDefault true;
       };
 
@@ -67,6 +93,23 @@ in
         obsidian.enable = lib.mkDefault true;
         vscode.enable = lib.mkDefault true;
         zen.enable = lib.mkDefault true;
+      };
+    };
+
+    home.persistence = lib.mkIf (impermanenceEnabled && persistDir != null) {
+      "${persistDir}" = {
+        directories = [
+          ".codex/skills/ask-codex"
+          ".codex/skills/humanize"
+          ".codex/skills/humanize-gen-plan"
+          ".codex/skills/humanize-refine-plan"
+          ".codex/skills/humanize-rlcr"
+          ".config/humanize"
+        ];
+        files = [
+          ".codex/hooks.json"
+          ".local/bin/bitlesson-selector"
+        ];
       };
     };
   };
