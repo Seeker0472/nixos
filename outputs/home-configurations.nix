@@ -68,6 +68,15 @@ let
         ];
       };
     };
+    "seeker@wsl" = {
+      host = import ../hosts/wsl/home.nix;
+      userModule = {
+        imports = [
+          ../users/seeker/home.nix
+          ../users/seeker/server.nix
+        ];
+      };
+    };
     "seeker4721@gpu02" = {
       host = import ../hosts/gpu02/home.nix;
       userModule = {

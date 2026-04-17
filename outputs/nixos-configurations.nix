@@ -105,6 +105,13 @@ in
       system = "x86_64-linux";
       modules = devContainerModules;
     };
+    wsl = mkNixos {
+      system = "x86_64-linux";
+      modules = [
+        ../hosts/wsl
+        ../users/seeker
+      ];
+    };
   };
   perSystem =
     {

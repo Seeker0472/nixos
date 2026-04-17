@@ -1,9 +1,12 @@
+let
+  base = import ../common/seeker-base.nix;
+in
 {
-  system = "x86_64-linux";
+  system = base.system;
   hostName = "miLaptop";
-  stateVersion = "24.05";
+  stateVersion = base.stateVersion;
 
-  machine = {
+  machine = base.machine // {
     type = "laptop";
     cpu = "intel";
     impermanence.enable = true;
@@ -14,10 +17,6 @@
       wofi.enable = true;
       mako.enable = true;
       wpaperd.enable = true;
-    };
-
-    users = {
-      seeker.enable = true;
     };
 
     programs = {
@@ -31,15 +30,16 @@
       tailscale.enable = true;
     };
 
-    secrets = {
+    secrets = (base.machine.secrets or { }) // {
       ageKeyPath = "/persist/home/seeker/age/keys";
-      webdav.enable = true;
     };
 
-    services.openssh = {
-      enable = true;
-      passwordAuthentication = false;
-      openFirewall = true;
+    services = (base.machine.services or { }) // {
+      openssh = (base.machine.services.openssh or { }) // {
+        enable = true;
+        passwordAuthentication = false;
+        openFirewall = true;
+      };
     };
 
     features = {
