@@ -1,25 +1,26 @@
 {
-  config,
   inputs,
-  lib,
   ...
 }:
-let
-  hmShared = import ../../outputs/common/home-manager-shared.nix { inherit inputs; };
-in
 {
   imports = [
-    ./home-manager-base.nix
+    ../home-manager.nix
   ];
+
+  environment.pathsToLink = [
+    "/share/applications"
+    "/share/xdg-desktop-portal"
+  ];
+  programs.dconf.enable = true;
 
   home-manager = {
     users.seeker = {
-      imports = hmShared.mkModuleList {
-        extraModules = [
-          ./home.nix
-        ]
-        ++ lib.optionals (config.machine.features.launcher.aloha.enable or false) [ ./miLaptop.nix ];
-      };
+      imports = [
+        inputs.sops-nix.homeManagerModules.sops
+        inputs.zen-browser.homeModules.beta
+        inputs.aloha.homeManagerModules.default
+        ./miLaptop.nix
+      ];
     };
   };
 }

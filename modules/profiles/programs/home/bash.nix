@@ -1,8 +1,7 @@
 { config, lib, ... }:
 {
-  config = lib.mkIf config.homeProfiles.cli.bash.enable {
+  config = lib.mkIf config.programs.bash.enable {
     programs.bash = {
-      enable = true;
       enableCompletion = true;
       # bashrcExtra = "";
 

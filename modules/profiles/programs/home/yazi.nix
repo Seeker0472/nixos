@@ -1,8 +1,7 @@
 { config, lib, ... }:
 {
-  config = lib.mkIf config.homeProfiles.cli.yazi.enable {
+  config = lib.mkIf config.programs.yazi.enable {
     programs.yazi = {
-      enable = true;
       settings = {
         tasks = {
           micro_workers = 5;

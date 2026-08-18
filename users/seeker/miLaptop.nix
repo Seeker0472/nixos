@@ -1,45 +1,39 @@
 {
-  inputs,
   config,
+  inputs,
   lib,
   osConfig,
   pkgs,
   ...
 }:
 let
-  launcherCfg = lib.attrByPath [
-    "machine"
-    "features"
-    "launcher"
-    "aloha"
-  ] { } osConfig;
+  impermanenceEnabled = lib.attrByPath [ "machine" "impermanence" "enable" ] false osConfig;
+  persistDir = lib.attrByPath [ "machine" "btrfs" "impermanence" "persistdir" ] null osConfig;
 in
 {
-  config = lib.mkIf (launcherCfg.enable or false) {
-    homeProfiles.launchers.aloha = {
-      enable = lib.mkDefault true;
-      package = inputs.aloha.packages.${pkgs.stdenv.hostPlatform.system}.default;
-      settings = {
+  imports = [
+    ./desktop.nix
+    ./ssh-secrets.nix
+  ];
+
+  config = lib.mkMerge [
+    {
+      programs.aloha = {
+        enable = true;
+        package = inputs.aloha.packages.${pkgs.stdenv.hostPlatform.system}.default;
         kitty = {
           title = "Aloha";
           class = "AlohaLauncher";
         };
-
         fzf.extraOptions = [
           "--layout=reverse"
           "--height=60%"
         ];
-
         roots = {
           apps = {
             prompt = "Apps> ";
-            sources = [
-              {
-                type = "desktop";
-              }
-            ];
+            sources = [ { type = "desktop"; } ];
           };
-
           commands = {
             prompt = "Commands> ";
             sources = [
@@ -50,7 +44,7 @@ in
                     id = "command-terminal";
                     label = "Terminal";
                     action = "exec";
-                    command = config.homeProfiles.terminals.command;
+                    command = "${pkgs.kitty}/bin/kitty";
                   }
                   {
                     id = "command-display-settings";
@@ -87,7 +81,6 @@ in
               }
             ];
           };
-
           power = {
             prompt = "Power> ";
             sources = [
@@ -136,6 +129,57 @@ in
           };
         };
       };
-    };
-  };
+
+      wayland.windowManager.hyprland.settings = {
+        "$menu" = lib.mkForce "aloha --root apps";
+        bind = lib.mkAfter [
+          "$mainMod, P, exec, aloha --root commands"
+          "$mainMod SHIFT, P, exec, aloha --root power"
+        ];
+        bindl = lib.mkAfter [
+          '', switch:off:Lid Switch, execr, [ $(hyprctl monitors | grep -c "eDP-1") -ne 1 ] && hyprctl keyword monitor eDP-1,2560x1600@120.0,0x237,1.33''
+          '', switch:on:Lid Switch, execr, [ $(hyprctl monitors | grep -c "ID") -ne 1 ] && hyprctl keyword monitor eDP-1,disable''
+        ];
+        windowrule = lib.mkAfter [
+          "tag +aloha_launcher, match:initial_class ^(AlohaLauncher)$"
+          "float on, match:tag aloha_launcher*"
+          "center on, match:tag aloha_launcher*"
+          "size (monitor_w*0.7) (monitor_h*0.6), match:tag aloha_launcher*"
+        ];
+      };
+    }
+
+    (lib.mkIf (impermanenceEnabled && persistDir != null) {
+      home.persistence."${persistDir}" = {
+        directories = [
+          "Downloads"
+          "Documents"
+          "Pictures"
+          "Videos"
+          ".ssh"
+          ".gnupg"
+          ".factorio"
+          ".local/share/fish"
+          ".local/share/direnv"
+          ".local/share/fcitx5"
+          ".config/fcitx5"
+          ".config/hypr"
+          ".local/share/hyprland"
+          ".config/kdeconnect"
+          ".config/obsidian"
+          ".vscode"
+          ".config/Code"
+          ".local/share/keyrings"
+          ".local/share/zed"
+          ".config/zen"
+          ".zotero"
+          "Zotero"
+        ];
+        files = [
+          ".gtkwaverc"
+          ".local/bin/bitlesson-selector"
+        ];
+      };
+    })
+  ];
 }

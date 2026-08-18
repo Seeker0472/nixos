@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   lib,
   osConfig,
@@ -12,17 +11,6 @@ let
     "hyprland"
     "enable"
   ] false osConfig;
-  alohaLauncher = lib.attrByPath [
-    "machine"
-    "features"
-    "launcher"
-    "aloha"
-  ] { } osConfig;
-  lidSwitch = lib.attrByPath [
-    "machine"
-    "features"
-    "lidSwitch"
-  ] { } osConfig;
   slurp = "${pkgs.slurp}/bin/slurp";
   grim = "${pkgs.grim}/bin/grim";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
@@ -58,10 +46,6 @@ let
     fi
   '';
   wpaperctl = "${pkgs.wpaperd}/bin/wpaperctl";
-  alohaEnabled = (alohaLauncher.enable or false) && config.homeProfiles.launchers.aloha.enable;
-  commandsLauncher =
-    if alohaEnabled then alohaLauncher.commandsCommand else ''${notify-send} "TODO"'';
-  powerLauncher = if alohaEnabled then alohaLauncher.powerCommand else ''${notify-send} "TODO"'';
 in
 {
   config = lib.mkIf hyprlandEnabled {
@@ -197,11 +181,6 @@ in
 
         # --- Other Binds ---
 
-        # launcher
-        "$mainMod, P, exec, ${commandsLauncher}"
-        "$mainMod SHIFT, P, exec, ${powerLauncher}"
-        ''$mainMod CONTROL SHIFT, P, exec, notify-send "TODO"''
-
         # screenshot
         "$mainMod SHIFT, A, exec, ${lib.getExe screenshootScript}"
         "$mainMod SHIFT ALT, A, exec, grim"
@@ -223,17 +202,13 @@ in
 
         ", XF86MonBrightnessUp, exec, ${brightnessctl} s 10%+"
         ", XF86MonBrightnessDown, exec, ${brightnessctl} s 10%-"
-      ]; # Media keys & Lid Switch
+      ]; # Media keys
       bindl = [
         ", XF86AudioNext, exec, ${playerctl} next"
         ", XF86AudioPause, exec, ${playerctl} play-pause"
         ", XF86AudioPlay, exec, ${playerctl} play-pause"
         ", XF86AudioPrev, exec, ${playerctl} previous"
-      ]
-      ++ (lib.optionals (lidSwitch.enable or false) [
-        ", switch:off:Lid Switch, execr, ${lidSwitch.switchOffCommand}"
-        ", switch:on:Lid Switch, execr, ${lidSwitch.switchOnCommand}"
-      ]);
+      ];
     };
   };
 }

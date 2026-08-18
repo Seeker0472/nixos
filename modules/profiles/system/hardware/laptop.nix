@@ -55,17 +55,6 @@
     #nixpkgs.config.permittedInsecurePackages = ["openssl-1.1.1w"];
     powerManagement.powertop.enable = false;
     powerManagement.enable = true;
-    services.auto-cpufreq.enable = true;
-    services.auto-cpufreq.settings = {
-      battery = {
-        governor = "powersave";
-        turbo = "never";
-      };
-      charger = {
-        governor = "performance";
-        turbo = "auto";
-      };
-    };
     # systemd.extraConfig
     systemd.settings.Manager = {
       DefaultTimeoutStopSec = "10s";

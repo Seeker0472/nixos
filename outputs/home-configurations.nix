@@ -1,89 +1,21 @@
 { inputs, ... }:
 let
-  lib = inputs.nixpkgs.lib;
-  hmShared = import ./common/home-manager-shared.nix { inherit inputs; };
+  system = "x86_64-linux";
   nixpkgsConfig = import ./common/nixpkgs-config.nix { inherit inputs; };
-  mkStandaloneHome =
-    { host, userModule }:
-    let
-      pkgs = import inputs.nixpkgs (
-        {
-          inherit (host) system;
-        }
-        // nixpkgsConfig
-      );
-
-      hostContext = lib.nixosSystem {
-        inherit (host) system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./common
-          ../modules
-          (
-            {
-              lib,
-              ...
-            }:
-            {
-              networking.hostName = host.hostName;
-              system.stateVersion = host.stateVersion;
-              machine = host.machine;
-              home-manager.users = { };
-            }
-            // lib.attrByPath [
-              "standalone"
-              "extraConfig"
-            ] { } host
-          )
-        ];
-      };
-    in
-    inputs.home-manager.lib.homeManagerConfiguration {
-      inherit pkgs;
-      extraSpecialArgs = hmShared.extraSpecialArgs // {
-        osConfig = hostContext.config;
-        hostMeta = host;
-      };
-      modules = hmShared.mkModuleList {
-        standalone = true;
-        extraModules = [ userModule ];
-      };
-    };
-  homeTargets = {
-    "seeker@miLaptop" = {
-      host = import ../hosts/miLaptop/home.nix;
-      userModule = {
-        imports = [
-          ../users/seeker/home.nix
-          ../users/seeker/miLaptop.nix
-        ];
-      };
-    };
-    "seeker@devContainer" = {
-      host = import ../hosts/devContainer/home.nix;
-      userModule = {
-        imports = [
-          ../users/seeker/home.nix
-          ../users/seeker/server.nix
-        ];
-      };
-    };
-    "seeker4721@gpu02" = {
-      host = import ../hosts/gpu02/home.nix;
-      userModule = {
-        imports = [
-          ../users/seeker/home.nix
-          ../users/seeker/server.nix
-          ../users/seeker/gpu02.nix
-        ];
-      };
-    };
-    "hagrid@GringottsVault713" = {
-      host = import ../hosts/GringottsVault713/home.nix;
-      userModule = ../users/hagrid/home.nix;
-    };
-  };
+  pkgs = import inputs.nixpkgs (
+    {
+      inherit system;
+    }
+    // nixpkgsConfig
+  );
 in
 {
-  flake.homeConfigurations = lib.mapAttrs (_: spec: mkStandaloneHome spec) homeTargets;
+  flake.homeConfigurations."seeker4721@gpu01" = inputs.home-manager.lib.homeManagerConfiguration {
+    inherit pkgs;
+    extraSpecialArgs = { inherit inputs; };
+    modules = [
+      ../users/seeker/home.nix
+      ../hosts/gpu01/home.nix
+    ];
+  };
 }

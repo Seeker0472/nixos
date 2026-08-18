@@ -1,10 +1,10 @@
 {
   system = "x86_64-linux";
-  hostName = "devContainer";
+  hostName = "devVM";
   stateVersion = "24.05";
 
   machine = {
-    type = "container";
+    type = "others";
     mainUser = "seeker";
 
     users = {

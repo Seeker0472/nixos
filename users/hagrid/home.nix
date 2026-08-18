@@ -1,20 +1,16 @@
-{
-  config,
-  osConfig,
-  pkgs,
-  ...
-}:
-let
-  flakeTarget = "${config.home.username}@${osConfig.networking.hostName}";
-in
+{ ... }:
 {
   home.username = "hagrid";
   home.homeDirectory = "/home/hagrid";
   imports = [
-    ./config.nix
+    ../../modules/profiles/programs/home/bash.nix
+    ../../modules/profiles/programs/home/tmux/default.nix
   ];
   home.stateVersion = "24.05";
 
-  programs.home-manager.enable = true;
-
+  programs = {
+    bash.enable = true;
+    home-manager.enable = true;
+    tmux.enable = true;
+  };
 }

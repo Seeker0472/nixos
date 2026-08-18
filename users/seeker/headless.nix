@@ -1,20 +1,16 @@
 { inputs, ... }:
-let
-  hmShared = import ../../outputs/common/home-manager-shared.nix { inherit inputs; };
-in
 {
   imports = [
-    ./home-manager-base.nix
+    ../home-manager.nix
   ];
 
   home-manager = {
     users.seeker = {
-      imports = hmShared.mkModuleList {
-        extraModules = [
-          ./home.nix
-          ./server.nix
-        ];
-      };
+      imports = [
+        inputs.sops-nix.homeManagerModules.sops
+        ./home.nix
+        ./ssh-secrets.nix
+      ];
     };
   };
 }

@@ -17,7 +17,7 @@
   home.sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
 
   imports = [
-    ./xdg_default.nix
+    ../../modules/home/base.nix
     ./tools.nix
     ./git.nix
     ./config.nix

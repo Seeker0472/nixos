@@ -1,9 +1,9 @@
 import ../lib/mk-host-module.nix {
-  hostFile = ./home.nix;
+  metaFile = ./meta.nix;
   extraModules = [
     ./disk.nix
     ./hardware-configuration.nix
-    ./programs.nix
+    ./xbox-firmware-overlay.nix
     (
       { pkgs, ... }:
       {

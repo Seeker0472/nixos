@@ -1,6 +1,9 @@
-{ hostFile, extraModules ? [ ] }:
+{
+  metaFile,
+  extraModules ? [ ],
+}:
 let
-  host = import hostFile;
+  host = import metaFile;
 in
 {
   imports = extraModules;
