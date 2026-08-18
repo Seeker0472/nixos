@@ -29,6 +29,7 @@ let
     ./profiles/system/hardware/laptop.nix
     ./profiles/system/hardware/user-accounts.nix
     ./profiles/system/hardware/users.nix
+    ./profiles/system/storage/single-disk.nix
   ];
 in
 {

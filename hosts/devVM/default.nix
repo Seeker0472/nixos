@@ -2,6 +2,8 @@ import ../lib/mk-host-module.nix {
   metaFile = ./meta.nix;
   extraModules = [
     {
+      boot.kernelParams = [ "console=ttyS0,115200n8" ];
+
       boot.loader.grub = {
         enable = true;
         device = "nodev";
@@ -13,10 +15,12 @@ import ../lib/mk-host-module.nix {
       };
 
       virtualisation.vmVariantWithBootLoader.virtualisation = {
-        cores = 4;
-        diskSize = 32 * 1024;
+        cores = 384;
+        # qcow2 allocates host storage on demand; this is only its virtual ceiling.
+        diskSize = 1024 * 1024;
         graphics = false;
-        memorySize = 4096;
+        memorySize = 1024 * 1024;
+        qemu.options = [ "-machine q35" ];
       };
     }
   ];
