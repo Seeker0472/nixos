@@ -1,5 +1,7 @@
 {
+  inputs,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -9,7 +11,11 @@ let
   ];
 in
 {
-  imports = [ ./netbird.nix ];
+  imports = [
+    ./netbird.nix
+    inputs.nixvim.nixosModules.nixvim
+    ../../modules/profiles/programs/nixvim/default.nix
+  ];
 
   networking = {
     hostName = host.hostName;
@@ -45,6 +51,15 @@ in
     qemuGuest.enable = true;
   };
 
+  programs = {
+    fish.enable = true;
+    nixvim = {
+      defaultEditor = true;
+      viAlias = true;
+      vimAlias = true;
+    };
+  };
+
   users = {
     mutableUsers = false;
     users = {
@@ -58,6 +73,7 @@ in
         description = "Seeker";
         extraGroups = [ "wheel" ];
         hashedPassword = "!";
+        shell = pkgs.fish;
         openssh.authorizedKeys.keys = adminSshKeys;
       };
     };
@@ -65,6 +81,25 @@ in
   security.sudo.wheelNeedsPassword = false;
 
   environment.defaultPackages = lib.mkForce [ ];
+  environment.systemPackages = with pkgs; [
+    btop
+    curl
+    fd
+    file
+    git
+    htop
+    jq
+    less
+    mtr
+    ncdu
+    ripgrep
+    rsync
+    tmux
+    tree
+    unzip
+    wget
+    zip
+  ];
   documentation.enable = false;
   programs.command-not-found.enable = false;
 
