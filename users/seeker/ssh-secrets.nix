@@ -12,6 +12,10 @@ lib.mkIf deploySecrets (
   lib.mkMerge [
     {
       programs.ssh.settings."*".IdentityFile = [ config.sops.secrets.id_ed25519.path ];
+      programs.ssh.settings."vps.seekerer.com" = {
+        IdentityFile = [ config.sops.secrets.id_ed25519.path ];
+        IdentitiesOnly = true;
+      };
 
       sops.secrets = {
         id_ed25519 = {

@@ -3,10 +3,15 @@
 # Also see https://github.com/Mic92/dotfiles/blob/d6114726d859df36ccaa32891c4963ae5717ef7f/nixos/.sops.yaml
 # for a more complex example.
 keys:
-  - &admin_seeker_age age19jg9f78x9dxmze6chtd29zhyltr0udndfajp0spc67ygznfv9pjqshah6c
+  - &admin_seeker_age age1kr2f0rqhqqvrgem9mjw96xhfdce558g8aksjcq9xuw68wxyntsfqj8fctn
+  - &kings_cross_age age14j7f9xqvauh32wknv9tug4wgaxjp5wyexxk0fd96ju2d9h4f0uxspnalww
 creation_rules:
+  - path_regex: hosts/KingsCross/.*secrets\.yaml$
+    key_groups:
+      - age:
+        - *admin_seeker_age
+        - *kings_cross_age
   - path_regex: .*secrets\.yaml$
     key_groups:
       - age:
         - *admin_seeker_age
-

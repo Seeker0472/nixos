@@ -58,6 +58,7 @@ let
     baseModules = [
       ./common/nixpkgs-settings.nix
       inputs.disko.nixosModules.disko
+      inputs.sops-nix.nixosModules.sops
       ../modules/profiles/system/storage/single-disk.nix
     ];
     modules = [ ../hosts/KingsCross ];

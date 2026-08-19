@@ -4,9 +4,13 @@
 }:
 let
   host = import ./meta.nix;
-  adminSshKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN9S/WUjiDke+EhHCWI0ZstCRBwvSljPxWxqbXzrKYDi seeker@DiagonAlley";
+  adminSshKeys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJP3Gwb41Q44iCJpzrUIyNdD38rB2fgedJat1nNfPqZ2 seeker@KingsCross-sops"
+  ];
 in
 {
+  imports = [ ./netbird.nix ];
+
   networking = {
     hostName = host.hostName;
     useDHCP = lib.mkDefault true;
@@ -46,7 +50,7 @@ in
     users = {
       root = {
         hashedPassword = "!";
-        openssh.authorizedKeys.keys = [ adminSshKey ];
+        openssh.authorizedKeys.keys = adminSshKeys;
       };
       seeker = {
         isNormalUser = true;
@@ -54,7 +58,7 @@ in
         description = "Seeker";
         extraGroups = [ "wheel" ];
         hashedPassword = "!";
-        openssh.authorizedKeys.keys = [ adminSshKey ];
+        openssh.authorizedKeys.keys = adminSshKeys;
       };
     };
   };
