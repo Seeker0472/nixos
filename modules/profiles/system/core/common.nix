@@ -29,7 +29,7 @@
   # time zone.
   time.timeZone = "Asia/Hong_Kong";
 
-  environment.variables.EDITOR = "vim";
+  environment.variables.EDITOR = lib.mkOverride 950 "vim";
 
   environment.systemPackages = with pkgs; [
     vim

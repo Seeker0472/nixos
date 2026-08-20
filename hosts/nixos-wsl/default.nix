@@ -14,19 +14,15 @@
     shell = pkgs.fish;
   };
 
-  nix = {
-    channel.enable = false;
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
-    settings = {
-      auto-optimise-store = true;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
+  machine = {
+    secrets.ageKeyPath = "/home/seeker/.config/sops/age/keys.txt";
+    services.openssh = {
+      enable = true;
+      passwordAuthentication = false;
+      openFirewall = true;
     };
   };
+
+  # The shared CLI profile supplies GC, store optimisation and flakes.
+  nix.channel.enable = false;
 }

@@ -12,6 +12,8 @@
       hagrid.enable = false;
     };
 
+    programs.nixvim.development.enable = true;
+
     secrets = {
       ageKeyPath = "/home/seeker/.config/sops/age/keys.txt";
       webdav.enable = true;

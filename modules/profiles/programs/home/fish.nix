@@ -8,11 +8,11 @@ lib.mkIf config.programs.fish.enable {
   programs.fish = {
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
-      set theme_color_scheme zenburn
-      set theme_date_format +"%b/%e|%a %H:%M.%S"
+      # set theme_color_scheme zenburn
+      # set theme_date_format +"%b/%e|%a %H:%M.%S"
       function fish_greeting; end
       set -g fish_key_bindings fish_vi_key_bindings
-      set -g VIRTUAL_ENV_DISABLE_PROMPT 1
+      # set -g VIRTUAL_ENV_DISABLE_PROMPT 1
 
       # --- for yazi ---
       function y
@@ -35,7 +35,7 @@ lib.mkIf config.programs.fish.enable {
       kmpv = "mpv --vo=kitty";
     };
     functions = {
-      fish_mode_prompt = "";
+      # fish_mode_prompt = "";
       backup = ''
         # function backup --description "Create a timestamped backup of a file"
             set file $argv[1]
@@ -58,6 +58,8 @@ lib.mkIf config.programs.fish.enable {
         # end
       '';
 
+      /*nixfmt:disable*/
+      /*
       _print_git_segment_fast = ''
         set -l color_git_bg $argv[1]
 
@@ -324,6 +326,8 @@ lib.mkIf config.programs.fish.enable {
         end
         set_color normal
       '';
+      */
+      /*nixfmt:enable*/
     };
     plugins = [
       {

@@ -45,7 +45,13 @@ let
       ./common/nixpkgs-settings.nix
       inputs.nixos-wsl.nixosModules.default
       inputs.home-manager.nixosModules.home-manager
+      inputs.sops-nix.nixosModules.sops
       ../users/home-manager.nix
+      ../modules/profiles/secrets/sops.nix
+      ../modules/profiles/secrets/nix_githubtoken.nix
+      ../modules/profiles/system/core/common.nix
+      ../modules/profiles/system/core/openssh.nix
+      ../modules/profiles/system/dev/default.nix
     ];
     modules = [
       ../hosts/nixos-wsl

@@ -165,6 +165,7 @@ in
           ".config/fcitx5"
           ".config/hypr"
           ".local/share/hyprland"
+          ".local/state/nvim"
           ".config/kdeconnect"
           ".config/obsidian"
           ".vscode"

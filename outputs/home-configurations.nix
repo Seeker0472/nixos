@@ -14,6 +14,8 @@ in
     inherit pkgs;
     extraSpecialArgs = { inherit inputs; };
     modules = [
+      inputs.nixvim.homeModules.nixvim
+      ../modules/profiles/programs/nixvim/default.nix
       ../users/seeker/home.nix
       ../hosts/gpu01/home.nix
     ];

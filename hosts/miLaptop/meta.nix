@@ -26,6 +26,7 @@
         enable = true;
         tun.enable = true;
       };
+      nixvim.development.enable = true;
       thunar.enable = true;
       steam.enable = true;
       tailscale.enable = true;
