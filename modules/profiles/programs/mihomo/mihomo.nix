@@ -24,7 +24,6 @@ let
     tcp-concurrent: true
     unified-delay: true
     geodata-mode: true
-    global-client-fingerprint: random
 
     secret: "${config.sops.placeholder.mihomo_secret}"
 

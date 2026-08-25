@@ -163,6 +163,7 @@ in
           ".local/share/direnv"
           ".local/share/fcitx5"
           ".config/fcitx5"
+          ".config/dconf"
           ".config/hypr"
           ".local/share/hyprland"
           ".local/state/nvim"
