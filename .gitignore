@@ -5,6 +5,10 @@ result
 .pre-commit-config.yaml
 .worktrees
 docs
+!docs/
+docs/*
+!docs/devvm-maintenance.md
+!docs/milaptop-installation.md
 .humanize/auto-rlcr-cache/
 .humanize/bitlesson.md
 .humanize/.pending-session-id

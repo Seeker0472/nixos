@@ -5,38 +5,107 @@
   ...
 }:
 let
+  hostName = osConfig.networking.hostName;
+  sshKeys = import ./ssh-public-keys.nix;
+  clientSopsFile = sshKeys.files.${hostName} or null;
   deploySecrets = lib.attrByPath [ "machine" "secrets" "deploy" ] true osConfig;
   ageKeyPath = lib.attrByPath [ "machine" "secrets" "ageKeyPath" ] null osConfig;
+  isAdminHost = builtins.elem hostName [
+    "miLaptop"
+    "nixos-wsl"
+  ];
+  meshHost = user: {
+    User = user;
+    IdentityFile = [ config.sops.secrets."ssh-client-private".path ];
+    IdentitiesOnly = true;
+  };
 in
-lib.mkIf deploySecrets (
-  lib.mkMerge [
+lib.mkIf deploySecrets {
+  assertions = [
     {
-      programs.ssh.settings."*".IdentityFile = [ config.sops.secrets.id_ed25519.path ];
-      programs.ssh.settings."vps.seekerer.com" = {
-        IdentityFile = [ config.sops.secrets.id_ed25519.path ];
-        IdentitiesOnly = true;
-      };
+      assertion = clientSopsFile != null;
+      message = "No SSH client SOPS file is registered for ${hostName}.";
+    }
+    {
+      assertion = ageKeyPath != null;
+      message = "machine.secrets.ageKeyPath is required to deploy SSH keys on ${hostName}.";
+    }
+  ];
 
-      sops.secrets = {
-        id_ed25519 = {
-          sopsFile = ./ssh.secrets.yaml;
-          key = "ssh_id_ed25519_private_key";
-          path = "${config.home.homeDirectory}/.ssh/id_seeker";
-        };
-        id_ed25519-public = {
-          sopsFile = ./ssh.secrets.yaml;
-          key = "ssh_id_ed25519_public_key";
-          path = "${config.home.homeDirectory}/.ssh/id_seeker.pub";
-        };
-        nix_config = {
-          sopsFile = ./ssh.secrets.yaml;
-          key = "nix_config";
-          path = "${config.home.homeDirectory}/.config/my_nix.conf";
-        };
+  programs.ssh.settings = {
+    "*" = {
+      IdentityFile = [ config.sops.secrets."ssh-external-private".path ];
+      IdentitiesOnly = true;
+    };
+    miLaptop = meshHost "seeker";
+    devVM = meshHost "seeker";
+    nixos-wsl = meshHost "seeker";
+    ecos = meshHost "seeker4721";
+    "github.com" = {
+      IdentityFile = [ config.sops.secrets."ssh-github-private".path ];
+      IdentitiesOnly = true;
+    };
+  }
+  // lib.optionalAttrs isAdminHost {
+    "vps.seekerer.com" = {
+      IdentityFile = [ config.sops.secrets."ssh-admin-private".path ];
+      IdentitiesOnly = true;
+    };
+  };
+
+  sops = {
+    age.keyFile = ageKeyPath;
+    secrets = {
+      "ssh-external-private" = {
+        sopsFile = sshKeys.files.external;
+        key = "private_key";
+        path = "${config.home.homeDirectory}/.ssh/id_external";
+        mode = "0600";
+      };
+      "ssh-external-public" = {
+        sopsFile = sshKeys.files.external;
+        key = "public_key_unencrypted";
+        path = "${config.home.homeDirectory}/.ssh/id_external.pub";
+        mode = "0644";
+      };
+      "ssh-client-private" = {
+        sopsFile = clientSopsFile;
+        key = "private_key";
+        path = "${config.home.homeDirectory}/.ssh/id_mesh";
+        mode = "0600";
+      };
+      "ssh-client-public" = {
+        sopsFile = clientSopsFile;
+        key = "public_key_unencrypted";
+        path = "${config.home.homeDirectory}/.ssh/id_mesh.pub";
+        mode = "0644";
+      };
+      "ssh-github-private" = {
+        sopsFile = sshKeys.files.github;
+        key = "private_key";
+        path = "${config.home.homeDirectory}/.ssh/id_github";
+        mode = "0600";
+      };
+      "ssh-github-public" = {
+        sopsFile = sshKeys.files.github;
+        key = "public_key_unencrypted";
+        path = "${config.home.homeDirectory}/.ssh/id_github.pub";
+        mode = "0644";
       };
     }
-    (lib.mkIf (ageKeyPath != null) {
-      sops.age.keyFile = ageKeyPath;
-    })
-  ]
-)
+    // lib.optionalAttrs isAdminHost {
+      "ssh-admin-private" = {
+        sopsFile = sshKeys.files.admin;
+        key = "private_key";
+        path = "${config.home.homeDirectory}/.ssh/id_admin";
+        mode = "0600";
+      };
+      "ssh-admin-public" = {
+        sopsFile = sshKeys.files.admin;
+        key = "public_key_unencrypted";
+        path = "${config.home.homeDirectory}/.ssh/id_admin.pub";
+        mode = "0644";
+      };
+    };
+  };
+}

@@ -1,0 +1,70 @@
+# Secret Management
+
+SOPS uses two human-managed age identities:
+
+- `admin_seeker_age` is installed on `miLaptop` and `nixos-wsl` for daily editing.
+- `recovery_age` is kept offline and is a recipient for every encrypted file.
+
+`devVM` has a separate runtime identity. It can decrypt the shared external and
+GitHub keys, its own SSH client key, and the system secrets already consumed by
+devVM. `gpu01` also has a separate runtime identity, scoped to the shared
+external and GitHub keys.
+The bootstrap identities live under the git-ignored `.secrets/age/` directory.
+The SOPS identity itself must be installed out of band because it cannot decrypt
+itself.
+
+## SSH layout
+
+- `users/seeker/ssh/<host>.secrets.json` contains one host-specific client key.
+- `users/seeker/ssh/external.secrets.json` contains the shared default key for
+  outbound SSH to external machines.
+- `users/seeker/ssh/github.secrets.json` contains the single GitHub key shared by
+  the three managed development clients.
+- `users/seeker/ssh/admin.secrets.json` retains the existing administrator key and is
+  deployed only to `miLaptop` and `nixos-wsl`.
+- `gpu01` receives the three development public keys in `authorized_keys` and
+  the shared external and GitHub private keys, but no mesh or administrator
+  private key.
+
+Public keys use the `_unencrypted` suffix inside their SOPS documents. They are
+not confidential, and keeping them readable lets NixOS and the standalone
+gpu01 Home Manager configuration build `authorized_keys` without decrypting a
+private key. SOPS still remains the single source for each key pair.
+
+## Bootstrap
+
+Install the admin identity at
+`/persist/home/seeker/.config/sops/age/keys.txt` on `miLaptop` and at
+`~/.config/sops/age/keys.txt` on `nixos-wsl`. The miLaptop persistence mount
+also exposes its identity at the standard XDG path after boot. Install
+`.secrets/age/devVM.txt` at `~/.config/sops/age/keys.txt` inside devVM before
+activating a configuration that consumes secrets. Install
+`.secrets/age/gpu01.txt` at the same path on gpu01. Keep
+`.secrets/age/recovery.txt` offline after confirming that it decrypts the
+repository.
+
+Before the first activation on an existing `miLaptop`, copy the old
+`/persist/home/seeker/age/keys` identity to
+`/persist/home/seeker/.config/sops/age/keys.txt`, owned by `seeker` with mode
+`0600`. The system reads this backing path before regular local filesystems and
+user persistence mounts are available during activation.
+
+See `docs/devvm-maintenance.md` for the devVM bootstrap, update, verification,
+and rollback workflow.
+
+Register the value of `public_key_unencrypted` from
+`users/seeker/ssh/github.secrets.json` as the one GitHub authentication key.
+Register the value from `users/seeker/ssh/external.secrets.json` on external
+machines; the external key is intentionally separate from the GitHub key.
+The gpu01 Home Manager activation takes ownership of `~/.ssh/authorized_keys`
+and atomically installs a user-owned regular file containing the administrator
+key plus the three development client keys. It deliberately does not use a Nix
+store symlink because the cluster's shared store ownership fails OpenSSH
+`StrictModes`. Confirm that no separately managed cluster key must be retained
+before the first activation.
+
+After changing recipients in `.sops.yaml`, update an existing document with:
+
+```bash
+sops updatekeys -y path/to/file.secrets.yaml
+```

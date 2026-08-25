@@ -11,7 +11,7 @@ Run these commands from `/home/seeker/flakes`:
 ```bash
 cd /home/seeker/flakes
 
-export NIX_SSHOPTS="-i /home/seeker/.ssh/id_seeker -o BatchMode=yes -o StrictHostKeyChecking=yes"
+export NIX_SSHOPTS="-4 -i /home/seeker/.ssh/id_admin -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=30 -o ConnectionAttempts=3 -o ServerAliveInterval=10 -o ServerAliveCountMax=6"
 FLAKE_REF="path:$PWD#King'sCross"
 
 # Check the flake and build without changing the VPS.
