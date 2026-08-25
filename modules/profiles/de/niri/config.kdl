@@ -27,12 +27,12 @@ layout {
     center-focused-column "on-overflow"
 
     preset-column-widths {
-        proportion 0.33333
         proportion 0.5
         proportion 0.7
+        proportion 0.85
     }
 
-    default-column-width { proportion 0.5; }
+    default-column-width { proportion 0.7; }
 
     preset-window-heights {
         proportion 0.33333
@@ -170,7 +170,7 @@ binds {
     Mod+T repeat=false hotkey-overlay-title="Toggle Floating" { toggle-window-floating; }
     Mod+Shift+T repeat=false hotkey-overlay-title="Resize and Center Window" { spawn "@resizeAndCenter@"; }
     Mod+F repeat=false hotkey-overlay-title="Toggle Fullscreen" { fullscreen-window; }
-    Mod+A repeat=false hotkey-overlay-title="Maximize Window to Edges" { maximize-window-to-edges; }
+    Mod+A repeat=false hotkey-overlay-title="Maximize Column" { maximize-column; }
     Mod+Shift+F repeat=false hotkey-overlay-title="Move Window to Floating" { move-window-to-floating; }
     Mod+Ctrl+F repeat=false hotkey-overlay-title="Move Window to Tiling" { move-window-to-tiling; }
 
@@ -191,6 +191,8 @@ binds {
     Mod+W repeat=false hotkey-overlay-title="Toggle Tabbed Column Display" { toggle-column-tabbed-display; }
 
     // Use the preset heights from layout.preset-window-heights.
+    Mod+Shift+R repeat=false hotkey-overlay-title="Cycle Preset Column Width" { switch-preset-column-width; }
+    Mod+Alt+R repeat=false hotkey-overlay-title="Cycle Preset Column Width Backward" { switch-preset-column-width-back; }
     Mod+Ctrl+Shift+R repeat=false hotkey-overlay-title="Cycle Preset Window Height" { switch-preset-window-height; }
     Mod+Ctrl+R repeat=false hotkey-overlay-title="Reset Window Height" { reset-window-height; }
     Mod+Shift+C repeat=false hotkey-overlay-title="Center Column" { center-column; }
