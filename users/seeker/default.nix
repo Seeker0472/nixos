@@ -2,6 +2,9 @@
   inputs,
   ...
 }:
+let
+  sshKeys = import ./ssh-public-keys.nix;
+in
 {
   imports = [
     ../home-manager.nix
@@ -12,6 +15,8 @@
     "/share/xdg-desktop-portal"
   ];
   programs.dconf.enable = true;
+
+  machine.users.seeker.authorizedKeys = sshKeys.authorizedKeys;
 
   home-manager = {
     users.seeker = {

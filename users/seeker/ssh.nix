@@ -5,7 +5,7 @@
     enableDefaultConfig = false;
     settings = {
       "*" = {
-        ForwardAgent = true;
+        ForwardAgent = false;
         AddKeysToAgent = "yes";
         Compression = false;
         ServerAliveInterval = 30;

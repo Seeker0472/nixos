@@ -1,4 +1,7 @@
 { pkgs, ... }:
+let
+  sshKeys = import ../../users/seeker/ssh-public-keys.nix;
+in
 {
   networking.hostName = "nixos-wsl";
   system.stateVersion = "26.05";
@@ -12,6 +15,7 @@
   users.users.seeker = {
     extraGroups = [ "wheel" ];
     shell = pkgs.fish;
+    openssh.authorizedKeys.keys = sshKeys.authorizedKeys;
   };
 
   machine = {

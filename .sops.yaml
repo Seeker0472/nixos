@@ -1,17 +1,39 @@
-# This example uses YAML anchors which allows reuse of multiple keys 
-# without having to repeat yourself.
-# Also see https://github.com/Mic92/dotfiles/blob/d6114726d859df36ccaa32891c4963ae5717ef7f/nixos/.sops.yaml
-# for a more complex example.
 keys:
   - &admin_seeker_age age1kr2f0rqhqqvrgem9mjw96xhfdce558g8aksjcq9xuw68wxyntsfqj8fctn
+  - &recovery_age age18yuhegufq2qxqwmej9lxexsn8qzsgcddzgxd47hqkgh8rgte34usmlyd7x
+  - &dev_vm_age age1jj0p70p8jtg2vmfmnyrq0fxpwepmqk0dqlnwr0vnucnv08y9fsfq7a5yjr
+  - &gpu01_age age10fuvaphy9qmn8csm6vz5v2mzec8pjasz78ed9us7yq5y54hvv4jqjfn6qk
   - &kings_cross_age age14j7f9xqvauh32wknv9tug4wgaxjp5wyexxk0fd96ju2d9h4f0uxspnalww
+
 creation_rules:
   - path_regex: hosts/KingsCross/.*secrets\.yaml$
+    unencrypted_suffix: _unencrypted
     key_groups:
       - age:
-        - *admin_seeker_age
-        - *kings_cross_age
-  - path_regex: .*secrets\.yaml$
+          - *admin_seeker_age
+          - *recovery_age
+          - *kings_cross_age
+
+  - path_regex: users/seeker/ssh/github\.secrets\.json$
+    unencrypted_suffix: _unencrypted
     key_groups:
       - age:
-        - *admin_seeker_age
+          - *admin_seeker_age
+          - *recovery_age
+          - *dev_vm_age
+          - *gpu01_age
+
+  - path_regex: (users/seeker/ssh/devVM\.secrets\.json|modules/profiles/secrets/sys\.secrets\.yaml)$
+    unencrypted_suffix: _unencrypted
+    key_groups:
+      - age:
+          - *admin_seeker_age
+          - *recovery_age
+          - *dev_vm_age
+
+  - path_regex: .*secrets\.(yaml|json)$
+    unencrypted_suffix: _unencrypted
+    key_groups:
+      - age:
+          - *admin_seeker_age
+          - *recovery_age

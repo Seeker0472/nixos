@@ -33,7 +33,7 @@
     };
 
     secrets = {
-      ageKeyPath = "/persist/home/seeker/age/keys";
+      ageKeyPath = "/persist/home/seeker/.config/sops/age/keys.txt";
       webdav.enable = true;
     };
 

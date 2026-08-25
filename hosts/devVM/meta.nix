@@ -20,9 +20,9 @@
     };
 
     services.openssh = {
-      enable = false;
+      enable = true;
       passwordAuthentication = false;
-      openFirewall = false;
+      openFirewall = true;
     };
   };
 }
