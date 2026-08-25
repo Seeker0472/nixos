@@ -210,6 +210,9 @@ in
             }
           ];
         };
+      }
+      // lib.optionalAttrs config.programs.fish.enable {
+        default_shell = "${config.programs.fish.package}/bin/fish";
       };
 
       layouts.dev = ''
