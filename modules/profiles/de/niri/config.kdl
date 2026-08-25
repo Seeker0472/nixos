@@ -7,9 +7,12 @@ input {
 
     touchpad {
         tap
+        dwt
         natural-scroll
     }
 
+    // Keep the existing logind policy: a short power-button press is ignored.
+    disable-power-key-handling
     focus-follows-mouse max-scroll-amount="0%"
 }
 
@@ -30,6 +33,12 @@ layout {
     }
 
     default-column-width { proportion 0.5; }
+
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
 
     focus-ring {
         width 3
@@ -64,6 +73,7 @@ xwayland-satellite {
 
 hotkey-overlay {
     skip-at-startup
+    hide-not-bound
 }
 
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
@@ -117,29 +127,52 @@ window-rule {
     default-floating-position x=16 y=16 relative-to="bottom-right"
 }
 
+// Keep common password-manager windows out of xdg-desktop-portal screencasts.
+window-rule {
+    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
+    match app-id=r#"^org\.gnome\.World\.Secrets$"#
+    block-out-from "screencast"
+}
+
+// Keep notification pop-ups out of xdg-desktop-portal screencasts.
+layer-rule {
+    match namespace=r#"^notifications$"#
+    block-out-from "screencast"
+}
+
+// Mod+Tab opens the recent-window switcher; holding Mod keeps cycling it.
+recent-windows {
+    binds {
+        Mod+Tab         { next-window; }
+        Mod+Shift+Tab   { previous-window; }
+        Mod+grave       { next-window filter="app-id"; }
+        Mod+Shift+grave { previous-window filter="app-id"; }
+    }
+}
+
 binds {
-    Mod+Shift+Slash { show-hotkey-overlay; }
-    Mod+Ctrl+Shift+M { quit; }
-    Mod+M { spawn "@systemctl@" "suspend-then-hibernate"; }
-    Mod+Shift+M { spawn "@systemctl@" "hibernate"; }
-    Mod+Ctrl+M { spawn "@loginctl@" "lock-session"; }
+    Mod+Shift+Slash repeat=false { show-hotkey-overlay; }
+    Mod+Ctrl+Shift+M repeat=false hotkey-overlay-title="Quit Niri" { quit; }
+    Mod+M repeat=false hotkey-overlay-title="Suspend and Hibernate" { spawn "@systemctl@" "suspend-then-hibernate"; }
+    Mod+Shift+M repeat=false hotkey-overlay-title="Hibernate" { spawn "@systemctl@" "hibernate"; }
+    Mod+Ctrl+M repeat=false hotkey-overlay-title="Lock Session" { spawn "@loginctl@" "lock-session"; }
 
-    Mod+R { spawn "@aloha@" "--root" "apps"; }
-    Mod+P { spawn "@aloha@" "--root" "commands"; }
-    Mod+Shift+P { spawn "@aloha@" "--root" "power"; }
+    Mod+R repeat=false hotkey-overlay-title="Open Applications" { spawn "@aloha@" "--root" "apps"; }
+    Mod+P repeat=false hotkey-overlay-title="Open Commands" { spawn "@aloha@" "--root" "commands"; }
+    Mod+Shift+P repeat=false hotkey-overlay-title="Open Power Menu" { spawn "@aloha@" "--root" "power"; }
 
-    Mod+Return { spawn "@kitty@"; }
-    Mod+Space { spawn "@kitty@" "--class" "FG"; }
-    Mod+E { spawn "@thunar@"; }
+    Mod+Return repeat=false hotkey-overlay-title="Open Terminal" { spawn "@kitty@"; }
+    Mod+Space repeat=false hotkey-overlay-title="Open Floating Terminal" { spawn "@kitty@" "--class" "FG"; }
+    Mod+E repeat=false hotkey-overlay-title="Open File Manager" { spawn "@thunar@"; }
 
-    Mod+Shift+Q { close-window; }
-    Mod+Ctrl+Shift+Q { spawn "@forceKill@"; }
-    Mod+T { toggle-window-floating; }
-    Mod+Shift+T { spawn "@resizeAndCenter@"; }
-    Mod+F { fullscreen-window; }
-    Mod+A { maximize-window-to-edges; }
-    Mod+Shift+F { move-window-to-floating; }
-    Mod+Ctrl+F { move-window-to-tiling; }
+    Mod+Shift+Q repeat=false hotkey-overlay-title="Close Window" { close-window; }
+    Mod+Ctrl+Shift+Q repeat=false hotkey-overlay-title="Force Kill Window" { spawn "@forceKill@"; }
+    Mod+T repeat=false hotkey-overlay-title="Toggle Floating" { toggle-window-floating; }
+    Mod+Shift+T repeat=false hotkey-overlay-title="Resize and Center Window" { spawn "@resizeAndCenter@"; }
+    Mod+F repeat=false hotkey-overlay-title="Toggle Fullscreen" { fullscreen-window; }
+    Mod+A repeat=false hotkey-overlay-title="Maximize Window to Edges" { maximize-window-to-edges; }
+    Mod+Shift+F repeat=false hotkey-overlay-title="Move Window to Floating" { move-window-to-floating; }
+    Mod+Ctrl+F repeat=false hotkey-overlay-title="Move Window to Tiling" { move-window-to-tiling; }
 
     Mod+H { focus-column-left; }
     Mod+J { focus-window-down; }
@@ -147,7 +180,21 @@ binds {
     Mod+L { focus-column-right; }
     Mod+Up { focus-window-up; }
     Mod+Down { focus-window-down; }
-    Mod+Tab { focus-window-previous; }
+
+    // Move windows between Niri's horizontal columns and vertical stacks.
+    Mod+BracketLeft repeat=false hotkey-overlay-title="Consume or Expel Window Left" { consume-or-expel-window-left; }
+    Mod+BracketRight repeat=false hotkey-overlay-title="Consume or Expel Window Right" { consume-or-expel-window-right; }
+    Mod+Comma repeat=false hotkey-overlay-title="Consume Window into Column" { consume-window-into-column; }
+    Mod+Period repeat=false hotkey-overlay-title="Expel Window from Column" { expel-window-from-column; }
+
+    // Show several windows in one column as vertical tabs.
+    Mod+W repeat=false hotkey-overlay-title="Toggle Tabbed Column Display" { toggle-column-tabbed-display; }
+
+    // Use the preset heights from layout.preset-window-heights.
+    Mod+Ctrl+Shift+R repeat=false hotkey-overlay-title="Cycle Preset Window Height" { switch-preset-window-height; }
+    Mod+Ctrl+R repeat=false hotkey-overlay-title="Reset Window Height" { reset-window-height; }
+    Mod+Shift+C repeat=false hotkey-overlay-title="Center Column" { center-column; }
+    Mod+Shift+E repeat=false hotkey-overlay-title="Expand Column to Available Width" { expand-column-to-available-width; }
 
     Mod+Left { focus-workspace-up; }
     Mod+Right { focus-workspace-down; }
@@ -212,28 +259,28 @@ binds {
     Mod+Shift+8 { move-column-to-workspace 8; }
     Mod+Shift+9 { move-column-to-workspace 9; }
 
-    Mod+C { spawn "@focusOrSpawn@" "^(zen-beta|app\\.zen_browser\\.zen)$" "zen-beta"; }
-    Mod+Q { spawn "@focusOrSpawn@" "^QQ$" "qq"; }
-    Mod+0 { spawn "@focusOrSpawn@" "^QQ$" "qq"; }
-    Mod+N { spawn "@focusOrSpawn@" "NeteaseCloudMusic" "netease-cloud-music-gtk4"; }
-    Mod+O { spawn "@focusOrSpawn@" "^obsidian$" "obsidian"; }
-    Mod+D { spawn "@focusOrSpawn@" "^obsidian$" "obsidian"; }
-    Mod+X { spawn "@focusOrSpawn@" "^dev\\.zed\\.Zed$" "zeditor"; }
-    Mod+Z { spawn "@focusOrSpawn@" "^zotero$" "zotero"; }
-    Mod+V { spawn "@focusOrSpawn@" "^code$" "code"; }
-    Mod+Shift+O { toggle-overview; }
+    Mod+C repeat=false { spawn "@focusOrSpawn@" "^(zen-beta|app\\.zen_browser\\.zen)$" "zen-beta"; }
+    Mod+Q repeat=false { spawn "@focusOrSpawn@" "^QQ$" "qq"; }
+    Mod+0 repeat=false { spawn "@focusOrSpawn@" "^QQ$" "qq"; }
+    Mod+N repeat=false { spawn "@focusOrSpawn@" "NeteaseCloudMusic" "netease-cloud-music-gtk4"; }
+    Mod+O repeat=false { spawn "@focusOrSpawn@" "^obsidian$" "obsidian"; }
+    Mod+D repeat=false { spawn "@focusOrSpawn@" "^obsidian$" "obsidian"; }
+    Mod+X repeat=false { spawn "@focusOrSpawn@" "^dev\\.zed\\.Zed$" "zeditor"; }
+    Mod+Z repeat=false { spawn "@focusOrSpawn@" "^zotero$" "zotero"; }
+    Mod+V repeat=false { spawn "@focusOrSpawn@" "^code$" "code"; }
+    Mod+Shift+O repeat=false hotkey-overlay-title="Toggle Overview" { toggle-overview; }
 
-    Mod+Ctrl+C { spawn-sh "@wlPaste@ --primary --no-newline | @wlCopy@"; }
+    Mod+Ctrl+C repeat=false { spawn-sh "@wlPaste@ --primary --no-newline | @wlCopy@"; }
 
-    Print { screenshot; }
-    Mod+Shift+A { screenshot; }
-    Ctrl+Print { screenshot-screen; }
-    Alt+Print { screenshot-window; }
+    Print repeat=false hotkey-overlay-title="Interactive Screenshot" { screenshot; }
+    Mod+Shift+A repeat=false hotkey-overlay-title="Interactive Screenshot" { screenshot; }
+    Ctrl+Print repeat=false hotkey-overlay-title="Screenshot Screen" { screenshot-screen; }
+    Alt+Print repeat=false hotkey-overlay-title="Screenshot Window" { screenshot-window; }
 
-    XF86Tools { spawn "@wallpaperQuote@" "default"; }
-    Shift+XF86Tools { spawn "@wallpaperQuote@" "anime"; }
-    Ctrl+XF86Tools { spawn "@wpaperctl@" "next-wallpaper"; }
-    Ctrl+Shift+XF86Tools { spawn "@wallpaperQuote@" "alternate"; }
+    XF86Tools repeat=false { spawn "@wallpaperQuote@" "default"; }
+    Shift+XF86Tools repeat=false { spawn "@wallpaperQuote@" "anime"; }
+    Ctrl+XF86Tools repeat=false { spawn "@wpaperctl@" "next-wallpaper"; }
+    Ctrl+Shift+XF86Tools repeat=false { spawn "@wallpaperQuote@" "alternate"; }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn "@mediaControl@" "volume-up"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "@mediaControl@" "volume-down"; }
@@ -246,5 +293,5 @@ binds {
     XF86MonBrightnessUp allow-when-locked=true { spawn "@brightnessctl@" "set" "10%+"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "@brightnessctl@" "set" "10%-"; }
 
-    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    Mod+Escape repeat=false allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 }

@@ -69,6 +69,24 @@ in
                     action = "exec";
                     command = "${pkgs.kitty}/bin/kitty --class RTG --hold ${pkgs.niri}/bin/niri msg outputs";
                   }
+                  {
+                    id = "command-cast-focused-window";
+                    label = "Cast Focused Window";
+                    action = "exec";
+                    command = "${pkgs.niri}/bin/niri msg action set-dynamic-cast-window";
+                  }
+                  {
+                    id = "command-cast-focused-monitor";
+                    label = "Cast Focused Monitor";
+                    action = "exec";
+                    command = "${pkgs.niri}/bin/niri msg action set-dynamic-cast-monitor";
+                  }
+                  {
+                    id = "command-clear-dynamic-cast";
+                    label = "Clear Dynamic Cast Target";
+                    action = "exec";
+                    command = "${pkgs.niri}/bin/niri msg action clear-dynamic-cast-target";
+                  }
                 ]
                 ++ [
                   {

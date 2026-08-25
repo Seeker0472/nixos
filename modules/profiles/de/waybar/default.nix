@@ -81,6 +81,8 @@ in
             "custom/gotobed"
             "group/sysinfo"
             "group/control"
+            "idle_inhibitor"
+            "privacy"
             "pulseaudio"
             "clock"
             "tray"
@@ -115,6 +117,27 @@ in
 
           "niri/workspaces" = {
             format = "{index}";
+          };
+
+          "idle_inhibitor" = {
+            format = "{icon}";
+            format-icons = {
+              activated = "";
+              deactivated = "";
+            };
+          };
+
+          "privacy" = {
+            modules = [
+              { type = "screenshare"; }
+              { type = "audio-in"; }
+            ];
+            ignore = [
+              {
+                type = "audio-in";
+                name = "cava";
+              }
+            ];
           };
 
           "network" = {
