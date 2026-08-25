@@ -11,6 +11,7 @@ let
     ./profiles/impermanence/config.nix
     ./profiles/programs/kde-connect.nix
     ./profiles/programs/mihomo/mihomo.nix
+    ./profiles/programs/netbird.nix
     ./profiles/programs/nixvim/default.nix
     ./profiles/programs/steam.nix
     ./profiles/programs/tailscale.nix

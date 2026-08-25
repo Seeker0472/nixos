@@ -10,20 +10,47 @@ let
   cfg = config.machine.programs.mihomo;
   deploySecrets = config.machine.secrets.deploy;
 
+  inboundConfig =
+    if cfg.share.enable then
+      ''
+        port: 7890
+        socks-port: 7891
+        allow-lan: true
+        bind-address: "*"
+        lan-allowed-ips:
+          - 127.0.0.0/8
+          - ::1/128
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+          - 100.64.0.0/10
+          - fc00::/7
+      ''
+    else
+      ''
+        port: 7890
+        socks-port: 7891
+        allow-lan: false
+        bind-address: 127.0.0.1
+      '';
+
   baseConfig = ''
-    port: 7890
-    socks-port: 7891
-    allow-lan: true
+    ${inboundConfig}
+
     mode: rule
     log-level: info
-    external-controller: 0.0.0.0:9090
+    external-controller: 127.0.0.1:9090
     ipv6: true
     keep-alive-interval: 30
     keep-alive-idle: 60
-    find-process-mode: strict
+    find-process-mode: off
     tcp-concurrent: true
     unified-delay: true
     geodata-mode: true
+
+    profile:
+      store-selected: true
+      store-fake-ip: true
 
     secret: "${config.sops.placeholder.mihomo_secret}"
 
@@ -31,7 +58,7 @@ let
       enable: true
       cache-algorithm: arc
       respect-rules: true
-      listen: 0.0.0.0:53
+      listen: 127.0.0.1:1053
       enhanced-mode: fake-ip
       fake-ip-range: 198.18.0.1/16
 
@@ -44,10 +71,13 @@ let
 
       fake-ip-filter:
         - '*.lan'
+        - '*.local'
+        - localhost
 
       nameserver-policy:
-      "geosite:cn": [https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
-      "geosite:category-ads-all": rcode://success # 广告域名直接拦截
+        "geosite:cn": [https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
+        "geosite:category-ads-all": rcode://success
+        "geosite:gfw": [https://dns.google/dns-query, https://1.1.1.1/dns-query]
 
       nameserver:
         - https://doh.pub/dns-query
@@ -62,8 +92,6 @@ let
       fallback-filter:
         geoip: true
         geoip-code: CN
-        geosite:
-          - gfw
         ipcidr:
           - 240.0.0.0/4
 
@@ -86,8 +114,19 @@ let
       stack: system
       dns-hijack:
         - any:53
+        - tcp://any:53
       auto-route: true
       auto-detect-interface: true
+      strict-route: false
+      route-exclude-address:
+        - 127.0.0.0/8
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+        - 100.64.0.0/10
+        - ::1/128
+        - fc00::/7
+        - fe80::/10
   '';
 
   providersAndRules = ''
@@ -96,13 +135,6 @@ let
         type: http
         url: "${config.sops.placeholder.airport_mojie_url}"
         path: ./providers/airport_a.yaml
-        interval: 3600
-        health-check: { enable: true, interval: 600, url: http://www.gstatic.com/generate_204 }
-
-      airport_dingji:
-        type: http
-        url: "${config.sops.placeholder.airport_dingji_url}"
-        path: ./providers/airport_b.yaml
         interval: 3600
         health-check: { enable: true, interval: 600, url: http://www.gstatic.com/generate_204 }
 
@@ -119,7 +151,7 @@ let
         url: 'http://www.gstatic.com/generate_204'
         interval: 300
         tolerance: 30
-        use: [airport_mojie, airport_dingji, airport_ikuuu]
+        use: [airport_mojie, airport_ikuuu]
 
       - name: "Auto-Fast-ikuuu"
         type: url-test
@@ -134,11 +166,21 @@ let
         proxies: ["Auto-Fast-ikuuu", "Auto-Fast-ALL", DIRECT]
 
     rules:
-      - GEOSITE,cn,DIRECT
-      - GEOIP,cn,DIRECT
-      - MATCH,Proxy
-      - DOMAIN-KEYWORD,subscribe,DIRECT
       - GEOSITE,category-ads-all,REJECT
+      - DOMAIN,netbird.vps.seekerer.com,DIRECT
+      - DOMAIN-SUFFIX,lan,DIRECT
+      - DOMAIN-SUFFIX,local,DIRECT
+      - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+      - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+      - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+      - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+      - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
+      - IP-CIDR6,::1/128,DIRECT,no-resolve
+      - IP-CIDR6,fc00::/7,DIRECT,no-resolve
+      - IP-CIDR6,fe80::/10,DIRECT,no-resolve
+      - GEOSITE,cn,DIRECT
+      - GEOIP,cn,DIRECT,no-resolve
+      - MATCH,Proxy
   '';
 
 in
@@ -146,30 +188,25 @@ in
   options.machine.programs = {
     mihomo = {
       enable = lib.mkEnableOption "mihomo";
+      share.enable = lib.mkEnableOption "Mihomo proxy sharing";
       tun.enable = lib.mkEnableOption "mihomo tun";
     };
   };
   config = mkIf (cfg.enable && deploySecrets) {
-    users.users.mihomo = {
-      group = "mihomo";
-      isSystemUser = true;
-    };
-    users.groups.mihomo = { };
-
-    boot.kernel.sysctl = mkIf cfg.tun.enable {
-      "net.ipv4.ip_forward" = 1;
-      "net.ipv6.conf.all.forwarding" = 1;
-    };
-
     networking.proxy = mkIf (cfg.enable && !cfg.tun.enable) {
       default = "http://localhost:7890";
-      noProxy = "127.0.0.1,localhost,internal.domain";
+      noProxy = "127.0.0.1,localhost,::1,.lan,.local";
+    };
+
+    networking.firewall = mkIf cfg.share.enable {
+      allowedTCPPorts = [
+        7890
+        7891
+      ];
+      allowedUDPPorts = [ 7891 ];
     };
 
     sops.secrets.airport_mojie_url = {
-      sopsFile = ./mihomo.secrets.yaml;
-    };
-    sops.secrets.airport_dingji_url = {
       sopsFile = ./mihomo.secrets.yaml;
     };
     sops.secrets.airport_ikuuu_url = {
@@ -180,8 +217,9 @@ in
     };
 
     sops.templates."mihomo-config.yaml" = {
-      owner = "mihomo";
-      group = "mihomo";
+      owner = "root";
+      group = "root";
+      mode = "0400";
       restartUnits = [ "mihomo.service" ];
       content = ''
         ${baseConfig}

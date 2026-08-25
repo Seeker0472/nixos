@@ -24,18 +24,20 @@
     programs = {
       kdeconnect.enable = true;
       mihomo = {
-        enable = true;
-        tun.enable = true;
+        enable = false;
+        share.enable = true;
+        tun.enable = false;
       };
+      netbird.enable = true;
       nixvim.development.enable = true;
       thunar.enable = true;
       steam.enable = true;
-      tailscale.enable = true;
+      tailscale.enable = false;
     };
 
     secrets = {
       ageKeyPath = "/persist/home/seeker/.config/sops/age/keys.txt";
-      webdav.enable = true;
+      webdav.enable = false;
     };
 
     services.openssh = {
