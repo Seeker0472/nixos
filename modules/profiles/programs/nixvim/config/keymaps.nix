@@ -8,6 +8,26 @@ let
       silent = true;
     };
   };
+
+  # Keep the same mappings useful outside Zellij while allowing zellij-nav to
+  # cross the boundary when the current Neovim window is already at an edge.
+  zellijNavMap = key: functionName: fallbackDirection: desc: {
+    mode = "n";
+    inherit key;
+    action = lib.nixvim.mkRaw ''
+      function()
+        if vim.env.ZELLIJ ~= nil then
+          require("zellij-nav").${functionName}()
+        else
+          vim.cmd("wincmd ${fallbackDirection}")
+        end
+      end
+    '';
+    options = {
+      inherit desc;
+      silent = true;
+    };
+  };
 in
 {
   keymaps = [
@@ -16,10 +36,10 @@ in
     (normalMap "<leader>q" "<cmd>confirm quit<cr>" "Quit window")
     (normalMap "<leader>Q" "<cmd>confirm qall<cr>" "Quit Neovim")
 
-    (normalMap "<C-h>" "<C-w>h" "Focus left window")
-    (normalMap "<C-j>" "<C-w>j" "Focus lower window")
-    (normalMap "<C-k>" "<C-w>k" "Focus upper window")
-    (normalMap "<C-l>" "<C-w>l" "Focus right window")
+    (zellijNavMap "<C-h>" "left_tab" "h" "Focus left window or pane")
+    (zellijNavMap "<C-j>" "down" "j" "Focus lower window or pane")
+    (zellijNavMap "<C-k>" "up" "k" "Focus upper window or pane")
+    (zellijNavMap "<C-l>" "right_tab" "l" "Focus right window or pane")
     (normalMap "<leader>-" "<cmd>split<cr>" "Split below")
     (normalMap "<leader>|" "<cmd>vsplit<cr>" "Split right")
 

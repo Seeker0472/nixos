@@ -6,6 +6,11 @@
   ];
 
   plugins = {
+    zellij-nav = {
+      enable = true;
+      autoLoad = true;
+    };
+
     telescope = {
       enable = true;
       highlightTheme = null;

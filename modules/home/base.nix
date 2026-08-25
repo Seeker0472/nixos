@@ -6,5 +6,6 @@
     ../profiles/programs/home/fish.nix
     ../profiles/programs/home/tmux/default.nix
     ../profiles/programs/home/yazi.nix
+    ../profiles/programs/home/zellij.nix
   ];
 }
