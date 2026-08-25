@@ -77,7 +77,6 @@ in
               ];
           # modules-center = [ "custom/lrc" ];
           modules-right = [
-            "cava"
             "custom/gotobed"
             "group/sysinfo"
             "group/control"
@@ -91,7 +90,7 @@ in
           "group/sysinfo" = {
             orientation = "inherit";
             drawer = {
-              transition-duration = 500;
+              transition-duration = 220;
               transition-left-to-right = false;
             };
             modules = (lib.optional (ident == "laptop") "battery") ++ [
@@ -104,13 +103,14 @@ in
           "group/control" = {
             orientation = "inherit";
             drawer = {
-              transition-duration = 500;
+              transition-duration = 220;
               transition-left-to-right = false;
             };
             modules = [
               "network"
               "custom/wallpaper"
               "bluetooth"
+              "cava"
             ]
             ++ (lib.optional (ident == "laptop") "backlight");
           };
@@ -142,11 +142,11 @@ in
 
           "network" = {
             # interface = "wlp2*"; # (Optional) To force the use of this interface
-            format-wifi = "{essid} ({signalStrength}%)  ";
-            format-ethernet = "{ipaddr}/{cidr}  ";
+            format-wifi = " {signalStrength}%";
+            format-ethernet = "";
             tooltip-format = "{ifname} via {gwaddr} 󰩠 {ipaddr}";
-            format-linked = "{ifname} (No IP) 󰛵 ";
-            format-disconnected = "Disconnected  ";
+            format-linked = "󰛵";
+            format-disconnected = "";
             format-alt = "{ifname}: {ipaddr}/{cidr}";
             on-click-right = runInRTG pkgs.networkmanager "nmtui-connect" "";
           };
@@ -292,10 +292,10 @@ in
 
           "cava" = {
             # cava_config = "/home/seeker/.config/cava/config_bar";
-            framerate = 30;
+            framerate = 20;
             autosens = 1;
             sensitivity = 5;
-            bars = 14;
+            bars = 10;
             lower_cutoff_freq = 100;
             higher_cutoff_freq = 1000;
             method = "pulse";
