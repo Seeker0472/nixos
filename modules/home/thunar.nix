@@ -10,9 +10,15 @@ let
     "thunar"
     "enable"
   ] false osConfig;
+  hyprlandEnabled = lib.attrByPath [
+    "machine"
+    "de"
+    "hyprland"
+    "enable"
+  ] false osConfig;
 in
 {
-  config = lib.mkIf thunarEnabled {
+  config = lib.mkIf (thunarEnabled && hyprlandEnabled) {
     wayland.windowManager.hyprland.settings = {
       "$fileManager" = "thunar";
       windowrule = [

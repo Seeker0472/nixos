@@ -13,11 +13,21 @@ let
     "machine"
     "type"
   ] "others" osConfig;
-  killRTG = pkgs.writeShellScriptBin "kill-rtg" ''
-    ${pkgs.hyprland}/bin/hyprctl clients -j | \
-    ${pkgs.jq}/bin/jq -r '.[] | select(.class == "RTG") | .pid' | \
-    ${pkgs.findutils}/bin/xargs -r kill -9
-  '';
+  niriEnabled = cfg.niri.enable or false;
+  killRTG = pkgs.writeShellScriptBin "kill-rtg" (
+    if niriEnabled then
+      ''
+        ${pkgs.niri}/bin/niri msg --json windows | \
+        ${pkgs.jq}/bin/jq -r '.[] | select(.app_id == "RTG") | .pid' | \
+        ${pkgs.findutils}/bin/xargs -r kill -9
+      ''
+    else
+      ''
+        ${pkgs.hyprland}/bin/hyprctl clients -j | \
+        ${pkgs.jq}/bin/jq -r '.[] | select(.class == "RTG") | .pid' | \
+        ${pkgs.findutils}/bin/xargs -r kill -9
+      ''
+  );
 
   #runInRTG = pkg: bin: args: "${killRTG}/bin/kill-rtg && ${pkgs.kitty}/bin/kitty -o font_size=14 -o confirm_os_window_close=0 --class RTG ${
   #  lib.getExe pkg
@@ -54,10 +64,17 @@ in
           position = "top";
           height = 32;
 
-          modules-left = [
-            "hyprland/workspaces"
-            "hyprland/window"
-          ];
+          modules-left =
+            if niriEnabled then
+              [
+                "niri/workspaces"
+                "niri/window"
+              ]
+            else
+              [
+                "hyprland/workspaces"
+                "hyprland/window"
+              ];
           # modules-center = [ "custom/lrc" ];
           modules-right = [
             "cava"
@@ -94,6 +111,10 @@ in
               "bluetooth"
             ]
             ++ (lib.optional (ident == "laptop") "backlight");
+          };
+
+          "niri/workspaces" = {
+            format = "{index}";
           };
 
           "network" = {

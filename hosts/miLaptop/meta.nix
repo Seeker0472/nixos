@@ -9,7 +9,8 @@
     impermanence.enable = true;
 
     de = {
-      hyprland.enable = true;
+      hyprland.enable = false;
+      niri.enable = true;
       waybar.enable = true;
       wofi.enable = true;
       mako.enable = true;

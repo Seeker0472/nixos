@@ -8,9 +8,10 @@ let
     "machine"
     "de"
   ] { } osConfig;
+  compositorEnabled = (cfg.hyprland.enable or false) || (cfg.niri.enable or false);
 in
 {
-  config = lib.mkIf (cfg.hyprland.enable or false) {
+  config = lib.mkIf compositorEnabled {
     xdg.configFile = lib.mkMerge [
       (lib.mkIf (cfg.wofi.enable or false) {
         "wofi".source = ./wofi;

@@ -5,6 +5,7 @@
 let
   profileModules = [
     ./profiles/de/hyprland/default.nix
+    ./profiles/de/niri/default.nix
     ./profiles/de/options.nix
     ./profiles/impermanence/btrfs.nix
     ./profiles/impermanence/config.nix

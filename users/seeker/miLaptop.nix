@@ -9,6 +9,13 @@
 let
   impermanenceEnabled = lib.attrByPath [ "machine" "impermanence" "enable" ] false osConfig;
   persistDir = lib.attrByPath [ "machine" "btrfs" "impermanence" "persistdir" ] null osConfig;
+  hyprlandEnabled = lib.attrByPath [ "machine" "de" "hyprland" "enable" ] false osConfig;
+  niriEnabled = lib.attrByPath [ "machine" "de" "niri" "enable" ] false osConfig;
+  lockCommand =
+    if niriEnabled then
+      "${pkgs.systemd}/bin/loginctl lock-session"
+    else
+      "${pkgs.hyprlock}/bin/hyprlock";
 in
 {
   imports = [
@@ -46,24 +53,48 @@ in
                     action = "exec";
                     command = "${pkgs.kitty}/bin/kitty";
                   }
+                ]
+                ++ lib.optionals hyprlandEnabled [
                   {
                     id = "command-display-settings";
                     label = "Display Settings";
                     action = "exec";
                     command = "${pkgs.nwg-displays}/bin/nwg-displays";
                   }
+                ]
+                ++ lib.optionals niriEnabled [
+                  {
+                    id = "command-display-settings";
+                    label = "Display Status";
+                    action = "exec";
+                    command = "${pkgs.kitty}/bin/kitty --class RTG --hold ${pkgs.niri}/bin/niri msg outputs";
+                  }
+                ]
+                ++ [
                   {
                     id = "command-next-wallpaper";
                     label = "Next Wallpaper";
                     action = "exec";
                     command = "${pkgs.wpaperd}/bin/wpaperctl next-wallpaper";
                   }
+                ]
+                ++ lib.optionals hyprlandEnabled [
                   {
                     id = "command-reload-hyprland";
                     label = "Reload Hyprland";
                     action = "exec";
                     command = "${pkgs.hyprland}/bin/hyprctl reload";
                   }
+                ]
+                ++ lib.optionals niriEnabled [
+                  {
+                    id = "command-reload-niri";
+                    label = "Reload Niri";
+                    action = "exec";
+                    command = "${pkgs.niri}/bin/niri msg action load-config-file --path ${config.home.homeDirectory}/.config/niri/config.kdl";
+                  }
+                ]
+                ++ [
                   {
                     id = "command-brightness";
                     label = "Brightness";
@@ -91,7 +122,7 @@ in
                     id = "power-lock";
                     label = "Lock";
                     action = "exec";
-                    command = "${pkgs.hyprlock}/bin/hyprlock";
+                    command = lockCommand;
                   }
                   {
                     id = "power-poweroff";
@@ -130,6 +161,9 @@ in
         };
       };
 
+    }
+
+    (lib.mkIf hyprlandEnabled {
       wayland.windowManager.hyprland.settings = {
         "$menu" = lib.mkForce "aloha --root apps";
         bind = lib.mkAfter [
@@ -147,7 +181,7 @@ in
           "size (monitor_w*0.7) (monitor_h*0.6), match:tag aloha_launcher*"
         ];
       };
-    }
+    })
 
     (lib.mkIf (impermanenceEnabled && persistDir != null) {
       home.persistence."${persistDir}" = {
@@ -165,6 +199,7 @@ in
           ".config/fcitx5"
           ".config/dconf"
           ".config/hypr"
+          ".config/niri"
           ".local/share/hyprland"
           ".local/state/nvim"
           ".config/kdeconnect"

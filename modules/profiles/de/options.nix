@@ -7,22 +7,27 @@
 }:
 let
   cfg = config.machine.de;
-  custom_cursor = {
-    name = "Bibata-Modern-Amber";
-    package = pkgs.bibata-cursors;
-    size = 32;
-  };
+  compositorEnabled = cfg.hyprland.enable || cfg.niri.enable;
 in
 {
   options.machine.de = {
     hyprland.enable = lib.mkEnableOption "Hyprland, a dynamic tiling Wayland compositor that doesn't sacrifice on looks";
+    niri.enable = lib.mkEnableOption "niri, a scrollable-tiling Wayland compositor";
     waybar.enable = lib.mkEnableOption "Waybar, a highly customizable Wayland bar";
     wofi.enable = lib.mkEnableOption "wofi, a launcher and menu program for Wayland compositors";
     mako.enable = lib.mkEnableOption "mako, a lightweight notification daemon for Wayland";
     wpaperd.enable = lib.mkEnableOption "wpaperd, a modern wallpaper daemon for Wayland";
   };
   config = lib.mkMerge [
-    (lib.mkIf cfg.hyprland.enable {
+    {
+      assertions = [
+        {
+          assertion = !(cfg.hyprland.enable && cfg.niri.enable);
+          message = "machine.de.hyprland and machine.de.niri cannot be enabled at the same time";
+        }
+      ];
+    }
+    (lib.mkIf compositorEnabled {
       machine.de = {
         waybar.enable = lib.mkDefault true;
         wofi.enable = lib.mkDefault true;
