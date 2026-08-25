@@ -2,6 +2,7 @@ let
   files = {
     admin = ./ssh/admin.secrets.json;
     external = ./ssh/external.secrets.json;
+    DiagonAlley = ./ssh/DiagonAlley.secrets.json;
     miLaptop = ./ssh/miLaptop.secrets.json;
     devVM = ./ssh/devVM.secrets.json;
     nixos-wsl = ./ssh/nixos-wsl.secrets.json;
@@ -10,6 +11,7 @@ let
   readPublicKey = file: (builtins.fromJSON (builtins.readFile file)).public_key_unencrypted;
   adminKey = readPublicKey files.admin;
   clientKeys = {
+    DiagonAlley = readPublicKey files.DiagonAlley;
     miLaptop = readPublicKey files.miLaptop;
     devVM = readPublicKey files.devVM;
     nixos-wsl = readPublicKey files.nixos-wsl;
@@ -28,6 +30,7 @@ in
 
   authorizedKeys = [
     adminKey
+    clientKeys.DiagonAlley
     clientKeys.miLaptop
     clientKeys.devVM
     clientKeys.nixos-wsl

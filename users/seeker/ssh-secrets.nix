@@ -11,6 +11,7 @@ let
   deploySecrets = lib.attrByPath [ "machine" "secrets" "deploy" ] false osConfig;
   ageKeyPath = lib.attrByPath [ "machine" "secrets" "ageKeyPath" ] null osConfig;
   isAdminHost = builtins.elem hostName [
+    "DiagonAlley"
     "miLaptop"
     "nixos-wsl"
   ];
@@ -36,6 +37,7 @@ in
     ];
 
     programs.ssh.settings = {
+      DiagonAlley = meshHost "seeker";
       miLaptop = meshHost "seeker";
       devVM = meshHost "seeker";
       nixos-wsl = meshHost "seeker";

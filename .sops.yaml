@@ -4,6 +4,7 @@ keys:
   - &dev_vm_age age1jj0p70p8jtg2vmfmnyrq0fxpwepmqk0dqlnwr0vnucnv08y9fsfq7a5yjr
   - &gpu01_age age10fuvaphy9qmn8csm6vz5v2mzec8pjasz78ed9us7yq5y54hvv4jqjfn6qk
   - &kings_cross_age age14j7f9xqvauh32wknv9tug4wgaxjp5wyexxk0fd96ju2d9h4f0uxspnalww
+  - &diagonal_alley_age age1q90fneddr9vx43h0lsdrrqc7puw0nxekxe9mlxce9uwpmm3uzeas6fqfhp
 
 creation_rules:
   - path_regex: hosts/KingsCross/.*secrets\.yaml$
@@ -14,6 +15,14 @@ creation_rules:
           - *recovery_age
           - *kings_cross_age
 
+  - path_regex: users/seeker/ssh/admin\.secrets\.json$
+    unencrypted_suffix: _unencrypted
+    key_groups:
+      - age:
+          - *admin_seeker_age
+          - *recovery_age
+          - *diagonal_alley_age
+
   - path_regex: users/seeker/ssh/github\.secrets\.json$
     unencrypted_suffix: _unencrypted
     key_groups:
@@ -22,6 +31,7 @@ creation_rules:
           - *recovery_age
           - *dev_vm_age
           - *gpu01_age
+          - *diagonal_alley_age
 
   - path_regex: users/seeker/ssh/external\.secrets\.json$
     unencrypted_suffix: _unencrypted
@@ -31,14 +41,40 @@ creation_rules:
           - *recovery_age
           - *dev_vm_age
           - *gpu01_age
+          - *diagonal_alley_age
 
-  - path_regex: (users/seeker/ssh/devVM\.secrets\.json|modules/profiles/secrets/sys\.secrets\.yaml)$
+  - path_regex: users/seeker/ssh/devVM\.secrets\.json$
     unencrypted_suffix: _unencrypted
     key_groups:
       - age:
           - *admin_seeker_age
           - *recovery_age
           - *dev_vm_age
+
+  - path_regex: users/seeker/ssh/DiagonAlley\.secrets\.json$
+    unencrypted_suffix: _unencrypted
+    key_groups:
+      - age:
+          - *admin_seeker_age
+          - *recovery_age
+          - *diagonal_alley_age
+
+  - path_regex: modules/profiles/secrets/sys\.secrets\.yaml$
+    unencrypted_suffix: _unencrypted
+    key_groups:
+      - age:
+          - *admin_seeker_age
+          - *recovery_age
+          - *dev_vm_age
+          - *diagonal_alley_age
+
+  - path_regex: modules/profiles/programs/mihomo/mihomo\.secrets\.yaml$
+    unencrypted_suffix: _unencrypted
+    key_groups:
+      - age:
+          - *admin_seeker_age
+          - *recovery_age
+          - *diagonal_alley_age
 
   - path_regex: .*secrets\.(yaml|json)$
     unencrypted_suffix: _unencrypted

@@ -5,10 +5,11 @@ SOPS uses two human-managed age identities:
 - `admin_seeker_age` is installed on `miLaptop` and `nixos-wsl` for daily editing.
 - `recovery_age` is kept offline and is a recipient for every encrypted file.
 
-`devVM` has a separate runtime identity. It can decrypt the shared external and
-GitHub keys, its own SSH client key, and the system secrets already consumed by
-devVM. `gpu01` also has a separate runtime identity, scoped to the shared
-external and GitHub keys.
+`devVM` and `DiagonAlley` have separate runtime identities. Each can decrypt its
+own SSH client key and the shared secrets consumed by that host. `DiagonAlley`
+also receives the administrator SSH key so it retains VPS maintenance access.
+`gpu01` has a separate runtime identity, scoped to the shared external and
+GitHub keys.
 The bootstrap identities live under the git-ignored `.secrets/age/` directory.
 The SOPS identity itself must be installed out of band because it cannot decrypt
 itself.
@@ -19,10 +20,10 @@ itself.
 - `users/seeker/ssh/external.secrets.json` contains the shared default key for
   outbound SSH to external machines.
 - `users/seeker/ssh/github.secrets.json` contains the single GitHub key shared by
-  the three managed development clients.
+  the four managed development clients.
 - `users/seeker/ssh/admin.secrets.json` retains the existing administrator key and is
-  deployed only to `miLaptop` and `nixos-wsl`.
-- `gpu01` receives the three development public keys in `authorized_keys` and
+  deployed only to `DiagonAlley`, `miLaptop`, and `nixos-wsl`.
+- `gpu01` receives the four development public keys in `authorized_keys` and
   the shared external and GitHub private keys, but no mesh or administrator
   private key.
 
@@ -42,6 +43,9 @@ activating a configuration that consumes secrets. Install
 `.secrets/age/gpu01.txt` at the same path on gpu01. Keep
 `.secrets/age/recovery.txt` offline after confirming that it decrypts the
 repository.
+
+Install the dedicated DiagonAlley identity out of band at
+`/persist/home/seeker/.config/sops/age/keys.txt` before its first activation.
 
 Before the first activation on an existing `miLaptop`, copy the old
 `/persist/home/seeker/age/keys` identity to

@@ -2,6 +2,7 @@
 let
   lib = inputs.nixpkgs.lib;
   miLaptop = import ../hosts/miLaptop/meta.nix;
+  diagonalAlley = import ../hosts/DiagonAlley/meta.nix;
   devVM = import ../hosts/devVM/meta.nix;
   kingsCross = import ../hosts/KingsCross/meta.nix;
 
@@ -68,6 +69,17 @@ in
 {
   flake.nixosConfigurations = {
     miLaptop = miLaptopConfiguration;
+    DiagonAlley = mkNixos {
+      inherit (diagonalAlley) system;
+      baseModules = [
+        ./common/nixpkgs-settings.nix
+        ../modules/bundles/desktop.nix
+      ];
+      modules = [
+        ../hosts/DiagonAlley
+        ../users/seeker
+      ];
+    };
     devVM = devVMConfiguration;
     nixos-wsl = wslConfiguration;
     "King'sCross" = kingsCrossConfiguration;
