@@ -37,6 +37,7 @@ Rectangle {
         ColumnLayout {
             spacing: 1
             Layout.fillWidth: true
+            Layout.minimumWidth: 0
 
             Text {
                 text: root.title
@@ -45,6 +46,8 @@ Rectangle {
                 font.pixelSize: 12
                 elide: Text.ElideRight
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                clip: true
             }
 
             Text {
@@ -55,6 +58,8 @@ Rectangle {
                 font.pixelSize: 10
                 elide: Text.ElideRight
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                clip: true
             }
         }
 

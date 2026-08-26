@@ -43,6 +43,26 @@ let
       cpu=$(${pkgs.gawk}/bin/awk -v busy="$((total_delta - idle_delta))" -v total="$total_delta" 'BEGIN { printf "%.0f", (busy / total) * 100 }')
     fi
 
+    cpu_frequency=0
+    cpu_frequency_sum=0
+    cpu_frequency_count=0
+    for frequency_file in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_cur_freq; do
+      if [ -r "$frequency_file" ]; then
+        frequency="$(${pkgs.coreutils}/bin/cat "$frequency_file" 2>/dev/null || true)"
+        if [[ "$frequency" =~ ^[0-9]+$ ]]; then
+          cpu_frequency_sum=$((cpu_frequency_sum + frequency))
+          cpu_frequency_count=$((cpu_frequency_count + 1))
+        fi
+      fi
+    done
+    if (( cpu_frequency_count > 0 )); then
+      cpu_frequency=$((cpu_frequency_sum / cpu_frequency_count / 1000))
+    else
+      cpu_frequency="$(${pkgs.gawk}/bin/awk '/^cpu MHz/ { sum += $4; count++ } END { if (count > 0) printf "%.0f", sum / count; else print 0 }' /proc/cpuinfo)"
+    fi
+    cpu_cores="$(${pkgs.coreutils}/bin/nproc 2>/dev/null || printf '0')"
+    load_average="$(${pkgs.gawk}/bin/awk '{ print $1 + 0 }' /proc/loadavg)"
+
     memory=0
     memory_used=0
     memory_total=0
@@ -186,6 +206,9 @@ let
       --arg bluetoothAddress "$bluetooth_address" \
       --arg bluetoothConnected "$bluetooth_connected" \
       --argjson cpu "''${cpu:-0}" \
+      --argjson cpuFrequencyMHz "''${cpu_frequency:-0}" \
+      --argjson cpuCores "''${cpu_cores:-0}" \
+      --argjson loadAverage "''${load_average:-0}" \
       --argjson memory "''${memory:-0}" \
       --argjson memoryUsed "''${memory_used:-0}" \
       --argjson memoryTotal "''${memory_total:-0}" \
@@ -199,7 +222,7 @@ let
       --argjson bluetoothPowered "$bluetooth_powered" \
       --argjson onBattery "$on_battery" \
       --argjson privacy "$privacy_json" \
-      '{cpu: $cpu, memory: $memory, memoryUsed: $memoryUsed, memoryTotal: $memoryTotal, swapUsed: $swapUsed, swapTotal: $swapTotal, temperature: $temperature, battery: $battery, batteryTime: $batteryTime, brightness: $brightness, network: $network, networkType: $networkType, networkSignal: $networkSignal, networkInterface: $networkInterface, networkAddress: $networkAddress, networkGateway: $networkGateway, batteryStatus: $batteryStatus, wifiEnabled: $wifiEnabled, bluetoothPowered: $bluetoothPowered, bluetoothController: $bluetoothController, bluetoothAddress: $bluetoothAddress, bluetoothConnected: $bluetoothConnected, onBattery: $onBattery} + $privacy'
+      '{cpu: $cpu, cpuFrequencyMHz: $cpuFrequencyMHz, cpuCores: $cpuCores, loadAverage: $loadAverage, memory: $memory, memoryUsed: $memoryUsed, memoryTotal: $memoryTotal, swapUsed: $swapUsed, swapTotal: $swapTotal, temperature: $temperature, battery: $battery, batteryTime: $batteryTime, brightness: $brightness, network: $network, networkType: $networkType, networkSignal: $networkSignal, networkInterface: $networkInterface, networkAddress: $networkAddress, networkGateway: $networkGateway, batteryStatus: $batteryStatus, wifiEnabled: $wifiEnabled, bluetoothPowered: $bluetoothPowered, bluetoothController: $bluetoothController, bluetoothAddress: $bluetoothAddress, bluetoothConnected: $bluetoothConnected, onBattery: $onBattery} + $privacy'
   '';
 
   cavaConfig = pkgs.writeText "niri-shell-cava.conf" ''

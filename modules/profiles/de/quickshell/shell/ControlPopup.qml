@@ -8,6 +8,8 @@ Rectangle {
     property string page: "overview"
     property var screen: null
     property var parentWindow: null
+    readonly property int metricIconWidth: 26
+    readonly property int metricBarWidth: 120
 
     focus: true
     color: Theme.background
@@ -68,6 +70,14 @@ Rectangle {
             lines.push(time + suffix)
         }
         return lines.join("\n")
+    }
+
+    function cpuDetails() {
+        var details = []
+        if (ShellState.cpuFrequencyMHz > 0) details.push(ShellState.cpuFrequencyMHz + " MHz")
+        if (ShellState.cpuCores > 0) details.push(ShellState.cpuCores + " cores")
+        details.push("load " + ShellState.loadAverage.toFixed(2))
+        return details.join(" · ")
     }
 
     ColumnLayout {
@@ -140,6 +150,8 @@ Rectangle {
                         Rectangle {
                             id: cpuCard
                             Layout.fillWidth: true
+                            Layout.minimumWidth: 0
+                            Layout.preferredWidth: 1
                             Layout.preferredHeight: 76
                             radius: Theme.smallRadius
                             color: Theme.backgroundElevated
@@ -150,9 +162,25 @@ Rectangle {
                                 anchors.fill: parent
                                 anchors.margins: 11
                                 spacing: 3
-                                Text { text: "CPU"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
-                                Text { text: ShellState.cpuUsage + "%"; color: root.metricAccent(ShellState.cpuUsage, Theme.text); font.pixelSize: 21; font.family: "Maple Mono NF CN"; font.weight: Font.DemiBold }
-                                MeterBar { value: ShellState.cpuUsage / 100; fillColor: root.metricAccent(ShellState.cpuUsage, Theme.accent); Layout.fillWidth: true }
+                                Text {
+                                    text: "CPU"
+                                    color: Theme.muted
+                                    font.pixelSize: 10
+                                    font.family: "Maple Mono NF CN"
+                                }
+                                Text {
+                                    text: ShellState.cpuUsage + "%"
+                                    color: root.metricAccent(ShellState.cpuUsage, Theme.text)
+                                    font.pixelSize: 21
+                                    font.family: "Maple Mono NF CN"
+                                    font.weight: Font.DemiBold
+                                }
+                                MeterBar {
+                                    value: ShellState.cpuUsage / 100
+                                    fillColor: root.metricAccent(ShellState.cpuUsage, Theme.accent)
+                                    Layout.fillWidth: true
+                                    Layout.minimumWidth: 0
+                                }
                             }
 
                             MouseArea {
@@ -162,12 +190,19 @@ Rectangle {
                                 hoverEnabled: true
                                 onClicked: ShellState.popupPage = "system"
                             }
-                            ToolTip { visible: cpuMouse.containsMouse; text: "CPU usage: " + ShellState.cpuUsage + "%"; delay: 500 }
+                            HoverTooltip {
+                                targetItem: cpuCard
+                                hovered: cpuMouse.containsMouse
+                                text: "CPU usage: " + ShellState.cpuUsage + "%\n" + root.cpuDetails()
+                                delay: 500
+                            }
                         }
 
                         Rectangle {
                             id: memoryCard
                             Layout.fillWidth: true
+                            Layout.minimumWidth: 0
+                            Layout.preferredWidth: 1
                             Layout.preferredHeight: 76
                             radius: Theme.smallRadius
                             color: Theme.backgroundElevated
@@ -178,9 +213,25 @@ Rectangle {
                                 anchors.fill: parent
                                 anchors.margins: 11
                                 spacing: 3
-                                Text { text: "Memory"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
-                                Text { text: ShellState.memoryUsage + "%"; color: root.metricAccent(ShellState.memoryUsage, Theme.text); font.pixelSize: 21; font.family: "Maple Mono NF CN"; font.weight: Font.DemiBold }
-                                MeterBar { value: ShellState.memoryUsage / 100; fillColor: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt); Layout.fillWidth: true }
+                                Text {
+                                    text: "Memory"
+                                    color: Theme.muted
+                                    font.pixelSize: 10
+                                    font.family: "Maple Mono NF CN"
+                                }
+                                Text {
+                                    text: ShellState.memoryUsage + "%"
+                                    color: root.metricAccent(ShellState.memoryUsage, Theme.text)
+                                    font.pixelSize: 21
+                                    font.family: "Maple Mono NF CN"
+                                    font.weight: Font.DemiBold
+                                }
+                                MeterBar {
+                                    value: ShellState.memoryUsage / 100
+                                    fillColor: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
+                                    Layout.fillWidth: true
+                                    Layout.minimumWidth: 0
+                                }
                             }
 
                             MouseArea {
@@ -190,7 +241,7 @@ Rectangle {
                                 hoverEnabled: true
                                 onClicked: ShellState.popupPage = "system"
                             }
-                            ToolTip { visible: memoryMouse.containsMouse; text: root.memoryTooltip(); delay: 500 }
+                            HoverTooltip { targetItem: memoryCard; hovered: memoryMouse.containsMouse; text: root.memoryTooltip(); delay: 500 }
                         }
                     }
 
@@ -239,18 +290,51 @@ Rectangle {
                         }
                     }
 
-                    RowLayout {
+                    ActionTile {
+                        icon: "󰕾"
+                        title: "Audio"
+                        subtitle: ShellState.audioShowSource ? ShellState.sourceName : ShellState.sinkName
+                        accent: Theme.accentAlt
                         Layout.fillWidth: true
-                        spacing: 8
-                        ActionTile { icon: "󰕾"; title: "Audio"; subtitle: ShellState.audioShowSource ? ShellState.sourceName : ShellState.sinkName; accent: Theme.accentAlt; Layout.fillWidth: true; onClicked: ShellState.popupPage = "audio" }
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 4
-                            Text { text: "Brightness"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
-                            RowLayout {
+                        Layout.minimumWidth: 0
+                        onClicked: ShellState.popupPage = "audio"
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 48
+                        radius: Theme.smallRadius
+                        color: Theme.backgroundElevated
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: 12
+                            anchors.rightMargin: 12
+                            spacing: 10
+
+                            Text {
+                                text: "Brightness"
+                                color: Theme.muted
+                                font.family: "Maple Mono NF CN"
+                                font.pixelSize: 11
+                                Layout.preferredWidth: 66
+                            }
+
+                            Text {
+                                text: ShellState.brightness + "%"
+                                color: Theme.text
+                                font.family: "Maple Mono NF CN"
+                                font.pixelSize: 12
+                                Layout.preferredWidth: 34
+                                horizontalAlignment: Text.AlignRight
+                            }
+
+                            ValueSlider {
+                                value: ShellState.brightness / 100
+                                accent: Theme.warning
                                 Layout.fillWidth: true
-                                Text { text: ShellState.brightness + "%"; color: Theme.text; font.pixelSize: 12; font.family: "Maple Mono NF CN" }
-                                ValueSlider { value: ShellState.brightness / 100; accent: Theme.warning; Layout.fillWidth: true; onMoved: ShellState.setBrightness(value) }
+                                Layout.minimumWidth: 0
+                                onMoved: ShellState.setBrightness(value)
                             }
                         }
                     }
@@ -271,7 +355,8 @@ Rectangle {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 58
+                        Layout.preferredHeight: 72
+                        clip: true
                         radius: Theme.smallRadius
                         color: Theme.backgroundElevated
                         border.width: 1
@@ -284,9 +369,14 @@ Rectangle {
                                 color: root.metricAccent(ShellState.cpuUsage, Theme.accent)
                                 font.family: "Maple Mono NF CN"
                                 font.pixelSize: 22
+                                horizontalAlignment: Text.AlignHCenter
+                                Layout.preferredWidth: root.metricIconWidth
+                                Layout.minimumWidth: root.metricIconWidth
+                                Layout.maximumWidth: root.metricIconWidth
                             }
                             ColumnLayout {
                                 Layout.fillWidth: true
+                                Layout.minimumWidth: 0
                                 spacing: 2
                                 Text {
                                     text: "CPU"
@@ -299,19 +389,35 @@ Rectangle {
                                     color: Theme.muted
                                     font.family: "Maple Mono NF CN"
                                     font.pixelSize: 10
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                    Layout.minimumWidth: 0
+                                }
+                                Text {
+                                    text: root.cpuDetails()
+                                    color: Theme.subtle
+                                    font.family: "Maple Mono NF CN"
+                                    font.pixelSize: 9
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                    Layout.minimumWidth: 0
                                 }
                             }
                             MeterBar {
                                 value: ShellState.cpuUsage / 100
                                 fillColor: root.metricAccent(ShellState.cpuUsage, Theme.accent)
-                                Layout.preferredWidth: 120
+                                Layout.preferredWidth: root.metricBarWidth
+                                Layout.minimumWidth: root.metricBarWidth
+                                Layout.maximumWidth: root.metricBarWidth
+                                Layout.alignment: Qt.AlignVCenter
                             }
                         }
                     }
 
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 70
+                        Layout.preferredHeight: 72
+                        clip: true
                         radius: Theme.smallRadius
                         color: Theme.backgroundElevated
                         border.width: 1
@@ -324,9 +430,14 @@ Rectangle {
                                 color: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
                                 font.family: "Maple Mono NF CN"
                                 font.pixelSize: 22
+                                horizontalAlignment: Text.AlignHCenter
+                                Layout.preferredWidth: root.metricIconWidth
+                                Layout.minimumWidth: root.metricIconWidth
+                                Layout.maximumWidth: root.metricIconWidth
                             }
                             ColumnLayout {
                                 Layout.fillWidth: true
+                                Layout.minimumWidth: 0
                                 spacing: 2
                                 Text {
                                     text: "Memory"
@@ -350,7 +461,10 @@ Rectangle {
                             MeterBar {
                                 value: ShellState.memoryUsage / 100
                                 fillColor: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
-                                Layout.preferredWidth: 120
+                                Layout.preferredWidth: root.metricBarWidth
+                                Layout.minimumWidth: root.metricBarWidth
+                                Layout.maximumWidth: root.metricBarWidth
+                                Layout.alignment: Qt.AlignVCenter
                             }
                         }
                     }
@@ -410,7 +524,7 @@ Rectangle {
                     anchors.fill: parent
                     spacing: 12
                     Text { text: "Output"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
-                    Text { text: ShellState.sinkName; color: Theme.text; font.pixelSize: 14; font.family: "Maple Mono NF CN"; elide: Text.ElideRight; Layout.fillWidth: true }
+                    Text { text: ShellState.sinkName; color: Theme.text; font.pixelSize: 14; font.family: "Maple Mono NF CN"; elide: Text.ElideRight; maximumLineCount: 1; clip: true; Layout.fillWidth: true; Layout.minimumWidth: 0 }
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: ShellState.sinkMuted ? "Muted" : Math.round(ShellState.sinkVolume * 100) + "%"; color: Theme.text; font.pixelSize: 12; font.family: "Maple Mono NF CN" }
@@ -424,7 +538,7 @@ Rectangle {
                     }
                     Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: Theme.surfaceStrong }
                     Text { text: "Input"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
-                    Text { text: ShellState.sourceName; color: Theme.text; font.pixelSize: 14; font.family: "Maple Mono NF CN"; elide: Text.ElideRight; Layout.fillWidth: true }
+                    Text { text: ShellState.sourceName; color: Theme.text; font.pixelSize: 14; font.family: "Maple Mono NF CN"; elide: Text.ElideRight; maximumLineCount: 1; clip: true; Layout.fillWidth: true; Layout.minimumWidth: 0 }
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: ShellState.sourceMuted ? "Muted" : Math.round(ShellState.sourceVolume * 100) + "%"; color: Theme.text; font.pixelSize: 12; font.family: "Maple Mono NF CN" }
@@ -497,6 +611,7 @@ Rectangle {
                     Repeater {
                         model: ShellState.bluetoothDevices
                         delegate: Rectangle {
+                            id: deviceCard
                             required property var modelData
                             Layout.fillWidth: true
                             Layout.preferredHeight: 48
@@ -515,7 +630,7 @@ Rectangle {
                                 }
                                 Text { visible: modelData.battery >= 0; text: Math.round(modelData.battery) + "%"; color: Theme.text; font.family: "Maple Mono NF CN"; font.pixelSize: 11 }
                             }
-                            ToolTip { visible: deviceMouse.containsMouse; text: modelData.name + "\n" + (modelData.address || "Address unavailable") + (modelData.battery >= 0 ? "\nBattery: " + Math.round(modelData.battery) + "%" : ""); delay: 450 }
+                            HoverTooltip { targetItem: deviceCard; hovered: deviceMouse.containsMouse; text: modelData.name + "\n" + (modelData.address || "Address unavailable") + (modelData.battery >= 0 ? "\nBattery: " + Math.round(modelData.battery) + "%" : ""); delay: 450 }
                             MouseArea {
                                 id: deviceMouse
                                 anchors.fill: parent

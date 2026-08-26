@@ -1,6 +1,5 @@
 import QtQuick 6.0
 import QtQuick.Layouts 6.0
-import QtQuick.Controls 6.0
 
 Rectangle {
     id: root
@@ -21,9 +20,9 @@ Rectangle {
     implicitHeight: 30
     opacity: root.blinking ? root.pulseOpacity : 1
     radius: Theme.smallRadius
-    color: selected ? Qt.darker(root.accent, 170) : (mouse.containsMouse ? Theme.surface : Theme.backgroundElevated)
+    color: selected ? Theme.surface : (mouse.containsMouse ? Theme.surface : "transparent")
     border.width: mouse.containsMouse || selected ? 1 : 0
-    border.color: root.accent
+    border.color: selected ? root.accent : Theme.surfaceStrong
 
     Behavior on color {
         ColorAnimation { duration: 140 }
@@ -77,8 +76,9 @@ Rectangle {
         }
     }
 
-    ToolTip {
-        visible: mouse.containsMouse && root.tooltip.length > 0
+    HoverTooltip {
+        targetItem: root
+        hovered: mouse.containsMouse
         text: root.tooltip
         delay: 550
     }

@@ -1,6 +1,5 @@
 import QtQuick 6.0
 import QtQuick.Layouts 6.0
-import QtQuick.Controls 6.0
 import Quickshell
 import Quickshell.Io
 
@@ -68,8 +67,9 @@ Item {
         }
     }
 
-    ToolTip {
-        visible: mouse.containsMouse
+    HoverTooltip {
+        targetItem: root
+        hovered: mouse.containsMouse
         text: root.paused ? "Audio visualizer paused" : "Audio visualizer"
         delay: 550
     }

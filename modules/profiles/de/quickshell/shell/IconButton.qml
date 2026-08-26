@@ -1,6 +1,5 @@
 import QtQuick 6.0
 import QtQuick.Layouts 6.0
-import QtQuick.Controls 6.0
 
 Rectangle {
     id: root
@@ -56,8 +55,9 @@ Rectangle {
         onClicked: root.clicked()
     }
 
-    ToolTip {
-        visible: mouse.containsMouse && root.tooltip.length > 0
+    HoverTooltip {
+        targetItem: root
+        hovered: mouse.containsMouse
         text: root.tooltip
         delay: 550
     }

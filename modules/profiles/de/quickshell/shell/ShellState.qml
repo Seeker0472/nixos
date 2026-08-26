@@ -17,6 +17,9 @@ Singleton {
     property int focusedWorkspaceIndex: 1
 
     property int cpuUsage: 0
+    property int cpuFrequencyMHz: 0
+    property int cpuCores: 0
+    property real loadAverage: 0
     property int memoryUsage: 0
     property int memoryUsedMiB: 0
     property int memoryTotalMiB: 0
@@ -181,6 +184,9 @@ Singleton {
             return;
         }
         cpuUsage = clampPercent(metrics.cpu);
+        cpuFrequencyMHz = Math.max(0, Math.round(Number(metrics.cpuFrequencyMHz || 0)));
+        cpuCores = Math.max(0, Math.round(Number(metrics.cpuCores || 0)));
+        loadAverage = Math.max(0, Number(metrics.loadAverage || 0));
         memoryUsage = clampPercent(metrics.memory);
         memoryUsedMiB = Number(metrics.memoryUsed || 0);
         memoryTotalMiB = Number(metrics.memoryTotal || 0);

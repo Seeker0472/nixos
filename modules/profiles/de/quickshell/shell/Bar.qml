@@ -3,6 +3,7 @@ import QtQuick.Layouts 6.0
 import QtQuick.Controls 6.0
 import Quickshell
 import Quickshell.Services.SystemTray
+import Quickshell.Widgets
 import Quickshell.Wayland._IdleInhibitor
 
 Item {
@@ -81,6 +82,22 @@ Item {
         item.display(root.panelWindow, Math.round(point.x), Math.round(point.y))
     }
 
+    function trayIconSource(item) {
+        if (!item) return ""
+
+        var icon = String(item.icon || "")
+        if (icon.length > 0) {
+            // StatusNotifierItem normally supplies a file/data URL, but some
+            // clients send a theme icon name instead.
+            if (icon.indexOf(":") >= 0 || icon.indexOf("/") >= 0) return icon
+            var themeIcon = Quickshell.iconPath(icon, true)
+            if (themeIcon.length > 0) return themeIcon
+            return ""
+        }
+
+        return ""
+    }
+
     Rectangle {
         anchors.fill: parent
         anchors.leftMargin: 8
@@ -97,27 +114,13 @@ Item {
         anchors.fill: parent
         anchors.leftMargin: 20
         anchors.rightMargin: 20
-        spacing: 7
-
-        IconButton {
-            icon: "◈"
-            label: "NIRI"
-            tooltip: "Open control center"
-            iconColor: Theme.accent
-            onClicked: ShellState.toggleControlCenter(root.screen)
-        }
-
-        Rectangle {
-            Layout.preferredWidth: 1
-            Layout.preferredHeight: 20
-            color: Theme.surfaceStrong
-        }
+        spacing: 6
 
         WorkspaceStrip {
             screen: root.screen
-            Layout.preferredWidth: Math.min(350, implicitWidth)
+            Layout.preferredWidth: Math.min(300, Math.max(70, implicitWidth))
             Layout.minimumWidth: 70
-            Layout.maximumWidth: 350
+            Layout.maximumWidth: 300
         }
 
         Text {
@@ -158,8 +161,11 @@ Item {
         StatusPill {
             icon: "󰻠"
             value: ShellState.cpuUsage + "%"
-            tooltip: "CPU: " + ShellState.cpuUsage + "% (" + ShellState.metricSeverity(ShellState.cpuUsage) + ")"
-            accent: root.metricAccent(ShellState.cpuUsage, Theme.accent)
+            tooltip: "CPU: " + ShellState.cpuUsage + "% (" + ShellState.metricSeverity(ShellState.cpuUsage) + ")" +
+                (ShellState.cpuFrequencyMHz > 0 ? "\nFrequency: " + ShellState.cpuFrequencyMHz + " MHz" : "") +
+                (ShellState.cpuCores > 0 ? "\nCores: " + ShellState.cpuCores : "") +
+                "\nLoad: " + ShellState.loadAverage.toFixed(2)
+            accent: root.metricAccent(ShellState.cpuUsage, Theme.muted)
             onClicked: ShellState.togglePopup("system", root.screen)
             onRightClicked: ShellState.togglePopup("system", root.screen)
         }
@@ -168,7 +174,7 @@ Item {
             icon: ""
             value: ShellState.memoryUsage + "%"
             tooltip: root.memoryTooltip()
-            accent: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
+            accent: root.metricAccent(ShellState.memoryUsage, Theme.muted)
             onClicked: ShellState.togglePopup("system", root.screen)
             onRightClicked: ShellState.togglePopup("system", root.screen)
         }
@@ -178,7 +184,7 @@ Item {
             icon: "󰔏"
             value: ShellState.temperature + "°C"
             tooltip: "Temperature"
-            accent: ShellState.temperature >= 80 ? Theme.danger : Theme.warning
+            accent: ShellState.temperature >= 80 ? Theme.danger : Theme.muted
             onClicked: ShellState.togglePopup("system", root.screen)
             onRightClicked: ShellState.togglePopup("system", root.screen)
         }
@@ -189,7 +195,7 @@ Item {
                 ? ((ShellState.networkInterface || "network") + (ShellState.networkAddress ? ": " + ShellState.networkAddress : ""))
                 : (!ShellState.networkConnected ? "Offline" : (ShellState.networkType === "wifi" ? ShellState.networkSignal + "%" : "LAN"))
             tooltip: root.networkTooltip()
-            accent: !ShellState.networkConnected ? Theme.danger : Theme.accentAlt
+            accent: !ShellState.networkConnected ? Theme.danger : Theme.muted
             onClicked: ShellState.togglePopup("network", root.screen)
             onRightClicked: ShellState.run([Commands.nmEditor])
             onMiddleClicked: ShellState.toggleNetworkFormat()
@@ -199,7 +205,7 @@ Item {
             icon: ShellState.bluetoothPowered ? "󰂯" : "󰂲"
             value: ShellState.bluetoothDisplayLabel()
             tooltip: root.bluetoothTooltip()
-            accent: ShellState.bluetoothPowered ? Theme.accentAlt : Theme.subtle
+            accent: ShellState.bluetoothPowered ? Theme.muted : Theme.subtle
             onClicked: ShellState.togglePopup("bluetooth", root.screen)
             onRightClicked: ShellState.run([Commands.blueman])
             onMiddleClicked: ShellState.toggleBluetoothFormat()
@@ -211,7 +217,7 @@ Item {
                 ? (ShellState.sourceReady ? Math.round(ShellState.sourceVolume * 100) + "%" : "Input")
                 : (ShellState.audioReady ? Math.round(ShellState.sinkVolume * 100) + "%" : "Audio")
             tooltip: root.audioTooltip()
-            accent: (ShellState.audioShowSource ? ShellState.sourceMuted : ShellState.sinkMuted) ? Theme.danger : Theme.accentAlt
+            accent: (ShellState.audioShowSource ? ShellState.sourceMuted : ShellState.sinkMuted) ? Theme.danger : Theme.muted
             onClicked: ShellState.togglePopup("audio", root.screen)
             onRightClicked: ShellState.run([Commands.pavucontrol])
             onMiddleClicked: ShellState.toggleAudioDisplay()
@@ -223,7 +229,7 @@ Item {
             icon: ShellState.brightnessIcon()
             value: ShellState.brightness + "%"
             tooltip: "Brightness: " + ShellState.brightness + "%"
-            accent: Theme.warning
+            accent: Theme.muted
             onClicked: ShellState.togglePopup("overview", root.screen)
             onScrolled: direction => ShellState.adjustBrightness(direction)
         }
@@ -279,7 +285,7 @@ Item {
             value: ShellState.batteryDisplayLabel()
             tooltip: root.batteryTooltip()
             accent: ShellState.batterySeverity() === "critical" ? Theme.danger
-                : (ShellState.batterySeverity() === "warning" ? Theme.warning : Theme.success)
+                : (ShellState.batterySeverity() === "warning" ? Theme.warning : Theme.muted)
             blinking: ShellState.batterySeverity() === "critical" && ShellState.onBattery
             onClicked: ShellState.togglePopup("overview", root.screen)
             onMiddleClicked: ShellState.toggleBatteryFormat()
@@ -289,7 +295,7 @@ Item {
             icon: "󰔛"
             value: ShellState.clockAlternate ? Qt.formatDate(ShellState.now, "yyyy-MM-dd") : Qt.formatTime(ShellState.now, "HH:mm")
             tooltip: Qt.formatDate(ShellState.now, "dddd, MMMM d, yyyy")
-            accent: Theme.accent
+            accent: Theme.muted
             onClicked: ShellState.togglePopup("calendar", root.screen)
             onRightClicked: ShellState.run([Commands.todo])
             onMiddleClicked: ShellState.toggleClockFormat()
@@ -310,8 +316,10 @@ Item {
                 model: SystemTray.items
 
                 delegate: Item {
+                    id: trayItem
                     required property var modelData
                     readonly property bool needsAttention: modelData.status === Status.NeedsAttention
+                    readonly property string iconSource: root.trayIconSource(modelData)
                     implicitWidth: modelData.status === Status.Passive ? 0 : 28
                     implicitHeight: 30
 
@@ -323,22 +331,21 @@ Item {
                         border.color: needsAttention ? Theme.danger : Theme.surfaceStrong
                     }
 
-                    Image {
-                        visible: modelData.icon && modelData.icon.length > 0
+                    IconImage {
+                        id: trayIcon
+                        visible: trayItem.iconSource.length > 0
                         anchors.centerIn: parent
-                        width: 18
-                        height: 18
-                        source: Quickshell.iconPath(modelData.icon)
-                        sourceSize.width: 18
-                        sourceSize.height: 18
-                        smooth: true
+                        implicitSize: 18
+                        source: trayItem.iconSource
+                        mipmap: true
                     }
 
                     Text {
-                        visible: !modelData.icon || modelData.icon.length === 0
+                        visible: trayItem.iconSource.length === 0
                         anchors.centerIn: parent
                         text: "•"
                         color: needsAttention ? Theme.danger : Theme.muted
+                        font.family: "Maple Mono NF CN"
                         font.pixelSize: 16
                     }
 
@@ -367,8 +374,9 @@ Item {
                         }
                     }
 
-                    ToolTip {
-                        visible: trayMouse.containsMouse && (modelData.tooltipTitle.length > 0 || modelData.tooltipDescription.length > 0)
+                    HoverTooltip {
+                        targetItem: trayItem
+                        hovered: trayMouse.containsMouse
                         delay: 450
                         text: modelData.tooltipDescription.length > 0
                             ? modelData.tooltipTitle + "\n" + modelData.tooltipDescription
