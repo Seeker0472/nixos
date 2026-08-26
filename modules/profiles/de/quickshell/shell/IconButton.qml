@@ -51,6 +51,7 @@ Rectangle {
         id: mouse
         anchors.fill: parent
         hoverEnabled: true
+        acceptedButtons: Qt.LeftButton
         cursorShape: Qt.PointingHandCursor
         onClicked: root.clicked()
     }

@@ -1,3 +1,5 @@
+//@ pragma UseQApplication
+
 import QtQuick 6.0
 import Quickshell
 import Quickshell.Wayland

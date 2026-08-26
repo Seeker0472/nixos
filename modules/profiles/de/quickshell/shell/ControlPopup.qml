@@ -1,6 +1,6 @@
 import QtQuick 6.0
 import QtQuick.Layouts 6.0
-import QtQuick.Controls 6.0
+import QtQuick.Controls 6.3
 
 Rectangle {
     id: root
@@ -16,25 +16,64 @@ Rectangle {
     border.color: Theme.surfaceStrong
 
     Keys.onEscapePressed: event => {
-        event.accepted = true;
-        ShellState.closePopup();
+        event.accepted = true
+        ShellState.closePopup()
     }
 
     function pageIndex() {
         switch (root.page) {
-        case "audio": return 1
-        case "network": return 2
-        case "bluetooth": return 3
-        case "calendar": return 4
-        case "power": return 5
+        case "system": return 1
+        case "audio": return 2
+        case "network": return 3
+        case "bluetooth": return 4
+        case "calendar": return 5
+        case "power": return 6
         default: return 0
         }
+    }
+
+    function pageTitle() {
+        switch (root.page) {
+        case "system": return "System"
+        case "audio": return "Audio"
+        case "network": return "Network"
+        case "bluetooth": return "Bluetooth"
+        case "calendar": return ShellState.calendarTitle
+        case "power": return "Power"
+        default: return "Control center"
+        }
+    }
+
+    function metricAccent(value, normal) {
+        var severity = ShellState.metricSeverity(value)
+        if (severity === "high") return Theme.danger
+        if (severity === "warning") return Theme.warning
+        return normal
+    }
+
+    function gib(value) {
+        return (Number(value || 0) / 1024).toFixed(1) + " GiB"
+    }
+
+    function memoryTooltip() {
+        return "Memory\n" + gib(ShellState.memoryUsedMiB) + " / " + gib(ShellState.memoryTotalMiB) +
+            " (" + ShellState.memoryUsage + "%)\nSwap\n" + gib(ShellState.swapUsedMiB) + " / " + gib(ShellState.swapTotalMiB)
+    }
+
+    function batteryDetails() {
+        var lines = [ShellState.batteryLevel + "%", ShellState.batteryStatus]
+        var time = ShellState.batteryTimeLabel()
+        if (time.length > 0) {
+            var suffix = ShellState.batteryStatus === "Charging" ? " until full" : (ShellState.batteryStatus === "Discharging" ? " remaining" : "")
+            lines.push(time + suffix)
+        }
+        return lines.join("\n")
     }
 
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 18
-        spacing: 14
+        spacing: 12
 
         RowLayout {
             Layout.fillWidth: true
@@ -45,7 +84,7 @@ Rectangle {
                 spacing: 1
 
                 Text {
-                    text: root.page === "calendar" ? Qt.formatDate(ShellState.now, "MMMM yyyy") : "Control center"
+                    text: root.pageTitle()
                     color: Theme.text
                     font.family: "Maple Mono NF CN"
                     font.pixelSize: 17
@@ -72,9 +111,10 @@ Rectangle {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 4
+            spacing: 3
 
             IconButton { icon: "⌂"; tooltip: "Overview"; selected: root.page === "overview"; onClicked: ShellState.popupPage = "overview" }
+            IconButton { icon: "󰒓"; tooltip: "System"; selected: root.page === "system"; onClicked: ShellState.popupPage = "system" }
             IconButton { icon: "󰕾"; tooltip: "Audio"; selected: root.page === "audio"; onClicked: ShellState.popupPage = "audio" }
             IconButton { icon: "󰤨"; tooltip: "Network"; selected: root.page === "network"; onClicked: ShellState.popupPage = "network" }
             IconButton { icon: "󰂯"; tooltip: "Bluetooth"; selected: root.page === "bluetooth"; onClicked: ShellState.popupPage = "bluetooth" }
@@ -91,58 +131,80 @@ Rectangle {
             Item {
                 ColumnLayout {
                     anchors.fill: parent
-                    spacing: 12
+                    spacing: 10
 
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
 
                         Rectangle {
+                            id: cpuCard
                             Layout.fillWidth: true
                             Layout.preferredHeight: 76
                             radius: Theme.smallRadius
                             color: Theme.backgroundElevated
+                            border.width: 1
+                            border.color: root.metricAccent(ShellState.cpuUsage, Theme.accent)
 
                             ColumnLayout {
                                 anchors.fill: parent
-                                anchors.margins: 12
+                                anchors.margins: 11
                                 spacing: 3
                                 Text { text: "CPU"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
-                                Text { text: ShellState.cpuUsage + "%"; color: Theme.text; font.pixelSize: 22; font.family: "Maple Mono NF CN"; font.weight: Font.DemiBold }
-                                MeterBar { value: ShellState.cpuUsage / 100; fillColor: Theme.accent; Layout.fillWidth: true }
+                                Text { text: ShellState.cpuUsage + "%"; color: root.metricAccent(ShellState.cpuUsage, Theme.text); font.pixelSize: 21; font.family: "Maple Mono NF CN"; font.weight: Font.DemiBold }
+                                MeterBar { value: ShellState.cpuUsage / 100; fillColor: root.metricAccent(ShellState.cpuUsage, Theme.accent); Layout.fillWidth: true }
                             }
+
+                            MouseArea {
+                                id: cpuMouse
+                                anchors.fill: parent
+                                acceptedButtons: Qt.LeftButton
+                                hoverEnabled: true
+                                onClicked: ShellState.popupPage = "system"
+                            }
+                            ToolTip { visible: cpuMouse.containsMouse; text: "CPU usage: " + ShellState.cpuUsage + "%"; delay: 500 }
                         }
 
                         Rectangle {
+                            id: memoryCard
                             Layout.fillWidth: true
                             Layout.preferredHeight: 76
                             radius: Theme.smallRadius
                             color: Theme.backgroundElevated
+                            border.width: 1
+                            border.color: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
 
                             ColumnLayout {
                                 anchors.fill: parent
-                                anchors.margins: 12
+                                anchors.margins: 11
                                 spacing: 3
                                 Text { text: "Memory"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
-                                Text { text: ShellState.memoryUsage + "%"; color: Theme.text; font.pixelSize: 22; font.family: "Maple Mono NF CN"; font.weight: Font.DemiBold }
-                                MeterBar { value: ShellState.memoryUsage / 100; fillColor: Theme.accentAlt; Layout.fillWidth: true }
+                                Text { text: ShellState.memoryUsage + "%"; color: root.metricAccent(ShellState.memoryUsage, Theme.text); font.pixelSize: 21; font.family: "Maple Mono NF CN"; font.weight: Font.DemiBold }
+                                MeterBar { value: ShellState.memoryUsage / 100; fillColor: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt); Layout.fillWidth: true }
                             }
+
+                            MouseArea {
+                                id: memoryMouse
+                                anchors.fill: parent
+                                acceptedButtons: Qt.LeftButton
+                                hoverEnabled: true
+                                onClicked: ShellState.popupPage = "system"
+                            }
+                            ToolTip { visible: memoryMouse.containsMouse; text: root.memoryTooltip(); delay: 500 }
                         }
                     }
 
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-
                         ActionTile {
-                            icon: ShellState.networkName === "Offline" ? "󰤭" : "󰤨"
-                            title: ShellState.networkName === "Offline" ? "Offline" : "Wi-Fi"
-                            subtitle: ShellState.networkName
-                            accent: ShellState.networkName === "Offline" ? Theme.danger : Theme.accentAlt
+                            icon: !ShellState.networkConnected ? "󰤭" : (ShellState.networkType === "ethernet" ? "" : "󰤨")
+                            title: ShellState.networkConnected ? ShellState.networkLabel : "Offline"
+                            subtitle: ShellState.networkConnected ? ShellState.networkName : "No active connection"
+                            accent: ShellState.networkConnected ? Theme.accentAlt : Theme.danger
                             Layout.fillWidth: true
                             onClicked: ShellState.popupPage = "network"
                         }
-
                         ActionTile {
                             icon: ShellState.bluetoothPowered ? "󰂯" : "󰂲"
                             title: "Bluetooth"
@@ -162,9 +224,9 @@ Rectangle {
 
                         RowLayout {
                             anchors.fill: parent
-                            anchors.margins: 12
-                            spacing: 10
-                            Text { text: "󰎆"; color: Theme.accent; font.pixelSize: 24; font.family: "Maple Mono NF CN" }
+                            anchors.margins: 11
+                            spacing: 8
+                            Text { text: "󰎆"; color: Theme.accent; font.pixelSize: 23; font.family: "Maple Mono NF CN" }
                             ColumnLayout {
                                 Layout.fillWidth: true
                                 spacing: 2
@@ -180,10 +242,10 @@ Rectangle {
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-                        ActionTile { icon: "󰕾"; title: "Audio"; subtitle: ShellState.sinkName; accent: Theme.accentAlt; Layout.fillWidth: true; onClicked: ShellState.popupPage = "audio" }
+                        ActionTile { icon: "󰕾"; title: "Audio"; subtitle: ShellState.audioShowSource ? ShellState.sourceName : ShellState.sinkName; accent: Theme.accentAlt; Layout.fillWidth: true; onClicked: ShellState.popupPage = "audio" }
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 5
+                            spacing: 4
                             Text { text: "Brightness"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
                             RowLayout {
                                 Layout.fillWidth: true
@@ -205,9 +267,150 @@ Rectangle {
             Item {
                 ColumnLayout {
                     anchors.fill: parent
-                    spacing: 16
+                    spacing: 9
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 58
+                        radius: Theme.smallRadius
+                        color: Theme.backgroundElevated
+                        border.width: 1
+                        border.color: root.metricAccent(ShellState.cpuUsage, Theme.accent)
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            Text {
+                                text: "󰻠"
+                                color: root.metricAccent(ShellState.cpuUsage, Theme.accent)
+                                font.family: "Maple Mono NF CN"
+                                font.pixelSize: 22
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
+                                Text {
+                                    text: "CPU"
+                                    color: Theme.text
+                                    font.family: "Maple Mono NF CN"
+                                    font.pixelSize: 12
+                                }
+                                Text {
+                                    text: ShellState.cpuUsage + "% · " + ShellState.metricSeverity(ShellState.cpuUsage)
+                                    color: Theme.muted
+                                    font.family: "Maple Mono NF CN"
+                                    font.pixelSize: 10
+                                }
+                            }
+                            MeterBar {
+                                value: ShellState.cpuUsage / 100
+                                fillColor: root.metricAccent(ShellState.cpuUsage, Theme.accent)
+                                Layout.preferredWidth: 120
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 70
+                        radius: Theme.smallRadius
+                        color: Theme.backgroundElevated
+                        border.width: 1
+                        border.color: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            Text {
+                                text: ""
+                                color: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
+                                font.family: "Maple Mono NF CN"
+                                font.pixelSize: 22
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
+                                Text {
+                                    text: "Memory"
+                                    color: Theme.text
+                                    font.family: "Maple Mono NF CN"
+                                    font.pixelSize: 12
+                                }
+                                Text {
+                                    text: gib(ShellState.memoryUsedMiB) + " / " + gib(ShellState.memoryTotalMiB)
+                                    color: Theme.muted
+                                    font.family: "Maple Mono NF CN"
+                                    font.pixelSize: 10
+                                }
+                                Text {
+                                    text: "Swap " + gib(ShellState.swapUsedMiB) + " / " + gib(ShellState.swapTotalMiB)
+                                    color: Theme.muted
+                                    font.family: "Maple Mono NF CN"
+                                    font.pixelSize: 10
+                                }
+                            }
+                            MeterBar {
+                                value: ShellState.memoryUsage / 100
+                                fillColor: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
+                                Layout.preferredWidth: 120
+                            }
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 52
+                            radius: Theme.smallRadius
+                            color: Theme.backgroundElevated
+                            ColumnLayout {
+                                anchors.fill: parent
+                                anchors.margins: 10
+                                Text { text: "Temperature"; color: Theme.muted; font.family: "Maple Mono NF CN"; font.pixelSize: 10 }
+                                Text { text: ShellState.temperature > 0 ? ShellState.temperature + "°C" : "Unavailable"; color: ShellState.temperature >= 80 ? Theme.danger : Theme.text; font.family: "Maple Mono NF CN"; font.pixelSize: 15 }
+                            }
+                        }
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 52
+                            radius: Theme.smallRadius
+                            color: Theme.backgroundElevated
+                            ColumnLayout {
+                                anchors.fill: parent
+                                anchors.margins: 10
+                                Text { text: "Battery"; color: Theme.muted; font.family: "Maple Mono NF CN"; font.pixelSize: 10 }
+                                Text { text: ShellState.batteryStatus === "Unknown" ? "Unavailable" : ShellState.batteryLevel + "% · " + ShellState.batteryStatus; color: ShellState.batterySeverity() === "critical" ? Theme.danger : (ShellState.batterySeverity() === "warning" ? Theme.warning : Theme.text); font.family: "Maple Mono NF CN"; font.pixelSize: 13 }
+                            }
+                        }
+                    }
+
+                    ActionTile { icon: "󰆍"; title: "Open btop"; subtitle: "Process, CPU, memory, and swap monitor"; accent: Theme.accentAlt; Layout.fillWidth: true; onClicked: ShellState.run([Commands.btop]) }
+
+                    Rectangle {
+                        visible: ShellState.audioInUse || ShellState.screenShareActive || ShellState.idleInhibited || ShellState.isBedtime()
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 42
+                        radius: Theme.smallRadius
+                        color: Theme.backgroundElevated
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            spacing: 8
+                            Text { text: "Privacy"; color: Theme.muted; font.family: "Maple Mono NF CN"; font.pixelSize: 10 }
+                            Text { Layout.fillWidth: true; text: (ShellState.audioInUse ? "󰍬 Mic " : "") + (ShellState.screenShareActive ? "󰖟 Share " : "") + (ShellState.idleInhibited ? " Idle " : "") + (ShellState.isBedtime() ? "󰋣 Bedtime" : ""); color: Theme.warning; font.family: "Maple Mono NF CN"; font.pixelSize: 11; elide: Text.ElideRight }
+                        }
+                    }
+
+                    Item { Layout.fillHeight: true }
+                }
+            }
+
+            Item {
+                ColumnLayout {
+                    anchors.fill: parent
+                    spacing: 12
                     Text { text: "Output"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
-                    Text { text: ShellState.sinkName; color: Theme.text; font.pixelSize: 15; font.family: "Maple Mono NF CN"; elide: Text.ElideRight; Layout.fillWidth: true }
+                    Text { text: ShellState.sinkName; color: Theme.text; font.pixelSize: 14; font.family: "Maple Mono NF CN"; elide: Text.ElideRight; Layout.fillWidth: true }
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: ShellState.sinkMuted ? "Muted" : Math.round(ShellState.sinkVolume * 100) + "%"; color: Theme.text; font.pixelSize: 12; font.family: "Maple Mono NF CN" }
@@ -217,13 +420,21 @@ Rectangle {
                         Layout.fillWidth: true
                         IconButton { icon: ShellState.sinkMuted ? "󰖁" : "󰕾"; label: ShellState.sinkMuted ? "Unmute" : "Mute"; onClicked: ShellState.toggleMute() }
                         IconButton { icon: "󰽴"; label: "Mixer"; onClicked: ShellState.run([Commands.pavucontrol]) }
+                        Item { Layout.fillWidth: true }
                     }
                     Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: Theme.surfaceStrong }
                     Text { text: "Input"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
+                    Text { text: ShellState.sourceName; color: Theme.text; font.pixelSize: 14; font.family: "Maple Mono NF CN"; elide: Text.ElideRight; Layout.fillWidth: true }
                     RowLayout {
                         Layout.fillWidth: true
-                        Text { text: ShellState.sourceMuted ? "Microphone muted" : "Microphone active"; color: Theme.text; font.pixelSize: 12; font.family: "Maple Mono NF CN"; Layout.fillWidth: true }
-                        IconButton { icon: ShellState.sourceMuted ? "󰍭" : "󰍬"; tooltip: "Toggle microphone"; onClicked: ShellState.run([Commands.wpctl, "set-mute", "@DEFAULT_AUDIO_SOURCE@", "toggle"]) }
+                        Text { text: ShellState.sourceMuted ? "Muted" : Math.round(ShellState.sourceVolume * 100) + "%"; color: Theme.text; font.pixelSize: 12; font.family: "Maple Mono NF CN" }
+                        ValueSlider { value: ShellState.sourceVolume; accent: Theme.warning; Layout.fillWidth: true; onMoved: ShellState.setSourceVolume(value) }
+                    }
+                    RowLayout {
+                        Layout.fillWidth: true
+                        IconButton { icon: ShellState.sourceMuted ? "󰍭" : "󰍬"; label: ShellState.sourceMuted ? "Unmute" : "Mute"; onClicked: ShellState.toggleSourceMute() }
+                        IconButton { icon: "󰋌"; label: "Show input"; selected: ShellState.audioShowSource; onClicked: ShellState.toggleAudioDisplay() }
+                        Item { Layout.fillWidth: true }
                     }
                     Item { Layout.fillHeight: true }
                 }
@@ -232,13 +443,28 @@ Rectangle {
             Item {
                 ColumnLayout {
                     anchors.fill: parent
-                    spacing: 14
+                    spacing: 10
                     RowLayout {
                         Layout.fillWidth: true
-                        Text { text: ShellState.networkName; color: Theme.text; font.pixelSize: 16; font.family: "Maple Mono NF CN"; Layout.fillWidth: true; elide: Text.ElideRight }
-                        IconButton { icon: ShellState.wifiEnabled ? "󰖩" : "󰖪"; label: ShellState.wifiEnabled ? "On" : "Off"; selected: ShellState.wifiEnabled; onClicked: ShellState.toggleWifi() }
+                        Text { text: ShellState.networkConnected ? ShellState.networkName : "Offline"; color: Theme.text; font.pixelSize: 16; font.family: "Maple Mono NF CN"; Layout.fillWidth: true; elide: Text.ElideRight }
+                        IconButton { visible: ShellState.networkType === "wifi" || !ShellState.networkConnected; icon: ShellState.wifiEnabled ? "󰖩" : "󰖪"; label: ShellState.wifiEnabled ? "On" : "Off"; selected: ShellState.wifiEnabled; onClicked: ShellState.toggleWifi() }
                     }
-                    MeterBar { value: ShellState.networkName === "Offline" ? 0 : 1; fillColor: ShellState.networkName === "Offline" ? Theme.danger : Theme.accentAlt; Layout.fillWidth: true }
+                    MeterBar { value: ShellState.networkSignal / 100; fillColor: ShellState.networkConnected ? Theme.accentAlt : Theme.danger; Layout.fillWidth: true }
+                    Text { text: ShellState.networkLabel + (ShellState.networkSignal > 0 ? " · " + ShellState.networkSignal + "%" : ""); color: Theme.muted; font.pixelSize: 11; font.family: "Maple Mono NF CN" }
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 84
+                        radius: Theme.smallRadius
+                        color: Theme.backgroundElevated
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 11
+                            spacing: 3
+                            Text { text: "Interface: " + (ShellState.networkInterface || "-"); color: Theme.text; font.pixelSize: 11; font.family: "Maple Mono NF CN" }
+                            Text { text: "Address: " + (ShellState.networkAddress || "-"); color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
+                            Text { text: "Gateway: " + (ShellState.networkGateway || "-"); color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
+                        }
+                    }
                     ActionTile { icon: "󰖩"; title: "Network connections"; subtitle: "Manage saved networks and VPNs"; accent: Theme.accentAlt; Layout.fillWidth: true; onClicked: ShellState.run([Commands.nmEditor]) }
                     ActionTile { icon: "󰒓"; title: "Refresh status"; subtitle: "Read NetworkManager state again"; accent: Theme.muted; Layout.fillWidth: true; onClicked: ShellState.refreshMetrics() }
                     Item { Layout.fillHeight: true }
@@ -248,15 +474,60 @@ Rectangle {
             Item {
                 ColumnLayout {
                     anchors.fill: parent
-                    spacing: 14
+                    spacing: 9
                     RowLayout {
                         Layout.fillWidth: true
                         Text { text: ShellState.bluetoothPowered ? "Bluetooth ready" : "Bluetooth off"; color: Theme.text; font.pixelSize: 16; font.family: "Maple Mono NF CN"; Layout.fillWidth: true }
                         IconButton { icon: ShellState.bluetoothPowered ? "󰂯" : "󰂲"; label: ShellState.bluetoothPowered ? "On" : "Off"; selected: ShellState.bluetoothPowered; onClicked: ShellState.toggleBluetooth() }
                     }
-                    Text { text: ShellState.bluetoothConnected || "No connected devices"; color: Theme.muted; font.pixelSize: 12; font.family: "Maple Mono NF CN"; wrapMode: Text.Wrap; Layout.fillWidth: true }
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 54
+                        radius: Theme.smallRadius
+                        color: Theme.backgroundElevated
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 10
+                            spacing: 2
+                            Text { text: ShellState.bluetoothControllerName || "No adapter"; color: Theme.text; font.family: "Maple Mono NF CN"; font.pixelSize: 12 }
+                            Text { text: ShellState.bluetoothControllerAddress || "Address unavailable"; color: Theme.muted; font.family: "Maple Mono NF CN"; font.pixelSize: 10 }
+                        }
+                    }
+                    Text { visible: ShellState.bluetoothDevices.length > 0; text: "Connected devices"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
+                    Repeater {
+                        model: ShellState.bluetoothDevices
+                        delegate: Rectangle {
+                            required property var modelData
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 48
+                            radius: Theme.smallRadius
+                            color: Theme.backgroundElevated
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: 10
+                                spacing: 8
+                                Text { text: "󰂱"; color: Theme.accentAlt; font.family: "Maple Mono NF CN"; font.pixelSize: 19 }
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 1
+                                    Text { text: modelData.name; color: Theme.text; font.family: "Maple Mono NF CN"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
+                                    Text { text: modelData.address || "Address unavailable"; color: Theme.muted; font.family: "Maple Mono NF CN"; font.pixelSize: 9 }
+                                }
+                                Text { visible: modelData.battery >= 0; text: Math.round(modelData.battery) + "%"; color: Theme.text; font.family: "Maple Mono NF CN"; font.pixelSize: 11 }
+                            }
+                            ToolTip { visible: deviceMouse.containsMouse; text: modelData.name + "\n" + (modelData.address || "Address unavailable") + (modelData.battery >= 0 ? "\nBattery: " + Math.round(modelData.battery) + "%" : ""); delay: 450 }
+                            MouseArea {
+                                id: deviceMouse
+                                anchors.fill: parent
+                                acceptedButtons: Qt.LeftButton
+                                hoverEnabled: true
+                                onClicked: ShellState.run([Commands.blueman])
+                            }
+                        }
+                    }
+                    Text { visible: ShellState.bluetoothDevices.length === 0; text: "No connected devices"; color: Theme.muted; font.pixelSize: 12; font.family: "Maple Mono NF CN" }
                     ActionTile { icon: "󰂱"; title: "Bluetooth manager"; subtitle: "Pair, connect, and rename devices"; accent: Theme.accentAlt; Layout.fillWidth: true; onClicked: ShellState.run([Commands.blueman]) }
-                    ActionTile { icon: "󰒓"; title: "Refresh status"; subtitle: "Read BlueZ state again"; accent: Theme.muted; Layout.fillWidth: true; onClicked: ShellState.refreshMetrics() }
+                    ActionTile { icon: "󰒓"; title: "Refresh status"; subtitle: "Read BlueZ state again"; accent: Theme.muted; Layout.fillWidth: true; onClicked: ShellState.refreshNativeServices() }
                     Item { Layout.fillHeight: true }
                 }
             }
@@ -264,31 +535,48 @@ Rectangle {
             Item {
                 ColumnLayout {
                     anchors.fill: parent
-                    spacing: 12
+                    spacing: 8
+                    RowLayout {
+                        Layout.fillWidth: true
+                        IconButton { icon: "󰅁"; tooltip: "Previous month"; onClicked: ShellState.shiftCalendar(-1) }
+                        Text { text: ShellState.calendarTitle; color: Theme.text; font.family: "Maple Mono NF CN"; font.pixelSize: 15; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter; Layout.fillWidth: true }
+                        IconButton { icon: "󰅂"; tooltip: "Next month"; onClicked: ShellState.shiftCalendar(1) }
+                    }
                     RowLayout {
                         Layout.fillWidth: true
                         Repeater {
                             model: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-                            delegate: Text { required property string modelData; text: modelData; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN"; horizontalAlignment: Text.AlignHCenter; Layout.fillWidth: true }
-                        }
-                    }
-                    GridLayout {
-                        columns: 7
-                        rowSpacing: 4
-                        columnSpacing: 2
-                        Layout.fillWidth: true
-                        Repeater {
-                            model: ShellState.calendarDays
-                            delegate: Rectangle {
-                                required property var modelData
+                            delegate: Text {
+                                required property string modelData
+                                text: modelData
+                                color: Theme.muted
+                                font.pixelSize: 10
+                                font.family: "Maple Mono NF CN"
+                                horizontalAlignment: Text.AlignHCenter
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 32
-                                radius: 8
-                                color: modelData.today ? Theme.accent : "transparent"
-                                Text { anchors.centerIn: parent; text: modelData.label; color: modelData.today ? Theme.background : Theme.text; font.pixelSize: 11; font.family: "Maple Mono NF CN" }
                             }
                         }
                     }
+                    MonthGrid {
+                        id: monthGrid
+                        month: ShellState.calendarMonth + 1
+                        year: ShellState.calendarYear
+                        locale: Qt.locale("en_GB")
+                        spacing: 4
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 224
+                        delegate: Rectangle {
+                            required property var model
+                            width: monthGrid.width / 7 - 4
+                            height: 32
+                            radius: 7
+                            color: model.today ? Theme.accent : "transparent"
+                            border.width: model.month === monthGrid.month && !model.today ? 1 : 0
+                            border.color: Theme.surfaceStrong
+                            Text { anchors.centerIn: parent; text: model.day; color: model.today ? Theme.background : (model.month === monthGrid.month ? Theme.text : Theme.subtle); font.family: "Maple Mono NF CN"; font.pixelSize: 11 }
+                        }
+                    }
+                    Text { text: "Today: " + Qt.formatDate(ShellState.now, "yyyy-MM-dd"); color: Theme.muted; font.family: "Maple Mono NF CN"; font.pixelSize: 10; Layout.alignment: Qt.AlignHCenter }
                     Item { Layout.fillHeight: true }
                 }
             }

@@ -6,6 +6,8 @@ import Quickshell
 Singleton {
     readonly property string niri: "@niri@"
     readonly property string focusWorkspace: "@focusWorkspace@"
+    readonly property string btop: "@btop@"
+    readonly property string todo: "@todo@"
     readonly property string metrics: "@metrics@"
     readonly property string nmcli: "@nmcli@"
     readonly property string bluetoothctl: "@bluetoothctl@"

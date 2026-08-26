@@ -1,5 +1,6 @@
 import QtQuick 6.0
 import QtQuick.Layouts 6.0
+import QtQuick.Controls 6.0
 import Quickshell
 import Quickshell.Io
 
@@ -8,6 +9,7 @@ Item {
 
     property var levels: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     property bool enabled: true
+    property bool paused: false
 
     implicitWidth: 92
     implicitHeight: 24
@@ -15,15 +17,22 @@ Item {
     Process {
         id: cavaProcess
         command: [Commands.cava, "-p", Commands.cavaConfig]
-        running: root.enabled
+        running: root.enabled && !root.paused
         stdout: SplitParser {
             onRead: line => root.update(line)
         }
         onRunningChanged: {
-            if (root.enabled && !running) {
-                running = true
+            if (root.enabled && !root.paused && !running) {
+                restartTimer.restart()
             }
         }
+    }
+
+    Timer {
+        id: restartTimer
+        interval: 1000
+        repeat: false
+        onTriggered: if (root.enabled && !cavaProcess.running) cavaProcess.running = true
     }
 
     RowLayout {
@@ -47,6 +56,22 @@ Item {
                 opacity: 0.45 + Number(modelData) * 0.55
             }
         }
+    }
+
+    MouseArea {
+        id: mouse
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        hoverEnabled: true
+        onClicked: event => {
+            if (event.button === Qt.RightButton) root.paused = !root.paused
+        }
+    }
+
+    ToolTip {
+        visible: mouse.containsMouse
+        text: root.paused ? "Audio visualizer paused" : "Audio visualizer"
+        delay: 550
     }
 
     function update(line) {

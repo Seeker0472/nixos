@@ -1,7 +1,9 @@
 import QtQuick 6.0
 import QtQuick.Layouts 6.0
+import QtQuick.Controls 6.0
 import Quickshell
 import Quickshell.Services.SystemTray
+import Quickshell.Wayland._IdleInhibitor
 
 Item {
     id: root
@@ -10,6 +12,74 @@ Item {
     property var panelWindow: null
 
     implicitHeight: 52
+
+    IdleInhibitor {
+        window: root.panelWindow
+        enabled: root.panelWindow !== null && ShellState.idleInhibited && ShellState.isPreferredScreen(root.screen)
+    }
+
+    function networkTooltip() {
+        if (!ShellState.networkConnected) return "Network offline"
+        var lines = [ShellState.networkName, ShellState.networkLabel]
+        if (ShellState.networkInterface.length > 0) lines.push("Interface: " + ShellState.networkInterface)
+        if (ShellState.networkSignal > 0) lines.push("Signal: " + ShellState.networkSignal + "%")
+        if (ShellState.networkAddress.length > 0) lines.push("Address: " + ShellState.networkAddress)
+        if (ShellState.networkGateway.length > 0) lines.push("Gateway: " + ShellState.networkGateway)
+        return lines.join("\n")
+    }
+
+    function audioTooltip() {
+        if (ShellState.audioShowSource) {
+            return ShellState.sourceName + "\n" + (ShellState.sourceMuted ? "Muted" : Math.round(ShellState.sourceVolume * 100) + "%")
+        }
+        return ShellState.sinkName + "\n" + (ShellState.sinkMuted ? "Muted" : Math.round(ShellState.sinkVolume * 100) + "%")
+    }
+
+    function batteryTooltip() {
+        var lines = [ShellState.batteryStatus, ShellState.batteryLevel + "%"]
+        var time = ShellState.batteryTimeLabel()
+        if (time.length > 0) {
+            var suffix = ShellState.batteryStatus === "Charging" ? " until full" : (ShellState.batteryStatus === "Discharging" ? " remaining" : "")
+            lines.push(time + suffix)
+        }
+        return lines.join("\n")
+    }
+
+    function memoryTooltip() {
+        function gib(value) { return (Number(value || 0) / 1024).toFixed(1) + " GiB" }
+        return "Memory: " + gib(ShellState.memoryUsedMiB) + " / " + gib(ShellState.memoryTotalMiB) +
+            "\nSwap: " + gib(ShellState.swapUsedMiB) + " / " + gib(ShellState.swapTotalMiB)
+    }
+
+    function metricAccent(value, normal) {
+        var severity = ShellState.metricSeverity(value)
+        if (severity === "high") return Theme.danger
+        if (severity === "warning") return Theme.warning
+        return normal
+    }
+
+    function bluetoothTooltip() {
+        var lines = [ShellState.bluetoothControllerName || "Bluetooth unavailable"]
+        if (ShellState.bluetoothControllerAddress.length > 0) lines.push(ShellState.bluetoothControllerAddress)
+        if (ShellState.bluetoothDevices.length === 0) {
+            lines.push("No connected devices")
+        } else {
+            for (var i = 0; i < ShellState.bluetoothDevices.length; i++) {
+                var device = ShellState.bluetoothDevices[i]
+                var line = device.name
+                if (device.address) line += " · " + device.address
+                if (device.battery >= 0) line += " · " + Math.round(device.battery) + "%"
+                lines.push(line)
+            }
+        }
+        return lines.join("\n")
+    }
+
+    function showTrayMenu(item, area) {
+        if (!item || !item.hasMenu || !root.panelWindow) return
+        var point = area.mapToItem(root, area.width / 2, area.height)
+        item.display(root.panelWindow, Math.round(point.x), Math.round(point.y))
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -27,7 +97,7 @@ Item {
         anchors.fill: parent
         anchors.leftMargin: 20
         anchors.rightMargin: 20
-        spacing: 9
+        spacing: 7
 
         IconButton {
             icon: "◈"
@@ -47,6 +117,7 @@ Item {
             screen: root.screen
             Layout.preferredWidth: Math.min(350, implicitWidth)
             Layout.minimumWidth: 70
+            Layout.maximumWidth: 350
         }
 
         Text {
@@ -56,7 +127,7 @@ Item {
             font.pixelSize: 11
             elide: Text.ElideMiddle
             Layout.fillWidth: true
-            Layout.minimumWidth: 100
+            Layout.minimumWidth: 60
             Layout.maximumWidth: 420
             verticalAlignment: Text.AlignVCenter
         }
@@ -67,15 +138,15 @@ Item {
             spacing: 4
 
             CavaVisualizer {
-                enabled: MediaState.available
+                enabled: ShellState.audioReady
                 Layout.preferredWidth: 82
                 Layout.preferredHeight: 24
             }
 
             Text {
                 visible: MediaState.available
-                text: MediaState.title
-                color: Theme.muted
+                text: MediaState.artist.length > 0 ? MediaState.artist + " · " + MediaState.title : MediaState.title
+                color: MediaState.playing ? Theme.text : Theme.muted
                 font.family: "Maple Mono NF CN"
                 font.pixelSize: 10
                 elide: Text.ElideRight
@@ -85,36 +156,143 @@ Item {
         }
 
         StatusPill {
-            icon: ShellState.networkName === "Offline" ? "󰤭" : "󰤨"
-            value: ShellState.networkName === "Offline" ? "Offline" : ShellState.networkName
-            tooltip: "Network"
-            accent: ShellState.networkName === "Offline" ? Theme.danger : Theme.accentAlt
+            icon: "󰻠"
+            value: ShellState.cpuUsage + "%"
+            tooltip: "CPU: " + ShellState.cpuUsage + "% (" + ShellState.metricSeverity(ShellState.cpuUsage) + ")"
+            accent: root.metricAccent(ShellState.cpuUsage, Theme.accent)
+            onClicked: ShellState.togglePopup("system", root.screen)
+            onRightClicked: ShellState.togglePopup("system", root.screen)
+        }
+
+        StatusPill {
+            icon: ""
+            value: ShellState.memoryUsage + "%"
+            tooltip: root.memoryTooltip()
+            accent: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
+            onClicked: ShellState.togglePopup("system", root.screen)
+            onRightClicked: ShellState.togglePopup("system", root.screen)
+        }
+
+        StatusPill {
+            visible: ShellState.temperature > 0
+            icon: "󰔏"
+            value: ShellState.temperature + "°C"
+            tooltip: "Temperature"
+            accent: ShellState.temperature >= 80 ? Theme.danger : Theme.warning
+            onClicked: ShellState.togglePopup("system", root.screen)
+            onRightClicked: ShellState.togglePopup("system", root.screen)
+        }
+
+        StatusPill {
+            icon: !ShellState.networkConnected ? "󰤭" : (ShellState.networkType === "ethernet" ? "" : "󰤨")
+            value: ShellState.networkShowDetails
+                ? ((ShellState.networkInterface || "network") + (ShellState.networkAddress ? ": " + ShellState.networkAddress : ""))
+                : (!ShellState.networkConnected ? "Offline" : (ShellState.networkType === "wifi" ? ShellState.networkSignal + "%" : "LAN"))
+            tooltip: root.networkTooltip()
+            accent: !ShellState.networkConnected ? Theme.danger : Theme.accentAlt
             onClicked: ShellState.togglePopup("network", root.screen)
+            onRightClicked: ShellState.run([Commands.nmEditor])
+            onMiddleClicked: ShellState.toggleNetworkFormat()
         }
 
         StatusPill {
-            icon: ShellState.sinkMuted ? "󰖁" : "󰕾"
-            value: ShellState.audioReady ? Math.round(ShellState.sinkVolume * 100) + "%" : "Audio"
-            tooltip: ShellState.sinkName
-            accent: ShellState.sinkMuted ? Theme.danger : Theme.accentAlt
+            icon: ShellState.bluetoothPowered ? "󰂯" : "󰂲"
+            value: ShellState.bluetoothDisplayLabel()
+            tooltip: root.bluetoothTooltip()
+            accent: ShellState.bluetoothPowered ? Theme.accentAlt : Theme.subtle
+            onClicked: ShellState.togglePopup("bluetooth", root.screen)
+            onRightClicked: ShellState.run([Commands.blueman])
+            onMiddleClicked: ShellState.toggleBluetoothFormat()
+        }
+
+        StatusPill {
+            icon: ShellState.audioShowSource ? (ShellState.sourceMuted ? "󰍭" : "󰍬") : (ShellState.sinkMuted ? "󰖁" : "󰕾")
+            value: ShellState.audioShowSource
+                ? (ShellState.sourceReady ? Math.round(ShellState.sourceVolume * 100) + "%" : "Input")
+                : (ShellState.audioReady ? Math.round(ShellState.sinkVolume * 100) + "%" : "Audio")
+            tooltip: root.audioTooltip()
+            accent: (ShellState.audioShowSource ? ShellState.sourceMuted : ShellState.sinkMuted) ? Theme.danger : Theme.accentAlt
             onClicked: ShellState.togglePopup("audio", root.screen)
+            onRightClicked: ShellState.run([Commands.pavucontrol])
+            onMiddleClicked: ShellState.toggleAudioDisplay()
+            onScrolled: direction => ShellState.adjustVolume(direction)
         }
 
         StatusPill {
-            visible: ShellState.batteryStatus !== "Unknown"
-            icon: ShellState.onBattery ? "󰁹" : "󰂄"
-            value: ShellState.batteryLevel + "%"
-            tooltip: ShellState.batteryStatus
-            accent: ShellState.batteryLevel < 20 ? Theme.danger : Theme.success
+            visible: ShellState.brightness > 0
+            icon: ShellState.brightnessIcon()
+            value: ShellState.brightness + "%"
+            tooltip: "Brightness: " + ShellState.brightness + "%"
+            accent: Theme.warning
+            onClicked: ShellState.togglePopup("overview", root.screen)
+            onScrolled: direction => ShellState.adjustBrightness(direction)
+        }
+
+        StatusPill {
+            visible: ShellState.screenShareActive
+            icon: "󰖟"
+            value: "Share"
+            tooltip: ShellState.privacyTooltip("screen")
+            accent: Theme.warning
             onClicked: ShellState.togglePopup("overview", root.screen)
         }
 
         StatusPill {
+            visible: ShellState.audioInUse
+            icon: "󰍬"
+            value: "Mic"
+            tooltip: ShellState.privacyTooltip("audio")
+            accent: Theme.warning
+            onClicked: ShellState.togglePopup("overview", root.screen)
+        }
+
+        StatusPill {
+            icon: ShellState.idleInhibited ? "" : ""
+            value: ShellState.idleInhibited ? "On" : ""
+            tooltip: ShellState.idleInhibited ? "Idle inhibition enabled" : "Idle inhibition disabled"
+            accent: ShellState.idleInhibited ? Theme.warning : Theme.subtle
+            selected: ShellState.idleInhibited
+            onClicked: ShellState.idleInhibited = !ShellState.idleInhibited
+        }
+
+        StatusPill {
+            visible: ShellState.isBedtime()
+            icon: "󰋣"
+            value: "!"
+            tooltip: "Bedtime window: 22:00-06:00"
+            accent: Theme.warning
+            selected: true
+            blinking: true
+            onClicked: ShellState.togglePopup("calendar", root.screen)
+        }
+
+        IconButton {
+            icon: "󰸉"
+            tooltip: "Next wallpaper"
+            iconColor: Theme.muted
+            onClicked: ShellState.run([Commands.wpaperctl, "next-wallpaper"])
+        }
+
+        StatusPill {
+            visible: ShellState.batteryStatus !== "Unknown"
+            icon: ShellState.batteryIcon()
+            value: ShellState.batteryDisplayLabel()
+            tooltip: root.batteryTooltip()
+            accent: ShellState.batterySeverity() === "critical" ? Theme.danger
+                : (ShellState.batterySeverity() === "warning" ? Theme.warning : Theme.success)
+            blinking: ShellState.batterySeverity() === "critical" && ShellState.onBattery
+            onClicked: ShellState.togglePopup("overview", root.screen)
+            onMiddleClicked: ShellState.toggleBatteryFormat()
+        }
+
+        StatusPill {
             icon: "󰔛"
-            value: Qt.formatTime(ShellState.now, "hh:mm")
-            tooltip: Qt.formatDate(ShellState.now, "dddd, MMMM d")
+            value: ShellState.clockAlternate ? Qt.formatDate(ShellState.now, "yyyy-MM-dd") : Qt.formatTime(ShellState.now, "HH:mm")
+            tooltip: Qt.formatDate(ShellState.now, "dddd, MMMM d, yyyy")
             accent: Theme.accent
             onClicked: ShellState.togglePopup("calendar", root.screen)
+            onRightClicked: ShellState.run([Commands.todo])
+            onMiddleClicked: ShellState.toggleClockFormat()
         }
 
         IconButton {
@@ -125,6 +303,7 @@ Item {
         }
 
         RowLayout {
+            visible: ShellState.isPreferredScreen(root.screen)
             spacing: 2
 
             Repeater {
@@ -132,10 +311,20 @@ Item {
 
                 delegate: Item {
                     required property var modelData
-                    implicitWidth: 24
-                    implicitHeight: 28
+                    readonly property bool needsAttention: modelData.status === Status.NeedsAttention
+                    implicitWidth: modelData.status === Status.Passive ? 0 : 28
+                    implicitHeight: 30
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: Theme.smallRadius
+                        color: needsAttention ? Qt.darker(Theme.danger, 180) : (trayMouse.containsMouse ? Theme.surface : "transparent")
+                        border.width: needsAttention || trayMouse.containsMouse ? 1 : 0
+                        border.color: needsAttention ? Theme.danger : Theme.surfaceStrong
+                    }
 
                     Image {
+                        visible: modelData.icon && modelData.icon.length > 0
                         anchors.centerIn: parent
                         width: 18
                         height: 18
@@ -145,16 +334,45 @@ Item {
                         smooth: true
                     }
 
+                    Text {
+                        visible: !modelData.icon || modelData.icon.length === 0
+                        anchors.centerIn: parent
+                        text: "•"
+                        color: needsAttention ? Theme.danger : Theme.muted
+                        font.pixelSize: 16
+                    }
+
                     MouseArea {
+                        id: trayMouse
                         anchors.fill: parent
                         hoverEnabled: true
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: if (mouse.button === Qt.LeftButton) modelData.activate()
-                        onPressed: {
-                            if (mouse.button === Qt.RightButton && modelData.hasMenu) {
-                                modelData.display(root.panelWindow, mouse.x, root.height)
+                        onClicked: event => {
+                            if (event.button === Qt.RightButton) {
+                                if (modelData.hasMenu) root.showTrayMenu(modelData, trayMouse)
+                                else modelData.secondaryActivate()
+                            } else if (event.button === Qt.MiddleButton) {
+                                modelData.secondaryActivate()
+                            } else if (modelData.onlyMenu && modelData.hasMenu) {
+                                root.showTrayMenu(modelData, trayMouse)
+                            } else {
+                                modelData.activate()
                             }
                         }
+                        onWheel: event => {
+                            var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x
+                            if (delta !== 0) modelData.scroll(delta, event.angleDelta.y === 0)
+                            event.accepted = true
+                        }
+                    }
+
+                    ToolTip {
+                        visible: trayMouse.containsMouse && (modelData.tooltipTitle.length > 0 || modelData.tooltipDescription.length > 0)
+                        delay: 450
+                        text: modelData.tooltipDescription.length > 0
+                            ? modelData.tooltipTitle + "\n" + modelData.tooltipDescription
+                            : modelData.tooltipTitle
                     }
                 }
             }

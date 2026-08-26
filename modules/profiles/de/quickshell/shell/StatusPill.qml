@@ -10,17 +10,30 @@ Rectangle {
     property string tooltip: ""
     property color accent: Theme.accentAlt
     property bool selected: false
+    property bool blinking: false
+    property real pulseOpacity: 1
     signal clicked
+    signal rightClicked
+    signal middleClicked
+    signal scrolled(int direction)
 
     implicitWidth: content.implicitWidth + 20
     implicitHeight: 30
+    opacity: root.blinking ? root.pulseOpacity : 1
     radius: Theme.smallRadius
-    color: selected ? Qt.darker(root.accent, 2.7) : (mouse.containsMouse ? Theme.surface : Theme.backgroundElevated)
+    color: selected ? Qt.darker(root.accent, 170) : (mouse.containsMouse ? Theme.surface : Theme.backgroundElevated)
     border.width: mouse.containsMouse || selected ? 1 : 0
     border.color: root.accent
 
     Behavior on color {
         ColorAnimation { duration: 140 }
+    }
+
+    SequentialAnimation on pulseOpacity {
+        running: root.blinking
+        loops: Animation.Infinite
+        NumberAnimation { to: 0.52; duration: 650; easing.type: Easing.InOutSine }
+        NumberAnimation { to: 1; duration: 650; easing.type: Easing.InOutSine }
     }
 
     RowLayout {
@@ -50,8 +63,18 @@ Rectangle {
         id: mouse
         anchors.fill: parent
         hoverEnabled: true
+        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.clicked()
+        onClicked: event => {
+            if (event.button === Qt.LeftButton) root.clicked()
+            else if (event.button === Qt.RightButton) root.rightClicked()
+            else if (event.button === Qt.MiddleButton) root.middleClicked()
+        }
+        onWheel: event => {
+            var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x
+            if (delta !== 0) root.scrolled(delta > 0 ? 1 : -1)
+            event.accepted = true
+        }
     }
 
     ToolTip {
