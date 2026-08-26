@@ -22,7 +22,7 @@ PopupWindow {
     color: "transparent"
     grabFocus: false
     visible: root.shown && root.text.length > 0 && root.targetItem !== null
-    implicitWidth: Math.min(root.maxTextWidth + 20, Math.max(96, tooltipText.implicitWidth + 20))
+    implicitWidth: Math.min(root.maxTextWidth + 20, Math.max(104, naturalText.implicitWidth + 20))
     implicitHeight: Math.max(30, tooltipText.implicitHeight + 18)
 
     Timer {
@@ -57,18 +57,27 @@ PopupWindow {
     Rectangle {
         anchors.fill: parent
         radius: Theme.smallRadius
-        color: Theme.backgroundElevated
-        border.width: 1
-        border.color: Theme.surfaceStrong
+        color: Theme.surface
+        border.width: 0
+
+        Text {
+            id: naturalText
+            visible: false
+            text: root.text
+            font.family: "Maple Mono NF CN"
+            font.pixelSize: 12
+            wrapMode: Text.NoWrap
+        }
 
         Text {
             id: tooltipText
-            anchors.fill: parent
-            anchors.margins: 9
+            x: 10
+            y: 9
+            width: Math.max(0, root.width - 20)
             text: root.text
             color: Theme.text
             font.family: "Maple Mono NF CN"
-            font.pixelSize: 11
+            font.pixelSize: 12
             lineHeight: 1.05
             wrapMode: Text.Wrap
             maximumLineCount: 6

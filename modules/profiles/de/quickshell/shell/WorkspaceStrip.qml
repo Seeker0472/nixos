@@ -5,8 +5,8 @@ Item {
 
     property var screen: null
     property var outputName: screen && screen.name ? screen.name : ""
-    property int cellWidth: 32
-    property int cellHeight: 30
+    property int cellWidth: 30
+    property int cellHeight: 28
 
     implicitWidth: workspaces.implicitWidth
     implicitHeight: root.cellHeight
@@ -17,7 +17,7 @@ Item {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         height: root.cellHeight
-        spacing: 3
+        spacing: 2
 
         Repeater {
             model: ShellState.workspacesFor(root.outputName)
@@ -37,10 +37,9 @@ Item {
                 height: root.cellHeight
                 radius: Theme.smallRadius
                 color: urgent
-                    ? Qt.rgba(Theme.danger.r, Theme.danger.g, Theme.danger.b, 0.16)
-                    : (focused || mouse.containsMouse ? Theme.surface : "transparent")
-                border.width: urgent ? 1 : 0
-                border.color: Theme.danger
+                    ? Theme.tint(Theme.danger, 0.16)
+                    : (focused ? Theme.tint(Theme.accent, 0.13) : (mouse.containsMouse ? Theme.surface : "transparent"))
+                border.width: 0
 
                 Behavior on color {
                     ColorAnimation { duration: 140 }
@@ -72,7 +71,7 @@ Item {
                     text: label
                     color: urgent ? Theme.danger : (focused ? Theme.accent : (empty ? Theme.subtle : Theme.muted))
                     font.family: "Maple Mono NF CN"
-                    font.pixelSize: 12
+                    font.pixelSize: 13
                     font.letterSpacing: 0
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter

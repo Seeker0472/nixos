@@ -11,7 +11,7 @@ Item {
     property bool paused: false
 
     implicitWidth: 92
-    implicitHeight: 24
+    implicitHeight: 22
 
     Process {
         id: cavaProcess

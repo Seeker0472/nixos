@@ -13,9 +13,8 @@ Rectangle {
 
     focus: true
     color: Theme.background
-    radius: 16
-    border.width: 1
-    border.color: Theme.surfaceStrong
+    radius: 14
+    border.width: 0
 
     Keys.onEscapePressed: event => {
         event.accepted = true
@@ -51,6 +50,10 @@ Rectangle {
         if (severity === "high") return Theme.danger
         if (severity === "warning") return Theme.warning
         return normal
+    }
+
+    function metricSurface(value, normal) {
+        return Theme.tint(metricAccent(value, normal), 0.10)
     }
 
     function gib(value) {
@@ -97,7 +100,7 @@ Rectangle {
                     text: root.pageTitle()
                     color: Theme.text
                     font.family: "Maple Mono NF CN"
-                    font.pixelSize: 17
+                    font.pixelSize: 18
                     font.weight: Font.DemiBold
                 }
 
@@ -106,7 +109,7 @@ Rectangle {
                     text: ShellState.focusedTitle
                     color: Theme.muted
                     font.family: "Maple Mono NF CN"
-                    font.pixelSize: 10
+                    font.pixelSize: 11
                     elide: Text.ElideMiddle
                     Layout.fillWidth: true
                 }
@@ -154,9 +157,8 @@ Rectangle {
                             Layout.preferredWidth: 1
                             Layout.preferredHeight: 76
                             radius: Theme.smallRadius
-                            color: Theme.backgroundElevated
-                            border.width: 1
-                            border.color: root.metricAccent(ShellState.cpuUsage, Theme.accent)
+                            color: root.metricSurface(ShellState.cpuUsage, Theme.accent)
+                            border.width: 0
 
                             ColumnLayout {
                                 anchors.fill: parent
@@ -205,9 +207,8 @@ Rectangle {
                             Layout.preferredWidth: 1
                             Layout.preferredHeight: 76
                             radius: Theme.smallRadius
-                            color: Theme.backgroundElevated
-                            border.width: 1
-                            border.color: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
+                            color: root.metricSurface(ShellState.memoryUsage, Theme.accentAlt)
+                            border.width: 0
 
                             ColumnLayout {
                                 anchors.fill: parent
@@ -358,9 +359,8 @@ Rectangle {
                         Layout.preferredHeight: 72
                         clip: true
                         radius: Theme.smallRadius
-                        color: Theme.backgroundElevated
-                        border.width: 1
-                        border.color: root.metricAccent(ShellState.cpuUsage, Theme.accent)
+                        color: root.metricSurface(ShellState.cpuUsage, Theme.accent)
+                        border.width: 0
                         RowLayout {
                             anchors.fill: parent
                             anchors.margins: 12
@@ -419,9 +419,8 @@ Rectangle {
                         Layout.preferredHeight: 72
                         clip: true
                         radius: Theme.smallRadius
-                        color: Theme.backgroundElevated
-                        border.width: 1
-                        border.color: root.metricAccent(ShellState.memoryUsage, Theme.accentAlt)
+                        color: root.metricSurface(ShellState.memoryUsage, Theme.accentAlt)
+                        border.width: 0
                         RowLayout {
                             anchors.fill: parent
                             anchors.margins: 12
@@ -686,8 +685,7 @@ Rectangle {
                             height: 32
                             radius: 7
                             color: model.today ? Theme.accent : "transparent"
-                            border.width: model.month === monthGrid.month && !model.today ? 1 : 0
-                            border.color: Theme.surfaceStrong
+                            border.width: 0
                             Text { anchors.centerIn: parent; text: model.day; color: model.today ? Theme.background : (model.month === monthGrid.month ? Theme.text : Theme.subtle); font.family: "Maple Mono NF CN"; font.pixelSize: 11 }
                         }
                     }

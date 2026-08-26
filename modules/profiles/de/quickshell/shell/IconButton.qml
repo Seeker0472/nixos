@@ -11,12 +11,11 @@ Rectangle {
     property bool selected: false
     signal clicked
 
-    implicitWidth: content.implicitWidth + 20
-    implicitHeight: 34
+    implicitWidth: content.implicitWidth + 14
+    implicitHeight: 30
     radius: Theme.smallRadius
-    color: selected ? Theme.surfaceStrong : (mouse.containsMouse ? Theme.surface : "transparent")
-    border.width: selected ? 1 : 0
-    border.color: Theme.accent
+    color: selected ? Theme.tint(Theme.accent, 0.16) : (mouse.containsMouse ? Theme.surface : "transparent")
+    border.width: 0
 
     Behavior on color {
         ColorAnimation { duration: 140 }
@@ -25,14 +24,14 @@ Rectangle {
     RowLayout {
         id: content
         anchors.centerIn: parent
-        spacing: 7
+        spacing: 6
 
         Text {
             visible: root.icon.length > 0
             text: root.icon
             color: root.iconColor
             font.family: "Maple Mono NF CN"
-            font.pixelSize: 16
+            font.pixelSize: 17
             verticalAlignment: Text.AlignVCenter
         }
 

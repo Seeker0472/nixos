@@ -9,6 +9,7 @@ Rectangle {
     property string tooltip: ""
     property color accent: Theme.accentAlt
     property bool selected: false
+    property bool highlighted: false
     property bool blinking: false
     property real pulseOpacity: 1
     signal clicked
@@ -16,13 +17,12 @@ Rectangle {
     signal middleClicked
     signal scrolled(int direction)
 
-    implicitWidth: content.implicitWidth + 20
-    implicitHeight: 30
+    implicitWidth: content.implicitWidth + 14
+    implicitHeight: 28
     opacity: root.blinking ? root.pulseOpacity : 1
     radius: Theme.smallRadius
-    color: selected ? Theme.surface : (mouse.containsMouse ? Theme.surface : "transparent")
-    border.width: mouse.containsMouse || selected ? 1 : 0
-    border.color: selected ? root.accent : Theme.surfaceStrong
+    color: (selected || highlighted) ? Theme.tint(root.accent, selected ? 0.16 : 0.11) : (mouse.containsMouse ? Theme.surface : "transparent")
+    border.width: 0
 
     Behavior on color {
         ColorAnimation { duration: 140 }
@@ -38,13 +38,13 @@ Rectangle {
     RowLayout {
         id: content
         anchors.centerIn: parent
-        spacing: 6
+        spacing: 5
 
         Text {
             text: root.icon
             color: root.accent
             font.family: "Maple Mono NF CN"
-            font.pixelSize: 15
+            font.pixelSize: 16
         }
 
         Text {
@@ -52,7 +52,7 @@ Rectangle {
             text: root.value
             color: Theme.text
             font.family: "Maple Mono NF CN"
-            font.pixelSize: 11
+            font.pixelSize: 12
             elide: Text.ElideRight
             Layout.maximumWidth: 150
         }

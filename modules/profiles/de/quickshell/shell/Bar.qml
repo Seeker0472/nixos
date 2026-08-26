@@ -12,7 +12,7 @@ Item {
     property var screen: null
     property var panelWindow: null
 
-    implicitHeight: 52
+    implicitHeight: 46
 
     IdleInhibitor {
         window: root.panelWindow
@@ -100,50 +100,49 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        anchors.leftMargin: 8
-        anchors.rightMargin: 8
-        anchors.topMargin: 7
-        anchors.bottomMargin: 7
-        radius: 14
+        anchors.leftMargin: 6
+        anchors.rightMargin: 6
+        anchors.topMargin: 5
+        anchors.bottomMargin: 5
+        radius: 12
         color: Theme.background
-        border.width: 1
-        border.color: Theme.surfaceStrong
+        border.width: 0
     }
 
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 20
-        anchors.rightMargin: 20
-        spacing: 6
+        anchors.leftMargin: 14
+        anchors.rightMargin: 14
+        spacing: 4
 
         WorkspaceStrip {
             screen: root.screen
-            Layout.preferredWidth: Math.min(300, Math.max(70, implicitWidth))
+            Layout.preferredWidth: Math.min(260, Math.max(70, implicitWidth))
             Layout.minimumWidth: 70
-            Layout.maximumWidth: 300
+            Layout.maximumWidth: 260
         }
 
         Text {
             text: ShellState.focusedTitle
             color: Theme.muted
             font.family: "Maple Mono NF CN"
-            font.pixelSize: 11
+            font.pixelSize: 12
             elide: Text.ElideMiddle
             Layout.fillWidth: true
-            Layout.minimumWidth: 60
-            Layout.maximumWidth: 420
+            Layout.minimumWidth: 48
+            Layout.maximumWidth: 320
             verticalAlignment: Text.AlignVCenter
         }
 
         Item { Layout.fillWidth: true }
 
         RowLayout {
-            spacing: 4
+            spacing: 3
 
             CavaVisualizer {
                 enabled: ShellState.audioReady
-                Layout.preferredWidth: 82
-                Layout.preferredHeight: 24
+                Layout.preferredWidth: 72
+                Layout.preferredHeight: 22
             }
 
             Text {
@@ -151,9 +150,9 @@ Item {
                 text: MediaState.artist.length > 0 ? MediaState.artist + " · " + MediaState.title : MediaState.title
                 color: MediaState.playing ? Theme.text : Theme.muted
                 font.family: "Maple Mono NF CN"
-                font.pixelSize: 10
+                font.pixelSize: 11
                 elide: Text.ElideRight
-                Layout.maximumWidth: 180
+                Layout.maximumWidth: 150
                 verticalAlignment: Text.AlignVCenter
             }
         }
@@ -166,6 +165,7 @@ Item {
                 (ShellState.cpuCores > 0 ? "\nCores: " + ShellState.cpuCores : "") +
                 "\nLoad: " + ShellState.loadAverage.toFixed(2)
             accent: root.metricAccent(ShellState.cpuUsage, Theme.muted)
+            highlighted: ShellState.metricSeverity(ShellState.cpuUsage) !== "normal"
             onClicked: ShellState.togglePopup("system", root.screen)
             onRightClicked: ShellState.togglePopup("system", root.screen)
         }
@@ -175,6 +175,7 @@ Item {
             value: ShellState.memoryUsage + "%"
             tooltip: root.memoryTooltip()
             accent: root.metricAccent(ShellState.memoryUsage, Theme.muted)
+            highlighted: ShellState.metricSeverity(ShellState.memoryUsage) !== "normal"
             onClicked: ShellState.togglePopup("system", root.screen)
             onRightClicked: ShellState.togglePopup("system", root.screen)
         }
@@ -185,6 +186,7 @@ Item {
             value: ShellState.temperature + "°C"
             tooltip: "Temperature"
             accent: ShellState.temperature >= 80 ? Theme.danger : Theme.muted
+            highlighted: ShellState.temperature >= 80
             onClicked: ShellState.togglePopup("system", root.screen)
             onRightClicked: ShellState.togglePopup("system", root.screen)
         }
@@ -196,6 +198,7 @@ Item {
                 : (!ShellState.networkConnected ? "Offline" : (ShellState.networkType === "wifi" ? ShellState.networkSignal + "%" : "LAN"))
             tooltip: root.networkTooltip()
             accent: !ShellState.networkConnected ? Theme.danger : Theme.muted
+            highlighted: !ShellState.networkConnected
             onClicked: ShellState.togglePopup("network", root.screen)
             onRightClicked: ShellState.run([Commands.nmEditor])
             onMiddleClicked: ShellState.toggleNetworkFormat()
@@ -218,6 +221,7 @@ Item {
                 : (ShellState.audioReady ? Math.round(ShellState.sinkVolume * 100) + "%" : "Audio")
             tooltip: root.audioTooltip()
             accent: (ShellState.audioShowSource ? ShellState.sourceMuted : ShellState.sinkMuted) ? Theme.danger : Theme.muted
+            highlighted: ShellState.audioShowSource ? ShellState.sourceMuted : ShellState.sinkMuted
             onClicked: ShellState.togglePopup("audio", root.screen)
             onRightClicked: ShellState.run([Commands.pavucontrol])
             onMiddleClicked: ShellState.toggleAudioDisplay()
@@ -240,6 +244,7 @@ Item {
             value: "Share"
             tooltip: ShellState.privacyTooltip("screen")
             accent: Theme.warning
+            highlighted: true
             onClicked: ShellState.togglePopup("overview", root.screen)
         }
 
@@ -249,6 +254,7 @@ Item {
             value: "Mic"
             tooltip: ShellState.privacyTooltip("audio")
             accent: Theme.warning
+            highlighted: true
             onClicked: ShellState.togglePopup("overview", root.screen)
         }
 
@@ -286,6 +292,7 @@ Item {
             tooltip: root.batteryTooltip()
             accent: ShellState.batterySeverity() === "critical" ? Theme.danger
                 : (ShellState.batterySeverity() === "warning" ? Theme.warning : Theme.muted)
+            highlighted: ShellState.batterySeverity() !== "normal"
             blinking: ShellState.batterySeverity() === "critical" && ShellState.onBattery
             onClicked: ShellState.togglePopup("overview", root.screen)
             onMiddleClicked: ShellState.toggleBatteryFormat()
@@ -320,15 +327,14 @@ Item {
                     required property var modelData
                     readonly property bool needsAttention: modelData.status === Status.NeedsAttention
                     readonly property string iconSource: root.trayIconSource(modelData)
-                    implicitWidth: modelData.status === Status.Passive ? 0 : 28
-                    implicitHeight: 30
+                    implicitWidth: modelData.status === Status.Passive ? 0 : 26
+                    implicitHeight: 28
 
                     Rectangle {
                         anchors.fill: parent
                         radius: Theme.smallRadius
-                        color: needsAttention ? Qt.darker(Theme.danger, 180) : (trayMouse.containsMouse ? Theme.surface : "transparent")
-                        border.width: needsAttention || trayMouse.containsMouse ? 1 : 0
-                        border.color: needsAttention ? Theme.danger : Theme.surfaceStrong
+                        color: needsAttention ? Theme.tint(Theme.danger, 0.16) : (trayMouse.containsMouse ? Theme.surface : "transparent")
+                        border.width: 0
                     }
 
                     IconImage {

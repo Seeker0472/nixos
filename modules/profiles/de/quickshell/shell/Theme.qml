@@ -18,4 +18,8 @@ Singleton {
     readonly property color danger: "#f38ba8"
     readonly property int radius: 12
     readonly property int smallRadius: 8
+
+    function tint(color, alpha) {
+        return Qt.rgba(color.r, color.g, color.b, alpha)
+    }
 }

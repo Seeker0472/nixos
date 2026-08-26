@@ -12,9 +12,8 @@ Rectangle {
 
     implicitHeight: 58
     radius: Theme.smallRadius
-    color: mouse.containsMouse ? Theme.surfaceStrong : Theme.backgroundElevated
-    border.width: mouse.containsMouse ? 1 : 0
-    border.color: root.accent
+    color: mouse.containsMouse ? Theme.tint(root.accent, 0.11) : Theme.backgroundElevated
+    border.width: 0
 
     Behavior on color {
         ColorAnimation { duration: 140 }
@@ -43,7 +42,7 @@ Rectangle {
                 text: root.title
                 color: Theme.text
                 font.family: "Maple Mono NF CN"
-                font.pixelSize: 12
+                font.pixelSize: 13
                 elide: Text.ElideRight
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
@@ -55,7 +54,7 @@ Rectangle {
                 text: root.subtitle
                 color: Theme.muted
                 font.family: "Maple Mono NF CN"
-                font.pixelSize: 10
+                font.pixelSize: 11
                 elide: Text.ElideRight
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
