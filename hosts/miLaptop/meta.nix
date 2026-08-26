@@ -11,7 +11,8 @@
     de = {
       hyprland.enable = false;
       niri.enable = true;
-      waybar.enable = true;
+      quickshell.enable = true;
+      waybar.enable = false;
       wofi.enable = true;
       mako.enable = true;
       wpaperd.enable = true;

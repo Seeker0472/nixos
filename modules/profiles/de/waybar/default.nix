@@ -53,7 +53,7 @@ let
   '';
 in
 {
-  config = lib.mkIf (cfg.waybar.enable or false) {
+  config = lib.mkIf ((cfg.waybar.enable or false) && !(cfg.quickshell.enable or false)) {
     xdg.configFile."waybar/style.css".source = ./style.css;
 
     programs.waybar = {

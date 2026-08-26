@@ -13,6 +13,7 @@ in
   options.machine.de = {
     hyprland.enable = lib.mkEnableOption "Hyprland, a dynamic tiling Wayland compositor that doesn't sacrifice on looks";
     niri.enable = lib.mkEnableOption "niri, a scrollable-tiling Wayland compositor";
+    quickshell.enable = lib.mkEnableOption "Quickshell, the Niri desktop shell and control center";
     waybar.enable = lib.mkEnableOption "Waybar, a highly customizable Wayland bar";
     wofi.enable = lib.mkEnableOption "wofi, a launcher and menu program for Wayland compositors";
     mako.enable = lib.mkEnableOption "mako, a lightweight notification daemon for Wayland";
@@ -29,7 +30,8 @@ in
     }
     (lib.mkIf compositorEnabled {
       machine.de = {
-        waybar.enable = lib.mkDefault true;
+        quickshell.enable = lib.mkDefault cfg.niri.enable;
+        waybar.enable = lib.mkDefault (!cfg.niri.enable);
         wofi.enable = lib.mkDefault true;
         mako.enable = lib.mkDefault true;
         wpaperd.enable = lib.mkDefault true;

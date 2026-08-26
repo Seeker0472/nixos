@@ -17,6 +17,7 @@ in
 {
   imports = [
     ../profiles/de/map.nix
+    ../profiles/de/quickshell/default.nix
     ../profiles/de/waybar/default.nix
     ../profiles/de/niri/home.nix
     ../profiles/de/hyprland/conf/appearance.nix

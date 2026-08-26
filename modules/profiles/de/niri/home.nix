@@ -123,8 +123,16 @@ let
     wlPaste = "${pkgs.wl-clipboard}/bin/wl-paste";
     wpaperctl = "${pkgs.wpaperd}/bin/wpaperctl";
     xwaylandSatellite = lib.getExe pkgs.xwayland-satellite;
-    waybarStartup = lib.optionalString (deCfg.waybar.enable or false) ''
-      spawn-at-startup "${lib.getExe pkgs.waybar}"
+    quickshellStartup = lib.optionalString (deCfg.quickshell.enable or false) ''
+      spawn-at-startup "${lib.getExe pkgs.quickshell}" "--config" "niri-shell"
+    '';
+    waybarStartup =
+      lib.optionalString ((deCfg.waybar.enable or false) && !(deCfg.quickshell.enable or false))
+        ''
+          spawn-at-startup "${lib.getExe pkgs.waybar}"
+        '';
+    quickshellToggle = lib.optionalString (deCfg.quickshell.enable or false) ''
+      Mod+Shift+Space repeat=false hotkey-overlay-title="Toggle Control Center" { spawn "${lib.getExe pkgs.quickshell}" "ipc" "-c" "niri-shell" "call" "shell" "toggle"; }
     '';
     wpaperdStartup = lib.optionalString (deCfg.wpaperd.enable or false) ''
       spawn-at-startup "${lib.getExe pkgs.wpaperd}"

@@ -112,6 +112,7 @@ hotkey-overlay {
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 prefer-no-csd
 
+@quickshellStartup@
 @waybarStartup@
 @wpaperdStartup@
 @fcitx5Startup@
@@ -184,6 +185,7 @@ recent-windows {
 }
 
 binds {
+    @quickshellToggle@
     Mod+Shift+Slash repeat=false { show-hotkey-overlay; }
     Mod+Ctrl+Shift+M repeat=false hotkey-overlay-title="Quit Niri" { quit; }
     Mod+M repeat=false hotkey-overlay-title="Suspend and Hibernate" { spawn "@systemctl@" "suspend-then-hibernate"; }
