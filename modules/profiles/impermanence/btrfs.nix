@@ -10,9 +10,15 @@ let
   cfg = config.machine.btrfs.impermanence;
 in
 {
-  # TODO :hibrnate don't work
   config = mkIf (config.machine.impermanence.enable && cfg.device != null) (mkMerge [
     {
+      assertions = [
+        {
+          assertion = (cfg.resumeDevice == null) == (cfg.resumeOffset == null);
+          message = "machine.btrfs.impermanence.resumeDevice and resumeOffset must be configured together.";
+        }
+      ];
+
       boot.initrd.systemd.enable = true;
       boot.initrd.supportedFilesystems = [ "btrfs" ];
       # boot.initrd.supportedFilesystems = lib.mkForce [ ];
