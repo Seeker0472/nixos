@@ -3,5 +3,6 @@ import ../lib/mk-host-module.nix {
   extraModules = [
     ./disk.nix
     ./hardware-configuration.nix
+    ./openrgb
   ];
 }

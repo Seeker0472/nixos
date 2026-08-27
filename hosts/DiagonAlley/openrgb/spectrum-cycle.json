@@ -1,0 +1,128 @@
+{
+  "version": 2,
+  "Effects": [
+    {
+      "EffectClassName": "SpectrumCycling",
+      "CustomName": "Synchronized spectrum cycle",
+      "FPS": 30,
+      "Speed": 6,
+      "Slider2Val": 1,
+      "RandomColors": false,
+      "AllowOnlyFirst": false,
+      "Brightness": 100,
+      "Temperature": 0,
+      "Tint": 0,
+      "UserColors": [],
+      "CustomSettings": {
+        "saturation": 255
+      },
+      "AutoStart": true,
+      "ControllerZones": [
+        {
+          "zone_idx": 0,
+          "reverse": false,
+          "self_brightness": 100,
+          "name": "ENE DRAM",
+          "location": "I2C: SMBus PIIX4 adapter port 0 at 0b00 (/dev/i2c-2), address 0x71",
+          "serial": "",
+          "description": "ENE SMBus Device",
+          "version": "AUDA0-E6K5-0101",
+          "vendor": "ENE",
+          "is_segment": false,
+          "segment_idx": -1
+        },
+        {
+          "zone_idx": 0,
+          "reverse": false,
+          "self_brightness": 100,
+          "name": "ENE DRAM",
+          "location": "I2C: SMBus PIIX4 adapter port 0 at 0b00 (/dev/i2c-2), address 0x73",
+          "serial": "",
+          "description": "ENE SMBus Device",
+          "version": "AUDA0-E6K5-0101",
+          "vendor": "ENE",
+          "is_segment": false,
+          "segment_idx": -1
+        },
+        {
+          "zone_idx": 0,
+          "reverse": false,
+          "self_brightness": 100,
+          "name": "B650M AORUS ELITE AX ICE",
+          "location": "HID: /dev/hidraw7",
+          "serial": "0x57010100",
+          "description": "IT5701-GIGABYTE V4.0.30.2",
+          "version": "4.0.30.2",
+          "vendor": "Gigabyte",
+          "is_segment": false,
+          "segment_idx": -1
+        },
+        {
+          "zone_idx": 1,
+          "reverse": false,
+          "self_brightness": 100,
+          "name": "B650M AORUS ELITE AX ICE",
+          "location": "HID: /dev/hidraw7",
+          "serial": "0x57010100",
+          "description": "IT5701-GIGABYTE V4.0.30.2",
+          "version": "4.0.30.2",
+          "vendor": "Gigabyte",
+          "is_segment": false,
+          "segment_idx": -1
+        },
+        {
+          "zone_idx": 2,
+          "reverse": false,
+          "self_brightness": 100,
+          "name": "B650M AORUS ELITE AX ICE",
+          "location": "HID: /dev/hidraw7",
+          "serial": "0x57010100",
+          "description": "IT5701-GIGABYTE V4.0.30.2",
+          "version": "4.0.30.2",
+          "vendor": "Gigabyte",
+          "is_segment": false,
+          "segment_idx": -1
+        },
+        {
+          "zone_idx": 3,
+          "reverse": false,
+          "self_brightness": 100,
+          "name": "B650M AORUS ELITE AX ICE",
+          "location": "HID: /dev/hidraw7",
+          "serial": "0x57010100",
+          "description": "IT5701-GIGABYTE V4.0.30.2",
+          "version": "4.0.30.2",
+          "vendor": "Gigabyte",
+          "is_segment": false,
+          "segment_idx": -1
+        },
+        {
+          "zone_idx": 4,
+          "reverse": false,
+          "self_brightness": 100,
+          "name": "B650M AORUS ELITE AX ICE",
+          "location": "HID: /dev/hidraw7",
+          "serial": "0x57010100",
+          "description": "IT5701-GIGABYTE V4.0.30.2",
+          "version": "4.0.30.2",
+          "vendor": "Gigabyte",
+          "is_segment": false,
+          "segment_idx": -1
+        },
+        {
+          "zone_idx": 5,
+          "reverse": false,
+          "self_brightness": 100,
+          "name": "B650M AORUS ELITE AX ICE",
+          "location": "HID: /dev/hidraw7",
+          "serial": "0x57010100",
+          "description": "IT5701-GIGABYTE V4.0.30.2",
+          "version": "4.0.30.2",
+          "vendor": "Gigabyte",
+          "is_segment": false,
+          "segment_idx": -1
+        }
+      ]
+    }
+  ]
+}
