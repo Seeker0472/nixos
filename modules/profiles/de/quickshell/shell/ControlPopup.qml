@@ -94,6 +94,7 @@ Rectangle {
 
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 spacing: 1
 
                 Text {
@@ -102,6 +103,9 @@ Rectangle {
                     font.family: "Maple Mono NF CN"
                     font.pixelSize: 18
                     font.weight: Font.DemiBold
+                    elide: Text.ElideRight
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
                 }
 
                 Text {
@@ -118,6 +122,7 @@ Rectangle {
             IconButton {
                 icon: "×"
                 tooltip: "Close"
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                 onClicked: ShellState.closePopup()
             }
         }
@@ -144,10 +149,12 @@ Rectangle {
             Item {
                 ColumnLayout {
                     anchors.fill: parent
-                    spacing: 10
+                    spacing: 8
 
                     RowLayout {
                         Layout.fillWidth: true
+                        Layout.fillHeight: false
+                        Layout.preferredHeight: 76
                         spacing: 8
 
                         Rectangle {
@@ -248,6 +255,8 @@ Rectangle {
 
                     RowLayout {
                         Layout.fillWidth: true
+                        Layout.fillHeight: false
+                        Layout.preferredHeight: 58
                         spacing: 8
                         ActionTile {
                             icon: !ShellState.networkConnected ? "󰤭" : (ShellState.networkType === "ethernet" ? "" : "󰤨")
@@ -270,6 +279,7 @@ Rectangle {
                     Rectangle {
                         visible: MediaState.available
                         Layout.fillWidth: true
+                        Layout.fillHeight: false
                         Layout.preferredHeight: 74
                         radius: Theme.smallRadius
                         color: Theme.backgroundElevated
@@ -297,12 +307,15 @@ Rectangle {
                         subtitle: ShellState.audioShowSource ? ShellState.sourceName : ShellState.sinkName
                         accent: Theme.accentAlt
                         Layout.fillWidth: true
+                        Layout.fillHeight: false
+                        Layout.preferredHeight: 58
                         Layout.minimumWidth: 0
                         onClicked: ShellState.popupPage = "audio"
                     }
 
                     Rectangle {
                         Layout.fillWidth: true
+                        Layout.fillHeight: false
                         Layout.preferredHeight: 48
                         radius: Theme.smallRadius
                         color: Theme.backgroundElevated
@@ -342,10 +355,14 @@ Rectangle {
 
                     RowLayout {
                         Layout.fillWidth: true
+                        Layout.fillHeight: false
+                        Layout.preferredHeight: 58
                         spacing: 8
                         ActionTile { icon: "󰌾"; title: "Lock"; subtitle: "Session"; accent: Theme.warning; Layout.fillWidth: true; onClicked: ShellState.run([Commands.swaylock, "-f"]) }
                         ActionTile { icon: "󰐥"; title: "Power"; subtitle: "Session actions"; accent: Theme.danger; Layout.fillWidth: true; onClicked: ShellState.popupPage = "power" }
                     }
+
+                    Item { Layout.fillHeight: true }
                 }
             }
 
@@ -673,7 +690,7 @@ Rectangle {
                     }
                     MonthGrid {
                         id: monthGrid
-                        month: ShellState.calendarMonth + 1
+                        month: ShellState.calendarMonth
                         year: ShellState.calendarYear
                         locale: Qt.locale("en_GB")
                         spacing: 4
@@ -681,12 +698,13 @@ Rectangle {
                         Layout.preferredHeight: 224
                         delegate: Rectangle {
                             required property var model
+                            readonly property bool todayCell: model.today && model.month === monthGrid.month && model.year === monthGrid.year
                             width: monthGrid.width / 7 - 4
                             height: 32
                             radius: 7
-                            color: model.today ? Theme.accent : "transparent"
+                            color: todayCell ? Theme.accent : "transparent"
                             border.width: 0
-                            Text { anchors.centerIn: parent; text: model.day; color: model.today ? Theme.background : (model.month === monthGrid.month ? Theme.text : Theme.subtle); font.family: "Maple Mono NF CN"; font.pixelSize: 11 }
+                            Text { anchors.centerIn: parent; text: model.day; color: todayCell ? Theme.background : (model.month === monthGrid.month ? Theme.text : Theme.subtle); font.family: "Maple Mono NF CN"; font.pixelSize: 11 }
                         }
                     }
                     Text { text: "Today: " + Qt.formatDate(ShellState.now, "yyyy-MM-dd"); color: Theme.muted; font.family: "Maple Mono NF CN"; font.pixelSize: 10; Layout.alignment: Qt.AlignHCenter }
@@ -698,11 +716,12 @@ Rectangle {
                 ColumnLayout {
                     anchors.fill: parent
                     spacing: 8
-                    ActionTile { icon: "󰌾"; title: "Lock session"; subtitle: "Keep applications running"; accent: Theme.warning; Layout.fillWidth: true; onClicked: ShellState.run([Commands.swaylock, "-f"]) }
-                    ActionTile { icon: "󰤄"; title: "Suspend"; subtitle: "Sleep until you return"; accent: Theme.accentAlt; Layout.fillWidth: true; onClicked: ShellState.run([Commands.systemctl, "suspend"]) }
-                    ActionTile { icon: "󰒲"; title: "Hibernate"; subtitle: "Save state to disk"; accent: Theme.accentAlt; Layout.fillWidth: true; onClicked: ShellState.run([Commands.systemctl, "hibernate"]) }
-                    ActionTile { icon: "󰜉"; title: "Reboot"; subtitle: "Restart the computer"; accent: Theme.warning; Layout.fillWidth: true; onClicked: ShellState.run([Commands.systemctl, "reboot"]) }
-                    ActionTile { icon: "󰐥"; title: "Power off"; subtitle: "Shut down the computer"; accent: Theme.danger; Layout.fillWidth: true; onClicked: ShellState.run([Commands.systemctl, "poweroff"]) }
+                    ActionTile { icon: "󰌾"; title: "Lock session"; subtitle: "Keep applications running"; accent: Theme.warning; Layout.fillWidth: true; Layout.fillHeight: false; Layout.preferredHeight: 58; onClicked: ShellState.run([Commands.swaylock, "-f"]) }
+                    ActionTile { icon: "󰤄"; title: "Suspend"; subtitle: "Sleep until you return"; accent: Theme.accentAlt; Layout.fillWidth: true; Layout.fillHeight: false; Layout.preferredHeight: 58; onClicked: ShellState.run([Commands.systemctl, "suspend"]) }
+                    ActionTile { icon: "󰒲"; title: "Hibernate"; subtitle: "Save state to disk"; accent: Theme.accentAlt; Layout.fillWidth: true; Layout.fillHeight: false; Layout.preferredHeight: 58; onClicked: ShellState.run([Commands.systemctl, "hibernate"]) }
+                    ActionTile { icon: "󰜉"; title: "Reboot"; subtitle: "Restart the computer"; accent: Theme.warning; Layout.fillWidth: true; Layout.fillHeight: false; Layout.preferredHeight: 58; onClicked: ShellState.run([Commands.systemctl, "reboot"]) }
+                    ActionTile { icon: "󰐥"; title: "Power off"; subtitle: "Shut down the computer"; accent: Theme.danger; Layout.fillWidth: true; Layout.fillHeight: false; Layout.preferredHeight: 58; onClicked: ShellState.run([Commands.systemctl, "poweroff"]) }
+                    Item { Layout.fillHeight: true }
                 }
             }
         }
