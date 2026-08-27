@@ -66,8 +66,8 @@ PopupWindow {
             id: naturalText
             visible: false
             text: root.text
-            font.family: "Maple Mono NF CN"
-            font.pixelSize: 12
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.bodyFontSize
             wrapMode: Text.NoWrap
         }
 
@@ -78,8 +78,8 @@ PopupWindow {
             width: Math.max(0, root.width - 20)
             text: root.text
             color: Theme.text
-            font.family: "Maple Mono NF CN"
-            font.pixelSize: 12
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.bodyFontSize
             lineHeight: 1.05
             wrapMode: Text.Wrap
             maximumLineCount: 6

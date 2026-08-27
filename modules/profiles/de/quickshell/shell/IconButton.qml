@@ -12,13 +12,25 @@ Rectangle {
     signal clicked
 
     implicitWidth: content.implicitWidth + 14
-    implicitHeight: 30
+    implicitHeight: Theme.controlHeight
+    activeFocusOnTab: enabled
+    Accessible.role: Accessible.Button
+    Accessible.name: tooltip.length > 0 ? tooltip : (label.length > 0 ? label : icon)
     radius: Theme.smallRadius
-    color: selected ? Theme.tint(Theme.accent, 0.16) : (mouse.containsMouse ? Theme.surface : "transparent")
-    border.width: 0
+    color: selected ? Theme.tint(Theme.accent, 0.16) : ((mouse.containsMouse || activeFocus) ? Theme.surface : "transparent")
+    border.width: activeFocus ? 1 : 0
+    border.color: Theme.accent
+
+    Keys.onPressed: event => {
+        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+            event.accepted = true
+            root.clicked()
+        }
+    }
+    Accessible.onPressAction: if (root.enabled) root.clicked()
 
     Behavior on color {
-        ColorAnimation { duration: 140 }
+        ColorAnimation { duration: Theme.animationFast }
     }
 
     RowLayout {
@@ -30,7 +42,7 @@ Rectangle {
             visible: root.icon.length > 0
             text: root.icon
             color: root.iconColor
-            font.family: "Maple Mono NF CN"
+            font.family: Theme.fontFamily
             font.pixelSize: 17
             verticalAlignment: Text.AlignVCenter
         }
@@ -39,8 +51,8 @@ Rectangle {
             visible: root.label.length > 0
             text: root.label
             color: Theme.text
-            font.family: "Maple Mono NF CN"
-            font.pixelSize: 12
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.bodyFontSize
             verticalAlignment: Text.AlignVCenter
         }
     }
@@ -51,12 +63,13 @@ Rectangle {
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.clicked()
+        onPressed: root.forceActiveFocus(Qt.MouseFocusReason)
+        onClicked: if (root.enabled) root.clicked()
     }
 
     HoverTooltip {
         targetItem: root
-        hovered: mouse.containsMouse
+        hovered: mouse.containsMouse || root.activeFocus
         text: root.tooltip
         delay: 550
     }

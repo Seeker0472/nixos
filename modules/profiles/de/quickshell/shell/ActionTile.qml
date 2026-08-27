@@ -11,17 +11,30 @@ Rectangle {
     signal clicked
 
     implicitHeight: 58
+    activeFocusOnTab: enabled
+    Accessible.role: Accessible.Button
+    Accessible.name: root.title
+    Accessible.description: root.subtitle
     radius: Theme.smallRadius
     // Blend the hover tint onto the tile first so the color animation stays opaque.
     readonly property color hoverColor: Qt.tint(
         Theme.backgroundElevated,
         Qt.rgba(root.accent.r, root.accent.g, root.accent.b, 0.11)
     )
-    color: mouse.containsMouse ? root.hoverColor : Theme.backgroundElevated
-    border.width: 0
+    color: (mouse.containsMouse || activeFocus) ? root.hoverColor : Theme.backgroundElevated
+    border.width: activeFocus ? 1 : 0
+    border.color: root.accent
+
+    Keys.onPressed: event => {
+        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+            event.accepted = true
+            root.clicked()
+        }
+    }
+    Accessible.onPressAction: if (root.enabled) root.clicked()
 
     Behavior on color {
-        ColorAnimation { duration: 140 }
+        ColorAnimation { duration: Theme.animationFast }
     }
 
     RowLayout {
@@ -33,7 +46,7 @@ Rectangle {
         Text {
             text: root.icon
             color: root.accent
-            font.family: "Maple Mono NF CN"
+            font.family: Theme.fontFamily
             font.pixelSize: 20
             Layout.alignment: Qt.AlignVCenter
         }
@@ -46,7 +59,7 @@ Rectangle {
             Text {
                 text: root.title
                 color: Theme.text
-                font.family: "Maple Mono NF CN"
+                font.family: Theme.fontFamily
                 font.pixelSize: 13
                 elide: Text.ElideRight
                 Layout.fillWidth: true
@@ -58,7 +71,7 @@ Rectangle {
                 visible: root.subtitle.length > 0
                 text: root.subtitle
                 color: Theme.muted
-                font.family: "Maple Mono NF CN"
+                font.family: Theme.fontFamily
                 font.pixelSize: 11
                 elide: Text.ElideRight
                 Layout.fillWidth: true
@@ -80,6 +93,7 @@ Rectangle {
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.clicked()
+        onPressed: root.forceActiveFocus(Qt.MouseFocusReason)
+        onClicked: if (root.enabled) root.clicked()
     }
 }

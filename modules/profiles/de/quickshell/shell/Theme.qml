@@ -4,6 +4,8 @@ import QtQuick
 import Quickshell
 
 Singleton {
+    readonly property string fontFamily: "Maple Mono NF CN"
+
     readonly property color background: "#171722"
     readonly property color backgroundElevated: "#1f1f2d"
     readonly property color surface: "#28283a"
@@ -18,6 +20,13 @@ Singleton {
     readonly property color danger: "#f38ba8"
     readonly property int radius: 12
     readonly property int smallRadius: 8
+    readonly property int controlHeight: 30
+    readonly property int fieldHeight: 34
+    readonly property int bodyFontSize: 12
+    readonly property int smallFontSize: 10
+    readonly property int iconFontSize: 17
+    readonly property int animationFast: 140
+    readonly property int animationNormal: 220
 
     function tint(color, alpha) {
         return Qt.rgba(color.r, color.g, color.b, alpha)

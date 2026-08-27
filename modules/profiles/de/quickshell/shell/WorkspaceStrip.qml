@@ -44,14 +44,26 @@ Item {
 
                 width: numeric ? root.cellWidth : Math.min(132, Math.max(56, workspaceLabel.implicitWidth + 16))
                 height: root.cellHeight
+                activeFocusOnTab: true
+                Accessible.role: Accessible.Button
+                Accessible.name: "Workspace " + label
                 radius: Theme.smallRadius
                 color: urgent
                     ? Theme.tint(Theme.danger, 0.16)
                     : (focused ? Theme.tint(Theme.accent, 0.13) : (mouse.containsMouse ? Theme.surface : "transparent"))
-                border.width: 0
+                border.width: activeFocus ? 1 : 0
+                border.color: Theme.accent
+
+                Keys.onPressed: event => {
+                    if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+                        event.accepted = true
+                        ShellState.focusWorkspace(Number(modelData.idx || 1), modelData.output || root.outputName)
+                    }
+                }
+                Accessible.onPressAction: ShellState.focusWorkspace(Number(modelData.idx || 1), modelData.output || root.outputName)
 
                 Behavior on color {
-                    ColorAnimation { duration: 140 }
+                    ColorAnimation { duration: Theme.animationFast }
                 }
 
                 opacity: urgent ? pulseOpacity : 1
@@ -79,7 +91,7 @@ Item {
                     anchors.rightMargin: 4
                     text: label
                     color: urgent ? Theme.danger : (focused ? Theme.accent : (empty ? Theme.subtle : Theme.muted))
-                    font.family: "Maple Mono NF CN"
+                    font.family: Theme.fontFamily
                     font.pixelSize: 13
                     font.letterSpacing: 0
                     horizontalAlignment: Text.AlignHCenter
@@ -94,12 +106,13 @@ Item {
                     hoverEnabled: true
                     acceptedButtons: Qt.LeftButton
                     cursorShape: Qt.PointingHandCursor
+                    onPressed: workspaceCell.forceActiveFocus(Qt.MouseFocusReason)
                     onClicked: ShellState.focusWorkspace(Number(modelData.idx || 1), modelData.output || root.outputName)
                 }
 
                 HoverTooltip {
                     targetItem: workspaceCell
-                    hovered: mouse.containsMouse
+                    hovered: mouse.containsMouse || workspaceCell.activeFocus
                     delay: 450
                     text: {
                         var state = focused ? "focused" : (activeOnOutput ? "active" : "inactive")

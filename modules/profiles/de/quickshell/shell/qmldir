@@ -1,0 +1,26 @@
+singleton AudioState 1.0 AudioState.qml
+singleton BluetoothState 1.0 BluetoothState.qml
+singleton CavaState 1.0 CavaState.qml
+singleton Commands 1.0 Commands.qml
+singleton MediaState 1.0 MediaState.qml
+singleton NetworkState 1.0 NetworkState.qml
+singleton NiriState 1.0 NiriState.qml
+singleton PowerState 1.0 PowerState.qml
+singleton PrivacyState 1.0 PrivacyState.qml
+singleton ShellState 1.0 ShellState.qml
+singleton SystemState 1.0 SystemState.qml
+singleton TaskState 1.0 TaskState.qml
+singleton Theme 1.0 Theme.qml
+singleton UiState 1.0 UiState.qml
+ActionTile 1.0 ActionTile.qml
+Bar 1.0 Bar.qml
+CavaVisualizer 1.0 CavaVisualizer.qml
+ControlPopup 1.0 ControlPopup.qml
+HoverTooltip 1.0 HoverTooltip.qml
+IconButton 1.0 IconButton.qml
+MeterBar 1.0 MeterBar.qml
+ShellTextField 1.0 ShellTextField.qml
+StatusPill 1.0 StatusPill.qml
+TaskPage 1.0 TaskPage.qml
+ValueSlider 1.0 ValueSlider.qml
+WorkspaceStrip 1.0 WorkspaceStrip.qml

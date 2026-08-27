@@ -24,7 +24,6 @@ from typing import Any
 SYSTEM_AC_INTERVAL = 2.0
 SYSTEM_BATTERY_INTERVAL = 10.0
 AMBIENT_INTERVAL = 10.0
-PRIVACY_INTERVAL = 5.0
 
 _stop_event = threading.Event()
 
@@ -282,12 +281,11 @@ class Sampler:
         }
 
 
-def run(pw_dump: str) -> None:
-    sampler = Sampler(pw_dump)
+def run() -> None:
+    sampler = Sampler("")
     now = time.monotonic()
     next_system = now
     next_ambient = now
-    next_privacy = now
     on_battery = sampler.read_on_battery()
 
     while not _stop_event.is_set():
@@ -306,11 +304,7 @@ def run(pw_dump: str) -> None:
             sampler.emit("ambient", sampler.sample_ambient())
             next_ambient = time.monotonic() + AMBIENT_INTERVAL
 
-        if now >= next_privacy:
-            sampler.emit("privacy", sampler.sample_privacy())
-            next_privacy = time.monotonic() + PRIVACY_INTERVAL
-
-        next_due = min(next_system, next_ambient, next_privacy)
+        next_due = min(next_system, next_ambient)
         # Event.wait() wakes immediately on SIGINT/SIGTERM while otherwise
         # sleeping until the next monotonic deadline. No heartbeat is needed.
         _stop_event.wait(max(0.05, next_due - time.monotonic()))
@@ -319,10 +313,15 @@ def run(pw_dump: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pw-dump", default="pw-dump", help="path to pw-dump for privacy fallback")
+    parser.add_argument("--privacy-once", action="store_true", help="emit one privacy sample and exit")
     args = parser.parse_args()
     signal.signal(signal.SIGINT, _stop)
     signal.signal(signal.SIGTERM, _stop)
-    run(args.pw_dump)
+    if args.privacy_once:
+        sampler = Sampler(args.pw_dump)
+        sampler.emit("privacy", sampler.sample_privacy())
+        return
+    run()
 
 
 if __name__ == "__main__":

@@ -19,13 +19,25 @@ Rectangle {
 
     implicitWidth: content.implicitWidth + 14
     implicitHeight: 28
+    activeFocusOnTab: enabled
+    Accessible.role: Accessible.Button
+    Accessible.name: root.tooltip.length > 0 ? root.tooltip : root.value
     opacity: root.blinking ? root.pulseOpacity : 1
     radius: Theme.smallRadius
-    color: (selected || highlighted) ? Theme.tint(root.accent, selected ? 0.16 : 0.11) : (mouse.containsMouse ? Theme.surface : "transparent")
-    border.width: 0
+    color: (selected || highlighted) ? Theme.tint(root.accent, selected ? 0.16 : 0.11) : ((mouse.containsMouse || activeFocus) ? Theme.surface : "transparent")
+    border.width: activeFocus ? 1 : 0
+    border.color: root.accent
+
+    Keys.onPressed: event => {
+        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+            event.accepted = true
+            root.clicked()
+        }
+    }
+    Accessible.onPressAction: if (root.enabled) root.clicked()
 
     Behavior on color {
-        ColorAnimation { duration: 140 }
+        ColorAnimation { duration: Theme.animationFast }
     }
 
     SequentialAnimation on pulseOpacity {
@@ -43,7 +55,7 @@ Rectangle {
         Text {
             text: root.icon
             color: root.accent
-            font.family: "Maple Mono NF CN"
+            font.family: Theme.fontFamily
             font.pixelSize: 16
         }
 
@@ -51,8 +63,8 @@ Rectangle {
             visible: root.value.length > 0
             text: root.value
             color: Theme.text
-            font.family: "Maple Mono NF CN"
-            font.pixelSize: 12
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.bodyFontSize
             elide: Text.ElideRight
             Layout.maximumWidth: 150
         }
@@ -64,6 +76,7 @@ Rectangle {
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
         cursorShape: Qt.PointingHandCursor
+        onPressed: root.forceActiveFocus(Qt.MouseFocusReason)
         onClicked: event => {
             if (event.button === Qt.LeftButton) root.clicked()
             else if (event.button === Qt.RightButton) root.rightClicked()
@@ -78,7 +91,7 @@ Rectangle {
 
     HoverTooltip {
         targetItem: root
-        hovered: mouse.containsMouse
+        hovered: mouse.containsMouse || root.activeFocus
         text: root.tooltip
         delay: 550
     }

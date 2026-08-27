@@ -43,7 +43,7 @@ ShellRoot {
                     id: controlPopup
                     property bool closeAnimationActive: false
                     property bool hasOpened: false
-                    readonly property bool requestedVisible: ShellState.popupOpen && ShellState.popupScreen === modelData
+                    readonly property bool requestedVisible: UiState.popupOpen && UiState.popupScreen === modelData
                     anchor.window: barWindow
                     anchor.rect.x: Math.max(12, barWindow.width - width - 18)
                     anchor.rect.y: barWindow.height + 8
@@ -79,7 +79,7 @@ ShellRoot {
                         } else if (hasOpened) {
                             // A screen change should not leave two popups visible;
                             // only a real close gets the exit animation.
-                            if (ShellState.popupOpen) {
+                            if (UiState.popupOpen) {
                                 openAnimation.stop()
                                 closeAnimation.stop()
                                 closeAnimationActive = false
@@ -151,7 +151,7 @@ ShellRoot {
                             ControlPopup {
                                 anchors.fill: parent
                                 transformOrigin: Item.TopRight
-                                page: ShellState.popupPage
+                                page: UiState.popupPage
                                 screen: modelData
                                 parentWindow: barWindow
                             }
@@ -167,17 +167,17 @@ ShellRoot {
         target: "shell"
 
         function toggle(): void {
-            ShellState.toggleControlCenter(ShellState.preferredScreen())
+            UiState.toggleControlCenter(NiriState.preferredScreen())
         }
 
         function open(page: string): void {
-            ShellState.popupPage = page
-            ShellState.popupScreen = ShellState.preferredScreen()
-            ShellState.popupOpen = true
+            UiState.popupPage = page
+            UiState.popupScreen = NiriState.preferredScreen()
+            UiState.popupOpen = true
         }
 
         function close(): void {
-            ShellState.closePopup()
+            UiState.closePopup()
         }
     }
 }

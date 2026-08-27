@@ -125,8 +125,8 @@ Item {
         Text {
             text: ShellState.focusedTitle
             color: Theme.muted
-            font.family: "Maple Mono NF CN"
-            font.pixelSize: 12
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.bodyFontSize
             elide: Text.ElideMiddle
             Layout.fillWidth: true
             Layout.minimumWidth: 48
@@ -149,7 +149,7 @@ Item {
                 visible: MediaState.available
                 text: MediaState.artist.length > 0 ? MediaState.artist + " · " + MediaState.title : MediaState.title
                 color: MediaState.playing ? Theme.text : Theme.muted
-                font.family: "Maple Mono NF CN"
+                font.family: Theme.fontFamily
                 font.pixelSize: 11
                 elide: Text.ElideRight
                 Layout.maximumWidth: 150
@@ -264,7 +264,7 @@ Item {
             tooltip: ShellState.idleInhibited ? "Idle inhibition enabled" : "Idle inhibition disabled"
             accent: ShellState.idleInhibited ? Theme.warning : Theme.subtle
             selected: ShellState.idleInhibited
-            onClicked: ShellState.idleInhibited = !ShellState.idleInhibited
+            onClicked: UiState.idleInhibited = !UiState.idleInhibited
         }
 
         StatusPill {
@@ -341,12 +341,28 @@ Item {
                     readonly property string iconSource: root.trayIconSource(modelData)
                     implicitWidth: modelData.status === Status.Passive ? 0 : 26
                     implicitHeight: 28
+                    activeFocusOnTab: modelData.status !== Status.Passive
+                    Accessible.role: Accessible.Button
+                    Accessible.name: modelData.tooltipTitle || "System tray item"
+
+                    Keys.onPressed: event => {
+                        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+                            event.accepted = true
+                            if (modelData.onlyMenu && modelData.hasMenu) root.showTrayMenu(modelData, trayItem)
+                            else modelData.activate()
+                        }
+                    }
+                    Accessible.onPressAction: {
+                        if (modelData.onlyMenu && modelData.hasMenu) root.showTrayMenu(modelData, trayItem)
+                        else modelData.activate()
+                    }
 
                     Rectangle {
                         anchors.fill: parent
                         radius: Theme.smallRadius
-                        color: needsAttention ? Theme.tint(Theme.danger, 0.16) : (trayMouse.containsMouse ? Theme.surface : "transparent")
-                        border.width: 0
+                        color: needsAttention ? Theme.tint(Theme.danger, 0.16) : ((trayMouse.containsMouse || trayItem.activeFocus) ? Theme.surface : "transparent")
+                        border.width: trayItem.activeFocus ? 1 : 0
+                        border.color: Theme.accent
                     }
 
                     IconImage {
@@ -363,7 +379,7 @@ Item {
                         anchors.centerIn: parent
                         text: "•"
                         color: needsAttention ? Theme.danger : Theme.muted
-                        font.family: "Maple Mono NF CN"
+                        font.family: Theme.fontFamily
                         font.pixelSize: 16
                     }
 
@@ -373,6 +389,7 @@ Item {
                         hoverEnabled: true
                         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
                         cursorShape: Qt.PointingHandCursor
+                        onPressed: trayItem.forceActiveFocus(Qt.MouseFocusReason)
                         onClicked: event => {
                             if (event.button === Qt.RightButton) {
                                 if (modelData.hasMenu) root.showTrayMenu(modelData, trayMouse)
@@ -394,7 +411,7 @@ Item {
 
                     HoverTooltip {
                         targetItem: trayItem
-                        hovered: trayMouse.containsMouse
+                        hovered: trayMouse.containsMouse || trayItem.activeFocus
                         delay: 450
                         text: modelData.tooltipDescription.length > 0
                             ? modelData.tooltipTitle + "\n" + modelData.tooltipDescription
