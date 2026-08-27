@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 pragma Singleton
 
 import QtQuick
@@ -17,15 +18,29 @@ Singleton {
     Connections {
         target: Mpris.players
         function onValuesChanged() {
-            root.selectPlayer();
+            root.scheduleSelectPlayer();
         }
     }
 
     Timer {
-        interval: 1000
-        running: true
-        repeat: true
+        id: selectionTimer
+        interval: 100
+        repeat: false
         onTriggered: root.selectPlayer()
+    }
+
+    Instantiator {
+        model: Mpris.players
+        delegate: Connections {
+            required property var modelData
+            target: modelData
+            function onIsPlayingChanged() { root.scheduleSelectPlayer(); }
+            function onPlaybackStateChanged() { root.scheduleSelectPlayer(); }
+            function onTrackTitleChanged() { root.scheduleSelectPlayer(); }
+            function onTrackArtistChanged() { root.scheduleSelectPlayer(); }
+            function onIdentityChanged() { root.scheduleSelectPlayer(); }
+            function onDesktopEntryChanged() { root.scheduleSelectPlayer(); }
+        }
     }
 
     Component.onCompleted: selectPlayer()
@@ -76,6 +91,10 @@ Singleton {
         }
 
         activePlayer = selected;
+    }
+
+    function scheduleSelectPlayer() {
+        selectionTimer.restart();
     }
 
     function command(action) {

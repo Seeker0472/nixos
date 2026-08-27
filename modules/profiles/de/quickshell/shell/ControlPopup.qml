@@ -1,6 +1,9 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick 6.0
 import QtQuick.Layouts 6.0
 import QtQuick.Controls 6.3
+import Quickshell
 
 Rectangle {
     id: root
@@ -596,7 +599,7 @@ Rectangle {
                         }
                     }
                     ActionTile { icon: "󰖩"; title: "Network connections"; subtitle: "Manage saved networks and VPNs"; accent: Theme.accentAlt; Layout.fillWidth: true; onClicked: ShellState.run([Commands.nmEditor]) }
-                    ActionTile { icon: "󰒓"; title: "Refresh status"; subtitle: "Read NetworkManager state again"; accent: Theme.muted; Layout.fillWidth: true; onClicked: ShellState.refreshMetrics() }
+                    ActionTile { icon: "󰒓"; title: "Refresh status"; subtitle: "Read NetworkManager state again"; accent: Theme.muted; Layout.fillWidth: true; onClicked: ShellState.refreshNativeState() }
                     Item { Layout.fillHeight: true }
                 }
             }
@@ -624,8 +627,13 @@ Rectangle {
                         }
                     }
                     Text { visible: ShellState.bluetoothDevices.length > 0; text: "Connected devices"; color: Theme.muted; font.pixelSize: 10; font.family: "Maple Mono NF CN" }
+                    ScriptModel {
+                        id: bluetoothModel
+                        values: ShellState.bluetoothDevices
+                        objectProp: "id"
+                    }
                     Repeater {
-                        model: ShellState.bluetoothDevices
+                        model: bluetoothModel
                         delegate: Rectangle {
                             id: deviceCard
                             required property var modelData

@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 //@ pragma UseQApplication
 //@ pragma IconTheme breeze-dark
 
@@ -44,11 +46,24 @@ ShellRoot {
                     anchor.window: barWindow
                     anchor.rect.x: Math.max(12, barWindow.width - width - 18)
                     anchor.rect.y: barWindow.height + 8
+                    anchor.adjustment: PopupAdjustment.All
                     visible: requestedVisible || closeAnimationActive
                     implicitWidth: 430
                     implicitHeight: 540
                     color: "transparent"
-                    grabFocus: true
+                    grabFocus: requestedVisible
+
+                    function resetContent() {
+                        if (!popupLoader.item) return
+                        popupLoader.item.opacity = 0
+                        popupLoader.item.scale = 0.96
+                    }
+
+                    function startOpenAnimation() {
+                        if (!popupLoader.item) return
+                        resetContent()
+                        openAnimation.restart()
+                    }
 
                     onRequestedVisibleChanged: {
                         if (requestedVisible) {
@@ -56,9 +71,7 @@ ShellRoot {
                             closeAnimationActive = false
                             closeTimer.stop()
                             closeAnimation.stop()
-                            popupContent.opacity = 0
-                            popupContent.scale = 0.96
-                            openAnimation.restart()
+                            startOpenAnimation()
                         } else if (hasOpened) {
                             // A screen change should not leave two popups visible;
                             // only a real close gets the exit animation.
@@ -66,8 +79,7 @@ ShellRoot {
                                 openAnimation.stop()
                                 closeAnimation.stop()
                                 closeAnimationActive = false
-                                popupContent.opacity = 0
-                                popupContent.scale = 0.96
+                                resetContent()
                             } else {
                                 openAnimation.stop()
                                 closeAnimationActive = true
@@ -77,17 +89,24 @@ ShellRoot {
                         }
                     }
 
+                    onVisibleChanged: {
+                        // PopupWindow can dismiss itself when focus is grabbed
+                        // and the user clicks outside. Keep the singleton state
+                        // as the source of truth in that case.
+                        if (!visible && requestedVisible) ShellState.closePopup()
+                    }
+
                     ParallelAnimation {
                         id: openAnimation
                         NumberAnimation {
-                            target: popupContent
+                            target: popupLoader.item
                             property: "opacity"
                             to: 1
                             duration: 180
                             easing.type: Easing.OutCubic
                         }
                         NumberAnimation {
-                            target: popupContent
+                            target: popupLoader.item
                             property: "scale"
                             to: 1
                             duration: 220
@@ -98,14 +117,14 @@ ShellRoot {
                     ParallelAnimation {
                         id: closeAnimation
                         NumberAnimation {
-                            target: popupContent
+                            target: popupLoader.item
                             property: "opacity"
                             to: 0
                             duration: 140
                             easing.type: Easing.InCubic
                         }
                         NumberAnimation {
-                            target: popupContent
+                            target: popupLoader.item
                             property: "scale"
                             to: 0.97
                             duration: 140
@@ -120,13 +139,20 @@ ShellRoot {
                         onTriggered: controlPopup.closeAnimationActive = false
                     }
 
-                    ControlPopup {
-                        id: popupContent
+                    Loader {
+                        id: popupLoader
                         anchors.fill: parent
-                        transformOrigin: Item.TopRight
-                        page: ShellState.popupPage
-                        screen: modelData
-                        parentWindow: barWindow
+                        active: controlPopup.requestedVisible || controlPopup.closeAnimationActive
+                        sourceComponent: Component {
+                            ControlPopup {
+                                anchors.fill: parent
+                                transformOrigin: Item.TopRight
+                                page: ShellState.popupPage
+                                screen: modelData
+                                parentWindow: barWindow
+                            }
+                        }
+                        onLoaded: if (controlPopup.requestedVisible) controlPopup.startOpenAnimation()
                     }
                 }
             }

@@ -1,9 +1,12 @@
+pragma ComponentBehavior: Bound
 pragma Singleton
 
 import QtQuick
+import QtQml.Models
 import Quickshell
 import Quickshell.Io
 import Quickshell.Bluetooth
+import Quickshell.Networking
 import Quickshell.Services.Pipewire
 import Quickshell.Services.UPower
 
@@ -11,7 +14,8 @@ Singleton {
     id: root
 
     property var workspaces: []
-    property var windows: []
+    property var workspacesByOutput: ({})
+    property int focusedWindowId: 0
     property string focusedTitle: "Desktop"
     property string focusedAppId: ""
     property int focusedWorkspaceIndex: 1
@@ -41,6 +45,10 @@ Singleton {
     property string networkAddress: ""
     property string networkGateway: ""
     property bool networkShowDetails: false
+    property var activeNetwork: null
+    property string networkDetailsInterface: ""
+    property string networkAddressQueryInterface: ""
+    property string networkGatewayQueryInterface: ""
     property bool wifiEnabled: false
     property bool bluetoothPowered: false
     property string bluetoothConnected: ""
@@ -56,11 +64,12 @@ Singleton {
     property bool screenShareActive: false
     property var audioInUseApps: []
     property var screenShareApps: []
+    property bool privacyNativeReady: false
     property bool idleInhibited: false
     property bool audioShowSource: false
     property bool clockAlternate: false
 
-    property var now: new Date()
+    readonly property var now: systemClock.date
     property int calendarMonth: (new Date()).getMonth()
     property int calendarYear: (new Date()).getFullYear()
     property string popupPage: "overview"
@@ -69,8 +78,20 @@ Singleton {
 
     readonly property var batteryDevice: UPower.displayDevice
     readonly property var bluetoothAdapter: Bluetooth.defaultAdapter
-    property var defaultSink: Pipewire.defaultAudioSink
-    property var defaultSource: Pipewire.defaultAudioSource
+    readonly property var defaultSink: Pipewire.defaultAudioSink
+    readonly property var defaultSource: Pipewire.defaultAudioSource
+    readonly property var privacyTrackedObjects: {
+        var objects = [];
+        var groups = Pipewire.linkGroups && Pipewire.linkGroups.values ? Pipewire.linkGroups.values : [];
+        for (var i = 0; i < groups.length; i++) {
+            var group = groups[i];
+            if (!group) continue;
+            if (objects.indexOf(group) < 0) objects.push(group);
+            if (group.source && objects.indexOf(group.source) < 0) objects.push(group.source);
+            if (group.target && objects.indexOf(group.target) < 0) objects.push(group.target);
+        }
+        return objects;
+    }
     readonly property bool audioReady: Pipewire.ready && defaultSink !== null && defaultSink !== undefined && defaultSink.ready && defaultSink.audio !== null && defaultSink.audio !== undefined
     readonly property bool sourceReady: Pipewire.ready && defaultSource !== null && defaultSource !== undefined && defaultSource.ready && defaultSource.audio !== null && defaultSource.audio !== undefined
     readonly property real sinkVolume: audioReady && defaultSink.audio ? defaultSink.audio.volume : 0
@@ -80,18 +101,66 @@ Singleton {
     readonly property bool sourceMuted: sourceReady && defaultSource.audio ? defaultSource.audio.muted : false
     readonly property string sourceName: sourceReady ? (defaultSource.description || defaultSource.name || "Default input") : "Audio input unavailable"
     readonly property bool networkConnected: (networkType !== "none" && networkInterface.length > 0) || (networkName !== "Offline" && networkName.length > 0)
+    readonly property bool networkDetailsRequested: networkShowDetails || (popupOpen && popupPage === "network")
     readonly property string networkLabel: networkType === "ethernet" ? "Ethernet" : (networkType === "wifi" ? "Wi-Fi" : "Network")
     readonly property string calendarTitle: Qt.formatDate(new Date(calendarYear, calendarMonth, 1), "MMMM yyyy")
+
+    SystemClock {
+        id: systemClock
+        precision: SystemClock.Minutes
+        enabled: true
+    }
+
+    onNetworkDetailsRequestedChanged: {
+        if (networkDetailsRequested) {
+            requestNetworkDetails();
+        } else {
+            cancelNetworkDetailQueries();
+            networkAddress = "";
+            networkGateway = "";
+            networkDetailsInterface = "";
+        }
+    }
 
     PwObjectTracker {
         objects: [root.defaultSink, root.defaultSource]
     }
 
+    // Link and node interfaces are lazy. Keep only connected privacy endpoints
+    // referenced so their state/properties emit native change signals.
+    PwObjectTracker {
+        objects: root.privacyTrackedObjects
+        onObjectsChanged: root.schedulePrivacyRefresh()
+    }
+
+    ScriptModel {
+        id: privacyObjectsModel
+        values: root.privacyTrackedObjects
+    }
+
     Process {
-        id: metricsProcess
-        command: [Commands.metrics]
+        id: samplerProcess
+        command: [Commands.python, "-u", Commands.sampler, "--pw-dump", Commands.pwDump]
+        running: true
+        stdout: SplitParser {
+            onRead: line => root.updateSamplerLine(line)
+        }
+        onRunningChanged: {
+            if (!running) samplerRestartTimer.restart()
+        }
+    }
+
+    Process {
+        id: networkAddressProcess
         stdout: StdioCollector {
-            onStreamFinished: root.updateMetrics(this.text)
+            onStreamFinished: root.updateNetworkAddress(this.text)
+        }
+    }
+
+    Process {
+        id: networkGatewayProcess
+        stdout: StdioCollector {
+            onStreamFinished: root.updateNetworkGateway(this.text)
         }
     }
 
@@ -121,17 +190,142 @@ Singleton {
     }
 
     Timer {
-        interval: 2200
-        running: true
-        repeat: true
-        onTriggered: root.refreshMetrics()
+        id: nativeRefreshTimer
+        interval: 100
+        repeat: false
+        onTriggered: root.refreshNativeServices()
     }
 
     Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: root.refreshNativeServices()
+        id: privacyRefreshTimer
+        interval: 100
+        repeat: false
+        onTriggered: root.refreshPrivacyFromPipewire()
+    }
+
+    Timer {
+        id: samplerRestartTimer
+        interval: 2000
+        repeat: false
+        onTriggered: if (!samplerProcess.running) samplerProcess.running = true
+    }
+
+    Connections {
+        target: UPower
+        function onOnBatteryChanged() {
+            root.scheduleNativeRefresh();
+        }
+    }
+
+    Connections {
+        target: UPower.devices
+        function onValuesChanged() { root.scheduleNativeRefresh(); }
+    }
+
+    Connections {
+        target: root.batteryDevice
+        function onPercentageChanged() { root.scheduleNativeRefresh(); }
+        function onStateChanged() { root.scheduleNativeRefresh(); }
+        function onTimeToEmptyChanged() { root.scheduleNativeRefresh(); }
+        function onTimeToFullChanged() { root.scheduleNativeRefresh(); }
+        function onReadyChanged() { root.scheduleNativeRefresh(); }
+        function onIsPresentChanged() { root.scheduleNativeRefresh(); }
+        function onIsLaptopBatteryChanged() { root.scheduleNativeRefresh(); }
+    }
+
+    Connections {
+        target: Bluetooth
+        function onDefaultAdapterChanged() { root.scheduleNativeRefresh(); }
+    }
+
+    Connections {
+        target: root.bluetoothAdapter ? root.bluetoothAdapter.devices : null
+        function onValuesChanged() { root.scheduleNativeRefresh(); }
+    }
+
+    Connections {
+        target: root.bluetoothAdapter
+        function onEnabledChanged() { root.scheduleNativeRefresh(); }
+        function onStateChanged() { root.scheduleNativeRefresh(); }
+        function onNameChanged() { root.scheduleNativeRefresh(); }
+    }
+
+    Instantiator {
+        model: root.bluetoothAdapter ? root.bluetoothAdapter.devices : null
+        delegate: Connections {
+            required property var modelData
+            target: modelData
+            function onConnectedChanged() { root.scheduleNativeRefresh(); }
+            function onStateChanged() { root.scheduleNativeRefresh(); }
+            function onBatteryChanged() { root.scheduleNativeRefresh(); }
+            function onBatteryAvailableChanged() { root.scheduleNativeRefresh(); }
+            function onAddressChanged() { root.scheduleNativeRefresh(); }
+            function onNameChanged() { root.scheduleNativeRefresh(); }
+            function onDeviceNameChanged() { root.scheduleNativeRefresh(); }
+        }
+    }
+
+    Connections {
+        target: Networking
+        function onWifiEnabledChanged() { root.scheduleNativeRefresh(); }
+        function onConnectivityChanged() { root.scheduleNativeRefresh(); }
+    }
+
+    Connections {
+        target: Networking.devices
+        function onValuesChanged() { root.scheduleNativeRefresh(); }
+    }
+
+    Instantiator {
+        model: Networking.devices
+        delegate: Connections {
+            required property var modelData
+            target: modelData
+            function onConnectedChanged() { root.scheduleNativeRefresh(); }
+            function onStateChanged() { root.scheduleNativeRefresh(); }
+            function onNameChanged() { root.scheduleNativeRefresh(); }
+            function onAddressChanged() { root.scheduleNativeRefresh(); }
+        }
+    }
+
+    Instantiator {
+        model: Networking.devices
+        delegate: Connections {
+            required property var modelData
+            target: modelData.networks
+            function onValuesChanged() { root.scheduleNativeRefresh(); }
+        }
+    }
+
+    Connections {
+        target: root.activeNetwork
+        ignoreUnknownSignals: true
+        function onConnectedChanged() { root.scheduleNativeRefresh(); }
+        function onNameChanged() { root.scheduleNativeRefresh(); }
+        function onStateChanged() { root.scheduleNativeRefresh(); }
+        function onSignalStrengthChanged() { root.scheduleNativeRefresh(); }
+    }
+
+    Connections {
+        target: Pipewire
+        function onReadyChanged() { root.schedulePrivacyRefresh(); }
+    }
+
+    Connections {
+        target: Pipewire.linkGroups
+        function onValuesChanged() { root.schedulePrivacyRefresh(); }
+    }
+
+    Instantiator {
+        model: privacyObjectsModel
+        delegate: Connections {
+            required property var modelData
+            target: modelData
+            ignoreUnknownSignals: true
+            function onStateChanged() { root.schedulePrivacyRefresh(); }
+            function onPropertiesChanged() { root.schedulePrivacyRefresh(); }
+            function onReadyChanged() { root.schedulePrivacyRefresh(); }
+        }
     }
 
     Timer {
@@ -147,17 +341,17 @@ Singleton {
     }
 
     Timer {
+        id: niriInitialFallbackTimer
         interval: 1000
-        running: true
-        repeat: true
-        onTriggered: root.updateClock()
+        repeat: false
+        onTriggered: if (root.workspaces.length === 0) root.refreshNiri()
     }
 
     Component.onCompleted: {
-        refreshMetrics();
-        refreshNiri();
         refreshNativeServices();
-        updateClock();
+        refreshPrivacyFromPipewire();
+        refreshNiri();
+        niriInitialFallbackTimer.start();
     }
 
     function parseJson(text, fallback) {
@@ -178,57 +372,223 @@ Singleton {
         return payload;
     }
 
-    function updateMetrics(text) {
-        var metrics = parseJson(text, null);
-        if (!metrics) {
-            return;
+    function updateSamplerLine(line) {
+        var sample = parseJson(String(line || "").trim(), null);
+        if (!sample || typeof sample !== "object") return;
+
+        var kind = String(sample.kind || "");
+        if (kind === "system") {
+            cpuUsage = clampPercent(sample.cpu);
+            cpuFrequencyMHz = Math.max(0, Math.round(Number(sample.cpuFrequencyMHz || 0)));
+            cpuCores = Math.max(0, Math.round(Number(sample.cpuCores || 0)));
+            loadAverage = Math.max(0, Number(sample.loadAverage || 0));
+            memoryUsage = clampPercent(sample.memory);
+            memoryUsedMiB = Number(sample.memoryUsed || 0);
+            memoryTotalMiB = Number(sample.memoryTotal || 0);
+            swapUsedMiB = Number(sample.swapUsed || 0);
+            swapTotalMiB = Number(sample.swapTotal || 0);
+        } else if (kind === "ambient") {
+            temperature = Number(sample.temperature || 0);
+            brightness = clampPercent(sample.brightness);
+        } else if (kind === "privacy" && !privacyNativeReady) {
+            setPrivacyState(sample);
         }
-        cpuUsage = clampPercent(metrics.cpu);
-        cpuFrequencyMHz = Math.max(0, Math.round(Number(metrics.cpuFrequencyMHz || 0)));
-        cpuCores = Math.max(0, Math.round(Number(metrics.cpuCores || 0)));
-        loadAverage = Math.max(0, Number(metrics.loadAverage || 0));
-        memoryUsage = clampPercent(metrics.memory);
-        memoryUsedMiB = Number(metrics.memoryUsed || 0);
-        memoryTotalMiB = Number(metrics.memoryTotal || 0);
-        swapUsedMiB = Number(metrics.swapUsed || 0);
-        swapTotalMiB = Number(metrics.swapTotal || 0);
-        temperature = Number(metrics.temperature || 0);
-        if (!batteryNativeReady) {
-            batteryLevel = clampPercent(metrics.battery);
-            batteryTime = metrics.batteryTime || "";
+    }
+
+    function stringListsEqual(left, right) {
+        if (!Array.isArray(left) || !Array.isArray(right) || left.length !== right.length) return false;
+        for (var i = 0; i < left.length; i++) {
+            if (String(left[i]) !== String(right[i])) return false;
         }
-        brightness = clampPercent(metrics.brightness);
-        if (!batteryNativeReady && metrics.batteryStatus) {
-            batteryStatus = metrics.batteryStatus;
-        }
-        networkType = metrics.networkType || "none";
-        networkName = metrics.network || (networkType === "ethernet" ? "Ethernet" : (networkType === "wifi" ? "Wi-Fi" : "Offline"));
-        networkSignal = clampPercent(metrics.networkSignal);
-        networkInterface = metrics.networkInterface || "";
-        networkAddress = metrics.networkAddress || "";
-        networkGateway = metrics.networkGateway || "";
-        wifiEnabled = Boolean(metrics.wifiEnabled);
-        if (!bluetoothNativeReady) {
-            bluetoothPowered = Boolean(metrics.bluetoothPowered);
-            bluetoothConnected = metrics.bluetoothConnected || "";
-            bluetoothControllerName = metrics.bluetoothController || "";
-            bluetoothControllerAddress = metrics.bluetoothAddress || "";
-        }
-        if (bluetoothNativeReady) {
-            bluetoothControllerAddress = metrics.bluetoothAddress || bluetoothControllerAddress;
-        }
-        if (!batteryNativeReady) {
-            onBattery = Boolean(metrics.onBattery);
-        }
-        audioInUse = Boolean(metrics.audioIn);
-        screenShareActive = Boolean(metrics.screenShare);
-        audioInUseApps = Array.isArray(metrics.audioInApps) ? metrics.audioInApps : [];
-        screenShareApps = Array.isArray(metrics.screenShareApps) ? metrics.screenShareApps : [];
+        return true;
+    }
+
+    function setPrivacyState(privacy) {
+        var nextAudioApps = Array.isArray(privacy.audioInApps) ? privacy.audioInApps : [];
+        var nextScreenApps = Array.isArray(privacy.screenShareApps) ? privacy.screenShareApps : [];
+        var nextAudio = Boolean(privacy.audioIn);
+        var nextScreen = Boolean(privacy.screenShare);
+        if (audioInUse !== nextAudio) audioInUse = nextAudio;
+        if (screenShareActive !== nextScreen) screenShareActive = nextScreen;
+        if (!stringListsEqual(audioInUseApps, nextAudioApps)) audioInUseApps = nextAudioApps;
+        if (!stringListsEqual(screenShareApps, nextScreenApps)) screenShareApps = nextScreenApps;
     }
 
     function refreshNativeServices() {
         refreshBattery();
         refreshBluetooth();
+        refreshNetwork();
+    }
+
+    function scheduleNativeRefresh() {
+        nativeRefreshTimer.restart();
+    }
+
+    function schedulePrivacyRefresh() {
+        privacyRefreshTimer.restart();
+    }
+
+    function refreshNetwork() {
+        try {
+            if (Networking.backend !== NetworkBackendType.NetworkManager) {
+                cancelNetworkDetailQueries();
+                activeNetwork = null;
+                networkType = "none";
+                networkName = "Offline";
+                networkSignal = 0;
+                networkInterface = "";
+                networkAddress = "";
+                networkGateway = "";
+                networkDetailsInterface = "";
+                networkAddressQueryInterface = "";
+                networkGatewayQueryInterface = "";
+                wifiEnabled = false;
+                return;
+            }
+
+            wifiEnabled = Boolean(Networking.wifiEnabled);
+            var model = Networking.devices;
+            var values = model && model.values ? model.values : [];
+            var activeDevice = null;
+            for (var i = 0; i < values.length; i++) {
+                if (values[i] && values[i].connected) {
+                    activeDevice = values[i];
+                    break;
+                }
+            }
+
+            if (!activeDevice) {
+                cancelNetworkDetailQueries();
+                networkType = "none";
+                networkName = "Offline";
+                networkSignal = 0;
+                networkInterface = "";
+                networkAddress = "";
+                networkGateway = "";
+                networkDetailsInterface = "";
+                networkAddressQueryInterface = "";
+                networkGatewayQueryInterface = "";
+                activeNetwork = null;
+                return;
+            }
+
+            networkType = activeDevice.type === DeviceType.Wifi ? "wifi"
+                : (activeDevice.type === DeviceType.Wired ? "ethernet" : "none");
+            networkInterface = String(activeDevice.name || "");
+            networkSignal = 0;
+            networkName = networkType === "ethernet" ? "Ethernet" : "Network";
+            var nextActiveNetwork = null;
+
+            var networkModel = activeDevice.networks;
+            var networkValues = networkModel && networkModel.values ? networkModel.values : [];
+            for (var j = 0; j < networkValues.length; j++) {
+                var candidate = networkValues[j];
+                if (!candidate || !candidate.connected) continue;
+                nextActiveNetwork = candidate;
+                networkName = String(candidate.name || networkName);
+                if (networkType === "wifi") {
+                    networkSignal = clampPercent(Number(candidate.signalStrength || 0) * 100);
+                }
+                break;
+            }
+
+            if (networkType === "none") {
+                networkName = String(activeDevice.name || "Network");
+            }
+            var networkSelectionChanged = activeNetwork !== nextActiveNetwork;
+            var networkInterfaceChanged = networkDetailsRequested && networkDetailsInterface !== networkInterface;
+            if (networkDetailsRequested && (networkInterfaceChanged || networkSelectionChanged)) {
+                cancelNetworkDetailQueries();
+            }
+            if (!networkDetailsRequested || networkInterfaceChanged || networkSelectionChanged) {
+                networkAddress = "";
+                networkGateway = "";
+            }
+            activeNetwork = nextActiveNetwork;
+            if (networkDetailsRequested) {
+                requestNetworkDetails();
+            } else {
+                networkDetailsInterface = "";
+            }
+        } catch (error) {
+            cancelNetworkDetailQueries();
+            activeNetwork = null;
+            networkType = "none";
+            networkName = "Offline";
+            networkSignal = 0;
+            networkInterface = "";
+            networkAddress = "";
+            networkGateway = "";
+            networkDetailsInterface = "";
+            networkAddressQueryInterface = "";
+            networkGatewayQueryInterface = "";
+            wifiEnabled = false;
+        }
+    }
+
+    function cancelNetworkDetailQueries() {
+        if (networkAddressProcess.running) networkAddressProcess.running = false;
+        if (networkGatewayProcess.running) networkGatewayProcess.running = false;
+        networkAddressQueryInterface = "";
+        networkGatewayQueryInterface = "";
+    }
+
+    function requestNetworkDetails() {
+        if (!networkDetailsRequested || !networkConnected || networkInterface.length === 0) {
+            cancelNetworkDetailQueries();
+            networkAddress = "";
+            networkGateway = "";
+            networkDetailsInterface = "";
+            return;
+        }
+
+        var iface = networkInterface;
+        networkDetailsInterface = iface;
+        if (networkAddressQueryInterface !== iface) {
+            networkAddressQueryInterface = iface;
+            networkAddressProcess.exec([Commands.ip, "-j", "-4", "address", "show", "dev", iface]);
+        }
+        if (networkGatewayQueryInterface !== iface) {
+            networkGatewayQueryInterface = iface;
+            networkGatewayProcess.exec([Commands.ip, "-j", "route", "show", "default", "dev", iface]);
+        }
+    }
+
+    function updateNetworkAddress(text) {
+        if (!networkDetailsRequested || networkAddressQueryInterface.length === 0 || networkAddressQueryInterface !== networkInterface) return;
+        var payload = parseJson(String(text || "").trim(), []);
+        if (!Array.isArray(payload) || payload.length === 0) {
+            networkAddress = "";
+            return;
+        }
+        var reportedInterface = String(payload[0] && payload[0].ifname || "");
+        if (reportedInterface.length > 0 && reportedInterface !== networkInterface) return;
+        var addresses = payload[0] && Array.isArray(payload[0].addr_info) ? payload[0].addr_info : [];
+        for (var i = 0; i < addresses.length; i++) {
+            var address = addresses[i];
+            if (address && address.family === "inet" && address.local) {
+                networkAddress = String(address.local) + (address.prefixlen !== undefined ? "/" + address.prefixlen : "");
+                return;
+            }
+        }
+        networkAddress = "";
+    }
+
+    function updateNetworkGateway(text) {
+        if (!networkDetailsRequested || networkGatewayQueryInterface.length === 0 || networkGatewayQueryInterface !== networkInterface) return;
+        var payload = parseJson(String(text || "").trim(), []);
+        if (!Array.isArray(payload)) {
+            networkGateway = "";
+            return;
+        }
+        for (var i = 0; i < payload.length; i++) {
+            if (payload[i] && payload[i].gateway &&
+                    (!payload[i].dev || String(payload[i].dev) === networkInterface)) {
+                networkGateway = String(payload[i].gateway);
+                return;
+            }
+        }
+        networkGateway = "";
     }
 
     function refreshBattery() {
@@ -277,6 +637,17 @@ Singleton {
         batteryTime = seconds > 0 ? formatDuration(seconds) : "";
     }
 
+    function bluetoothListsEqual(left, right) {
+        if (!Array.isArray(left) || !Array.isArray(right) || left.length !== right.length) return false;
+        for (var i = 0; i < left.length; i++) {
+            if (left[i].id !== right[i].id || left[i].name !== right[i].name ||
+                    left[i].address !== right[i].address || left[i].battery !== right[i].battery) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     function refreshBluetooth() {
         try {
             var adapter = Bluetooth.defaultAdapter;
@@ -299,7 +670,7 @@ Singleton {
             }
             bluetoothControllerId = adapterId;
 
-            var model = Bluetooth.devices;
+            var model = adapter.devices;
             var values = model && model.values ? model.values : [];
             var connected = [];
             for (var i = 0; i < values.length; i++) {
@@ -309,13 +680,18 @@ Singleton {
                 }
                 // BluetoothDevice.battery is normalized to 0.0..1.0 by Quickshell.
                 var rawBattery = Number(device.battery);
+                var address = String(device.address || "");
+                var name = String(device.name || device.deviceName || "Unknown device");
                 connected.push({
-                    name: String(device.name || device.deviceName || "Unknown device"),
-                    address: String(device.address || ""),
+                    id: address || name,
+                    name: name,
+                    address: address,
                     battery: device.batteryAvailable && !isNaN(rawBattery) ? clampPercent(rawBattery * 100) : -1
                 });
             }
-            bluetoothDevices = connected;
+            if (!bluetoothListsEqual(bluetoothDevices, connected)) {
+                bluetoothDevices = connected;
+            }
 
             var labels = [];
             for (var j = 0; j < connected.length; j++) {
@@ -335,6 +711,57 @@ Singleton {
             bluetoothControllerName = "";
             bluetoothControllerAddress = "";
             bluetoothControllerId = "";
+        }
+    }
+
+    function refreshPrivacyFromPipewire() {
+        if (!Pipewire.ready) {
+            privacyNativeReady = false;
+            setPrivacyState({});
+            return;
+        }
+
+        try {
+            var audioApps = [];
+            var screenApps = [];
+            var groups = Pipewire.linkGroups && Pipewire.linkGroups.values ? Pipewire.linkGroups.values : [];
+            for (var i = 0; i < groups.length; i++) {
+                var group = groups[i];
+                if (!group || group.state !== PwLinkState.Active) continue;
+                var nodes = [group.source, group.target];
+                for (var j = 0; j < nodes.length; j++) {
+                    var node = nodes[j];
+                    if (!node) continue;
+
+                    var typeName = String(PwNodeType.toString(node.type));
+                    var props = node.properties || {};
+                    var nodeName = String(props["node.name"] || node.name || "");
+                    var appName = String(props["application.name"] || props["media.name"] || node.description || node.name || "Unknown");
+                    var mediaCategory = String(props["media.category"] || "").toLowerCase();
+                    var streamMonitor = String(props["stream.monitor"] || "").toLowerCase();
+                    if (mediaCategory === "monitor" || streamMonitor === "true" ||
+                            nodeName.toLowerCase() === "cava" || appName.toLowerCase() === "cava") continue;
+
+                    var mediaClass = String(props["media.class"] || "");
+                    if (typeName === "AudioInStream" || mediaClass === "Stream/Input/Audio") {
+                        if (audioApps.indexOf(appName) < 0) audioApps.push(appName);
+                    } else if (mediaClass === "Stream/Input/Video") {
+                        if (screenApps.indexOf(appName) < 0) screenApps.push(appName);
+                    }
+                }
+            }
+            audioApps.sort();
+            screenApps.sort();
+            privacyNativeReady = true;
+            setPrivacyState({
+                audioIn: audioApps.length > 0,
+                screenShare: screenApps.length > 0,
+                audioInApps: audioApps,
+                screenShareApps: screenApps
+            });
+        } catch (error) {
+            privacyNativeReady = false;
+            setPrivacyState({});
         }
     }
 
@@ -360,7 +787,16 @@ Singleton {
     }
 
     function setWorkspaces(list) {
-        workspaces = sortWorkspaces(list);
+        var sorted = sortWorkspaces(list);
+        var grouped = {};
+        for (var groupIndex = 0; groupIndex < sorted.length; groupIndex++) {
+            var workspace = sorted[groupIndex];
+            var output = String((workspace && workspace.output) || "");
+            if (!grouped[output]) grouped[output] = [];
+            grouped[output].push(workspace);
+        }
+        workspaces = sorted;
+        workspacesByOutput = grouped;
         var hasFocusedWorkspace = false;
         for (var i = 0; i < workspaces.length; i++) {
             if (workspaces[i].is_focused) {
@@ -382,27 +818,14 @@ Singleton {
 
     function setFocusedWindow(window) {
         if (!window || typeof window !== "object") {
+            focusedWindowId = 0;
             focusedTitle = "Desktop";
             focusedAppId = "";
             return;
         }
+        focusedWindowId = Number(window.id || 0);
         focusedTitle = window.title || "Desktop";
         focusedAppId = window.app_id || "";
-    }
-
-    function updateWindows(list) {
-        windows = Array.isArray(list) ? list : [];
-        updateFocusedFromWindows();
-    }
-
-    function updateFocusedFromWindows() {
-        for (var i = 0; i < windows.length; i++) {
-            if (windows[i].is_focused) {
-                setFocusedWindow(windows[i]);
-                return;
-            }
-        }
-        setFocusedWindow(null);
     }
 
     function copyObject(value) {
@@ -428,17 +851,9 @@ Singleton {
     }
 
     function updateWindowUrgency(id, urgent) {
-        var next = windows.slice();
-        for (var i = 0; i < next.length; i++) {
-            if (Number(next[i].id) === Number(id)) {
-                var window = copyObject(next[i]);
-                window.is_urgent = Boolean(urgent);
-                next[i] = window;
-                updateWindows(next);
-                return;
-            }
-        }
-        refreshNiri();
+        // Window urgency is not rendered by the shell. Avoid copying the full
+        // window snapshot for an event that has no visible consumer.
+        return;
     }
 
     function updateNiriEvent(text) {
@@ -463,11 +878,6 @@ Singleton {
             updateWorkspaceUrgency(urgencyData && urgencyData.id !== undefined ? urgencyData.id : urgencyData, urgencyData && urgencyData.urgent);
             return;
         }
-        if (event.WindowsChanged !== undefined) {
-            var windowData = event.WindowsChanged;
-            updateWindows(windowData && windowData.windows !== undefined ? windowData.windows : windowData);
-            return;
-        }
         if (event.WindowUrgencyChanged !== undefined) {
             var windowUrgencyData = event.WindowUrgencyChanged;
             updateWindowUrgency(windowUrgencyData && windowUrgencyData.id !== undefined ? windowUrgencyData.id : windowUrgencyData, windowUrgencyData && windowUrgencyData.urgent);
@@ -479,47 +889,27 @@ Singleton {
             if (!openedWindow || openedWindow.id === undefined) {
                 return;
             }
-            var nextWindows = windows.slice();
-            var replaced = false;
-            if (openedWindow.is_focused) {
-                for (var resetIndex = 0; resetIndex < nextWindows.length; resetIndex++) {
-                    nextWindows[resetIndex] = copyObject(nextWindows[resetIndex]);
-                    nextWindows[resetIndex].is_focused = false;
-                }
+            if (openedWindow.is_focused || Number(openedWindow.id) === focusedWindowId) {
+                setFocusedWindow(openedWindow);
             }
-            for (var i = 0; i < nextWindows.length; i++) {
-                if (Number(nextWindows[i].id) === Number(openedWindow.id)) {
-                    nextWindows[i] = openedWindow;
-                    replaced = true;
-                    break;
-                }
-            }
-            if (!replaced) {
-                nextWindows.push(openedWindow);
-            }
-            updateWindows(nextWindows);
             return;
         }
         if (event.WindowClosed !== undefined) {
             var closedData = event.WindowClosed;
             var closedId = closedData && closedData.id !== undefined ? closedData.id : closedData;
-            updateWindows(windows.filter(item => Number(item.id) !== Number(closedId)));
+            if (Number(closedId) === focusedWindowId) {
+                focusedWindowId = 0;
+                if (!focusedWindowProcess.running) {
+                    focusedWindowProcess.exec(focusedWindowProcess.command);
+                }
+            }
             return;
         }
         if (event.WindowFocusChanged !== undefined) {
             var focusData = event.WindowFocusChanged;
             var focusedId = focusData && focusData.id !== undefined ? focusData.id : focusData;
-            var nextFocusedWindows = windows.slice();
-            var found = false;
-            for (var j = 0; j < nextFocusedWindows.length; j++) {
-                nextFocusedWindows[j] = copyObject(nextFocusedWindows[j]);
-                nextFocusedWindows[j].is_focused = focusedId !== null && Number(nextFocusedWindows[j].id) === Number(focusedId);
-                if (nextFocusedWindows[j].is_focused) {
-                    found = true;
-                }
-            }
-            updateWindows(nextFocusedWindows);
-            if (!found && focusedId !== null) {
+            focusedWindowId = focusedId === null ? 0 : Number(focusedId || 0);
+            if (!focusedWindowProcess.running) {
                 focusedWindowProcess.exec(focusedWindowProcess.command);
             }
             return;
@@ -580,17 +970,20 @@ Singleton {
         }
     }
 
-    function refreshMetrics() {
-        metricsProcess.exec([Commands.metrics]);
+    function refreshNativeState() {
+        // Keep the manual refresh action event-driven as well. The resident
+        // sampler owns only procfs/sysfs values and continues on its cadence.
+        refreshNativeServices();
+        refreshPrivacyFromPipewire();
     }
 
     function refreshNiri() {
-        workspacesProcess.exec(workspacesProcess.command);
-        focusedWindowProcess.exec(focusedWindowProcess.command);
-    }
-
-    function updateClock() {
-        now = new Date();
+        if (!workspacesProcess.running) {
+            workspacesProcess.exec(workspacesProcess.command);
+        }
+        if (!focusedWindowProcess.running) {
+            focusedWindowProcess.exec(focusedWindowProcess.command);
+        }
     }
 
     function clampPercent(value) {
@@ -654,13 +1047,11 @@ Singleton {
     }
 
     function workspacesFor(outputName) {
-        var result = [];
-        for (var i = 0; i < workspaces.length; i++) {
-            if (!outputName || !workspaces[i].output || workspaces[i].output === outputName) {
-                result.push(workspaces[i]);
-            }
+        var grouped = workspacesByOutput || {};
+        if (outputName && grouped[outputName] && grouped[outputName].length > 0) {
+            return grouped[outputName];
         }
-        return result.length > 0 ? result : (workspaces.length > 0 ? workspaces : [{idx: 1, is_focused: true, is_active: true}]);
+        return workspaces.length > 0 ? workspaces : [{id: 0, idx: 1, is_focused: true, is_active: true}];
     }
 
     function focusWorkspace(index, outputName) {
@@ -774,8 +1165,8 @@ Singleton {
 
     function setBrightness(value) {
         var percent = Math.round(Math.max(0, Math.min(100, Number(value) * 100)));
+        brightness = percent;
         run([Commands.brightnessctl, "set", String(percent) + "%"]);
-        refreshMetrics();
     }
 
     function brightnessIcon() {
@@ -786,14 +1177,15 @@ Singleton {
     }
 
     function adjustBrightness(direction) {
-        var suffix = Number(direction) > 0 ? "5%+" : "5%-";
+        var step = Number(direction) > 0 ? 5 : -5;
+        brightness = clampPercent(brightness + step);
+        var suffix = step > 0 ? "5%+" : "5%-";
         run([Commands.brightnessctl, "set", suffix]);
-        refreshMetrics();
     }
 
     function toggleWifi() {
         run([Commands.nmcli, "radio", "wifi", wifiEnabled ? "off" : "on"]);
-        refreshMetrics();
+        refreshNativeState();
     }
 
     function toggleBluetooth() {
@@ -802,12 +1194,12 @@ Singleton {
         } else {
             run([Commands.bluetoothctl, "power", bluetoothPowered ? "off" : "on"]);
         }
-        refreshMetrics();
+        refreshNativeState();
     }
 
     function connectNetwork(name) {
         run([Commands.nmcli, "connection", "up", "id", name]);
-        refreshMetrics();
+        refreshNativeState();
     }
 
     function resetCalendar() {

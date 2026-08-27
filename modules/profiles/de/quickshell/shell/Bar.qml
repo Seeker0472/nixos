@@ -140,7 +140,7 @@ Item {
             spacing: 3
 
             CavaVisualizer {
-                enabled: ShellState.audioReady
+                active: ShellState.audioReady && ShellState.isPreferredScreen(root.screen) && !ShellState.onBattery
                 Layout.preferredWidth: 72
                 Layout.preferredHeight: 22
             }

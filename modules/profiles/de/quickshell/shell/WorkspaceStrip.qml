@@ -1,4 +1,7 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick 6.0
+import Quickshell
 
 Item {
     id: root
@@ -19,8 +22,14 @@ Item {
         height: root.cellHeight
         spacing: 2
 
+        ScriptModel {
+            id: workspaceModel
+            values: ShellState.workspacesFor(root.outputName)
+            objectProp: "id"
+        }
+
         Repeater {
-            model: ShellState.workspacesFor(root.outputName)
+            model: workspaceModel
 
             delegate: Rectangle {
                 id: workspaceCell
