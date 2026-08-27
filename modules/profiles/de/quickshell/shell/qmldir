@@ -7,6 +7,7 @@ singleton NetworkState 1.0 NetworkState.qml
 singleton NiriState 1.0 NiriState.qml
 singleton PowerState 1.0 PowerState.qml
 singleton PrivacyState 1.0 PrivacyState.qml
+singleton RgbState 1.0 RgbState.qml
 singleton ShellState 1.0 ShellState.qml
 singleton SystemState 1.0 SystemState.qml
 singleton TaskState 1.0 TaskState.qml
@@ -19,6 +20,12 @@ ControlPopup 1.0 ControlPopup.qml
 HoverTooltip 1.0 HoverTooltip.qml
 IconButton 1.0 IconButton.qml
 MeterBar 1.0 MeterBar.qml
+RgbColorControl 1.0 RgbColorControl.qml
+RgbDirectionControl 1.0 RgbDirectionControl.qml
+RgbOptionsControl 1.0 RgbOptionsControl.qml
+RgbPage 1.0 RgbPage.qml
+RgbSliderControl 1.0 RgbSliderControl.qml
+RgbToggleControl 1.0 RgbToggleControl.qml
 ShellTextField 1.0 ShellTextField.qml
 StatusPill 1.0 StatusPill.qml
 TaskPage 1.0 TaskPage.qml

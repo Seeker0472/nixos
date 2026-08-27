@@ -8,6 +8,12 @@
 let
   deCfg = lib.attrByPath [ "machine" "de" ] { } osConfig;
   enabled = deCfg.quickshell.enable or false;
+  rgbCfg = config.programs.niri-shell.rgbControl;
+  rgbCommand =
+    if rgbCfg.enable && rgbCfg.package != null then
+      lib.getExe rgbCfg.package
+    else
+      "${pkgs.coreutils}/bin/false";
   swaylockCommand =
     if (deCfg.niri.enable or false) then lib.getExe pkgs.swaylock-effects else lib.getExe pkgs.swaylock;
 
@@ -74,11 +80,29 @@ let
       --subst-var-by wpaperctl ${pkgs.wpaperd}/bin/wpaperctl \
       --subst-var-by playerctl ${lib.getExe pkgs.playerctl} \
       --subst-var-by cava ${lib.getExe pkgs.cava} \
-      --subst-var-by cavaConfig ${cavaConfig}
+      --subst-var-by cavaConfig ${cavaConfig} \
+      --subst-var-by rgbEnabled ${lib.boolToString rgbCfg.enable} \
+      --subst-var-by rgbControl ${rgbCommand}
   '';
 in
 {
+  options.programs.niri-shell.rgbControl = {
+    enable = lib.mkEnableOption "the OpenRGB controls in the Niri shell";
+    package = lib.mkOption {
+      type = lib.types.nullOr lib.types.package;
+      default = null;
+      description = "Package providing the openrgb-control executable.";
+    };
+  };
+
   config = lib.mkIf enabled {
+    assertions = [
+      {
+        assertion = !rgbCfg.enable || rgbCfg.package != null;
+        message = "programs.niri-shell.rgbControl.package must be set when RGB controls are enabled";
+      }
+    ];
+
     xdg.configFile."quickshell/niri-shell".source = commands;
 
     programs.taskwarrior = {
@@ -88,11 +112,13 @@ in
       config.weekstart = "monday";
     };
 
-    home.packages = with pkgs; [
-      quickshell
-      networkmanagerapplet
-      blueman
-      pavucontrol
-    ];
+    home.packages =
+      (with pkgs; [
+        quickshell
+        networkmanagerapplet
+        blueman
+        pavucontrol
+      ])
+      ++ lib.optional (rgbCfg.enable && rgbCfg.package != null) rgbCfg.package;
   };
 }

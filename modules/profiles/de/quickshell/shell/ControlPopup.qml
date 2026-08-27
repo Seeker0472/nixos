@@ -31,9 +31,10 @@ Rectangle {
         case "audio": return 2
         case "network": return 3
         case "bluetooth": return 4
-        case "calendar": return 5
-        case "tasks": return 6
-        case "power": return 7
+        case "rgb": return 5
+        case "calendar": return 6
+        case "tasks": return 7
+        case "power": return 8
         default: return 0
         }
     }
@@ -44,6 +45,7 @@ Rectangle {
         case "audio": return "Audio"
         case "network": return "Network"
         case "bluetooth": return "Bluetooth"
+        case "rgb": return "RGB lighting"
         case "calendar": return ShellState.calendarTitle
         case "tasks": return "Tasks"
         case "power": return "Power"
@@ -116,7 +118,8 @@ Rectangle {
 
                 Text {
                     visible: root.page !== "calendar"
-                    text: root.page === "tasks" ? TaskState.headerSummary : ShellState.focusedTitle
+                    text: root.page === "tasks" ? TaskState.headerSummary
+                        : (root.page === "rgb" ? RgbState.summary : ShellState.focusedTitle)
                     color: Theme.muted
                     font.family: Theme.fontFamily
                     font.pixelSize: 11
@@ -142,6 +145,7 @@ Rectangle {
             IconButton { icon: "󰕾"; tooltip: "Audio"; selected: root.page === "audio"; onClicked: UiState.popupPage = "audio" }
             IconButton { icon: "󰤨"; tooltip: "Network"; selected: root.page === "network"; onClicked: UiState.popupPage = "network" }
             IconButton { icon: "󰂯"; tooltip: "Bluetooth"; selected: root.page === "bluetooth"; onClicked: UiState.popupPage = "bluetooth" }
+            IconButton { visible: Commands.rgbEnabled; icon: "󰏘"; tooltip: "RGB lighting"; selected: root.page === "rgb"; onClicked: UiState.popupPage = "rgb" }
             IconButton { icon: "󰃭"; tooltip: "Calendar"; selected: root.page === "calendar"; onClicked: UiState.popupPage = "calendar" }
             IconButton { icon: "󰄬"; tooltip: "Tasks"; selected: root.page === "tasks"; onClicked: UiState.popupPage = "tasks" }
             IconButton { icon: "󰐥"; tooltip: "Power"; selected: root.page === "power"; onClicked: UiState.popupPage = "power" }
@@ -713,6 +717,8 @@ Rectangle {
                     Item { Layout.fillHeight: true }
                 }
             }
+
+            RgbPage { }
 
             Item {
                 ColumnLayout {

@@ -229,6 +229,19 @@ Item {
         }
 
         StatusPill {
+            visible: Commands.rgbEnabled
+            icon: RgbState.power ? "󰏘" : "󰌶"
+            value: ""
+            tooltip: RgbState.summary
+            accent: RgbState.power ? RgbState.accentColor : Theme.subtle
+            selected: UiState.popupOpen && UiState.popupPage === "rgb"
+            highlighted: RgbState.errorMessage.length > 0
+            onClicked: ShellState.togglePopup("rgb", root.screen)
+            onMiddleClicked: RgbState.togglePower()
+            onScrolled: direction => RgbState.adjustBrightness(direction)
+        }
+
+        StatusPill {
             visible: ShellState.brightness > 0
             icon: ShellState.brightnessIcon()
             value: ShellState.brightness + "%"

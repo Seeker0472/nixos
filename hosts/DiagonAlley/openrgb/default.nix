@@ -4,14 +4,22 @@
   ...
 }:
 let
-  effectsProfile = "spectrum-cycle.json";
+  effectsProfile = "quickshell.json";
   openrgb = pkgs.openrgb.withPlugins [ pkgs.openrgb-plugin-effects ];
-  prepareEffectsProfile = pkgs.writeShellScript "prepare-openrgb-effects-profile" ''
-    runtime_config_dir="$1"
-    ${pkgs.coreutils}/bin/install -D -m 0644 \
-      ${./spectrum-cycle.json} \
-      "$runtime_config_dir/plugins/settings/effect-profiles/${effectsProfile}"
-  '';
+  controllerVersion = builtins.hashString "sha256" (
+    (builtins.hashFile "sha256" ./controller.py) + (builtins.hashFile "sha256" ./spectrum-cycle.json)
+  );
+  controller = pkgs.writeShellApplication {
+    name = "openrgb-control";
+    runtimeInputs = [ pkgs.python3 ];
+    text = ''
+      export OPENRGB_CONTROL_TEMPLATE=${./spectrum-cycle.json}
+      export OPENRGB_CONTROL_OPENRGB=${lib.getExe openrgb}
+      export OPENRGB_CONTROL_SYSTEMCTL=${pkgs.systemd}/bin/systemctl
+      export OPENRGB_CONTROL_CONFIG_VERSION=${controllerVersion}
+      exec ${lib.getExe pkgs.python3} ${./controller.py} "$@"
+    '';
+  };
 in
 {
   # Gigabyte's ACPI tables reserve the AMD SMBus I/O range, preventing
@@ -34,6 +42,11 @@ in
   '';
 
   home-manager.users.seeker = {
+    programs.niri-shell.rgbControl = {
+      enable = true;
+      package = controller;
+    };
+
     systemd.user.services.openrgb-effects = {
       Unit = {
         Description = "Synchronized OpenRGB effects";
@@ -44,17 +57,23 @@ in
         Environment = "OPENRGB_EFFECTS_PLUGIN_STARTUP_PROFILE=${effectsProfile}";
         RuntimeDirectory = "openrgb-effects";
         RuntimeDirectoryMode = "0700";
-        ExecStartPre = "${prepareEffectsProfile} %t/openrgb-effects";
+        ExecStartPre = "${lib.getExe controller} prepare %t/openrgb-effects";
         ExecStart = lib.escapeShellArgs [
           (lib.getExe openrgb)
           "--noautoconnect"
           "--client"
+          "127.0.0.1:6742"
+          "--server"
+          "--server-host"
           "127.0.0.1"
+          "--server-port"
+          "6743"
           "--nodetect"
           "--startminimized"
           "--config"
           "%t/openrgb-effects"
         ];
+        ExecStartPost = "${lib.getExe controller} restore";
         Restart = "on-failure";
         RestartSec = 3;
       };
