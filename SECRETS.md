@@ -9,7 +9,7 @@ SOPS uses two human-managed age identities:
 own SSH client key and the shared secrets consumed by that host. `DiagonAlley`
 also receives the administrator SSH key so it retains VPS maintenance access.
 `gpu01` has a separate runtime identity, scoped to the shared external and
-GitHub keys.
+GitHub keys plus the shared Codex authentication file.
 The bootstrap identities live under the git-ignored `.secrets/age/` directory.
 The SOPS identity itself must be installed out of band because it cannot decrypt
 itself.
@@ -31,6 +31,13 @@ Public keys use the `_unencrypted` suffix inside their SOPS documents. They are
 not confidential, and keeping them readable lets NixOS and the standalone
 gpu01 Home Manager configuration build `authorized_keys` without decrypting a
 private key. SOPS still remains the single source for each key pair.
+
+## Codex authentication
+
+`users/seeker/codex-auth.secrets.json` contains the complete Codex
+`auth.json`. Home Manager deploys it through sops-nix with mode `0600` on
+`miLaptop`, `DiagonAlley`, `devVM`, `nixos-wsl`, and `gpu01`. The keyless
+development container deliberately does not import this secret module.
 
 ## Bootstrap
 

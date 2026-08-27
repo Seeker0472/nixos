@@ -24,6 +24,7 @@ in
         inputs.sops-nix.homeManagerModules.sops
         inputs.zen-browser.homeModules.beta
         inputs.aloha.homeManagerModules.default
+        ./codex-secrets.nix
         ./miLaptop.nix
       ];
     };

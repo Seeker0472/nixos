@@ -52,6 +52,11 @@ lib.mkIf config.programs.fish.enable {
         echo "starting: $process"
         hyprctl dispatch exec "$process"
       '';
+    }
+    // lib.optionalAttrs (config.programs.codex.enable && config.programs.codex.package != null) {
+      codex = ''
+        ${lib.getExe' config.programs.codex.package "codex"} --profile nix $argv
+      '';
     };
     plugins = [
       {

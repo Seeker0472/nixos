@@ -62,8 +62,9 @@ systemctl --user restart sops-nix.service
 ```
 
 The devVM identity can decrypt only its own SSH client key, the shared GitHub
-key, and the system secrets consumed by devVM. It cannot decrypt administrator,
-miLaptop, WSL, Mihomo, or King'sCross secrets.
+key, the shared Codex authentication file, and the system secrets consumed by
+devVM. It cannot decrypt administrator, miLaptop, WSL, Mihomo, or King'sCross
+secrets.
 
 ## Update
 
