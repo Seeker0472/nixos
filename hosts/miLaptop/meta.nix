@@ -25,9 +25,9 @@
     programs = {
       kdeconnect.enable = true;
       mihomo = {
-        enable = false;
+        enable = true;
         share.enable = true;
-        tun.enable = false;
+        tun.enable = true;
       };
       netbird.enable = true;
       nixvim.development.enable = true;
