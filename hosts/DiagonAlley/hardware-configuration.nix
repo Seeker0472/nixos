@@ -52,6 +52,21 @@
   hardware.bluetooth.powerOnBoot = true;
   hardware.i2c.enable = true;
 
+  services.hardware.openrgb = {
+    enable = true;
+    motherboard = "amd";
+  };
+
+  services.smartd = {
+    enable = true;
+    autodetect = true;
+  };
+
+  environment.systemPackages = with pkgs; [
+    nvme-cli
+    smartmontools
+  ];
+
   services.printing.enable = true;
   services.keyd = {
     enable = true;

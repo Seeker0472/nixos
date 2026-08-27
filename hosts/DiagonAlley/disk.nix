@@ -48,6 +48,7 @@ in
         "/etc/NetworkManager/system-connections"
         "/var/lib/docker"
         "/var/lib/private/mihomo"
+        "/var/lib/OpenRGB"
       ];
       files = [
         "/etc/machine-id"
