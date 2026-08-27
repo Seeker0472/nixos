@@ -2,7 +2,6 @@
 with pkgs;
 [
   gparted
-  flclash
   evince
   libreoffice
   chromium

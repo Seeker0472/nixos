@@ -28,6 +28,7 @@
         enable = true;
         share.enable = true;
         tun.enable = true;
+        web.enable = true;
       };
       netbird.enable = true;
       nixvim.development.enable = true;

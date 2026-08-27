@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib;
@@ -32,6 +33,10 @@ let
         allow-lan: false
         bind-address: 127.0.0.1
       '';
+
+  webConfig = optionalString cfg.web.enable ''
+    external-ui: "${pkgs.metacubexd}"
+  '';
 
   baseConfig = ''
     ${inboundConfig}
@@ -189,6 +194,7 @@ in
       enable = lib.mkEnableOption "mihomo";
       share.enable = lib.mkEnableOption "Mihomo proxy sharing";
       tun.enable = lib.mkEnableOption "mihomo tun";
+      web.enable = lib.mkEnableOption "Mihomo web dashboard";
     };
   };
   config = mkIf (cfg.enable && deploySecrets) {
@@ -218,9 +224,14 @@ in
       restartUnits = [ "mihomo.service" ];
       content = ''
         ${baseConfig}
+        ${webConfig}
         ${optionalString cfg.tun.enable tunConfig}
         ${providersAndRules}
       '';
+    };
+
+    systemd.services.mihomo.environment = mkIf cfg.web.enable {
+      SAFE_PATHS = "${pkgs.metacubexd}";
     };
 
     services.mihomo = {
