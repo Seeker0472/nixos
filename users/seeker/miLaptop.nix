@@ -214,6 +214,8 @@ in
           ".local/share/fish"
           ".local/share/direnv"
           ".local/share/fcitx5"
+          # Zellij stores plugin permission grants in this cache.
+          ".cache/zellij"
           ".config/fcitx5"
           ".config/dconf"
           ".config/hypr"
