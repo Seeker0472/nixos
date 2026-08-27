@@ -169,7 +169,7 @@ in
         timestr = "%H:%M  ·  %m-%d";
         datestr = "󰌾  %A";
         font = "Maple Mono NF CN";
-        font-size = 36;
+        font-size = 56;
 
         inside-color = "303446e6";
         inside-clear-color = "303446e6";

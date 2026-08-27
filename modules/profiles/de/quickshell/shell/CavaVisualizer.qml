@@ -6,7 +6,10 @@ import Quickshell.Io
 Item {
     id: root
 
-    property var levels: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    readonly property int barCount: 12
+    readonly property real minimumLevel: 0.08
+    readonly property real inputMaximum: 8
+    property var levels: [0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08, 0.08]
     property bool enabled: true
     property bool paused: false
 
@@ -38,18 +41,19 @@ Item {
         anchors.fill: parent
         anchors.leftMargin: 2
         anchors.rightMargin: 2
-        spacing: 3
+        spacing: 2
 
         Repeater {
             model: root.levels
 
             delegate: Rectangle {
                 required property var modelData
-                Layout.fillHeight: true
                 Layout.fillWidth: true
+                Layout.fillHeight: false
                 Layout.alignment: Qt.AlignBottom
-                implicitHeight: 4
-                height: Math.max(3, parent.height * Number(modelData))
+                Layout.minimumHeight: 3
+                Layout.preferredHeight: Math.max(3, root.height * Number(modelData))
+                implicitHeight: 3
                 radius: width / 2
                 color: Theme.accentAlt
                 opacity: 0.45 + Number(modelData) * 0.55
@@ -75,15 +79,21 @@ Item {
     }
 
     function update(line) {
-        var values = String(line || "").trim().split(";")
+        var text = String(line || "").trim()
+        if (text.length === 0) return
+
+        var values = text.split(";")
         var next = []
         for (var i = 0; i < values.length; i++) {
-            var value = Number(values[i])
-            if (!isNaN(value)) {
-                next.push(Math.max(0.08, Math.min(1, value / 8)))
+            var token = values[i].trim()
+            if (token.length === 0) continue
+
+            var value = Number(token)
+            if (!isNaN(value) && isFinite(value)) {
+                next.push(Math.max(root.minimumLevel, Math.min(1, value / root.inputMaximum)))
             }
         }
-        if (next.length > 0) {
+        if (next.length === root.barCount) {
             levels = next
         }
     }
