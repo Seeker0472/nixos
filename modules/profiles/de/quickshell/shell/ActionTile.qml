@@ -12,7 +12,12 @@ Rectangle {
 
     implicitHeight: 58
     radius: Theme.smallRadius
-    color: mouse.containsMouse ? Theme.tint(root.accent, 0.11) : Theme.backgroundElevated
+    // Blend the hover tint onto the tile first so the color animation stays opaque.
+    readonly property color hoverColor: Qt.tint(
+        Theme.backgroundElevated,
+        Qt.rgba(root.accent.r, root.accent.g, root.accent.b, 0.11)
+    )
+    color: mouse.containsMouse ? root.hoverColor : Theme.backgroundElevated
     border.width: 0
 
     Behavior on color {

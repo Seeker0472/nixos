@@ -20,6 +20,8 @@ PopupWindow {
     anchor.margins.bottom: -8
 
     color: "transparent"
+    // A tooltip is informational; it must not take the pointer away from its target.
+    mask: Region {}
     grabFocus: false
     visible: root.shown && root.text.length > 0 && root.targetItem !== null
     implicitWidth: Math.min(root.maxTextWidth + 20, Math.max(104, naturalText.implicitWidth + 20))

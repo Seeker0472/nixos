@@ -164,7 +164,7 @@ let
     brightness=0
     brightness_line="$(${pkgs.coreutils}/bin/timeout 1 ${pkgs.brightnessctl}/bin/brightnessctl -m 2>/dev/null | ${pkgs.coreutils}/bin/head -n1 || true)"
     if [ -n "$brightness_line" ]; then
-      brightness="$(${pkgs.coreutils}/bin/cut -d, -f5 <<< "$brightness_line" | ${pkgs.gnused}/bin/sed 's/%//')"
+      brightness="$(${pkgs.coreutils}/bin/cut -d, -f4 <<< "$brightness_line" | ${pkgs.gnused}/bin/sed 's/%$//')"
     fi
 
     on_battery="false"
