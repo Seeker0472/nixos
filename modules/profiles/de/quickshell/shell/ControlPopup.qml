@@ -31,7 +31,8 @@ Rectangle {
         case "network": return 3
         case "bluetooth": return 4
         case "calendar": return 5
-        case "power": return 6
+        case "tasks": return 6
+        case "power": return 7
         default: return 0
         }
     }
@@ -43,6 +44,7 @@ Rectangle {
         case "network": return "Network"
         case "bluetooth": return "Bluetooth"
         case "calendar": return ShellState.calendarTitle
+        case "tasks": return "Tasks"
         case "power": return "Power"
         default: return "Control center"
         }
@@ -113,7 +115,7 @@ Rectangle {
 
                 Text {
                     visible: root.page !== "calendar"
-                    text: ShellState.focusedTitle
+                    text: root.page === "tasks" ? TaskState.headerSummary : ShellState.focusedTitle
                     color: Theme.muted
                     font.family: "Maple Mono NF CN"
                     font.pixelSize: 11
@@ -140,6 +142,7 @@ Rectangle {
             IconButton { icon: "󰤨"; tooltip: "Network"; selected: root.page === "network"; onClicked: ShellState.popupPage = "network" }
             IconButton { icon: "󰂯"; tooltip: "Bluetooth"; selected: root.page === "bluetooth"; onClicked: ShellState.popupPage = "bluetooth" }
             IconButton { icon: "󰃭"; tooltip: "Calendar"; selected: root.page === "calendar"; onClicked: ShellState.popupPage = "calendar" }
+            IconButton { icon: "󰄬"; tooltip: "Tasks"; selected: root.page === "tasks"; onClicked: ShellState.popupPage = "tasks" }
             IconButton { icon: "󰐥"; tooltip: "Power"; selected: root.page === "power"; onClicked: ShellState.popupPage = "power" }
         }
 
@@ -719,6 +722,8 @@ Rectangle {
                     Item { Layout.fillHeight: true }
                 }
             }
+
+            TaskPage { }
 
             Item {
                 ColumnLayout {

@@ -28,6 +28,7 @@ ShellRoot {
                 implicitHeight: 46
                 exclusiveZone: 46
                 aboveWindows: true
+                focusable: controlPopup.requestedVisible
 
                 WlrLayershell.namespace: "niri-shell-bar"
                 WlrLayershell.layer: WlrLayer.Top
@@ -51,7 +52,10 @@ ShellRoot {
                     implicitWidth: 430
                     implicitHeight: 540
                     color: "transparent"
-                    grabFocus: requestedVisible
+                    // PopupWindow only applies grabFocus when it is shown. Keep
+                    // it enabled before visible changes so text inputs can
+                    // receive keyboard focus reliably on Wayland.
+                    grabFocus: true
 
                     function resetContent() {
                         if (!popupLoader.item) return

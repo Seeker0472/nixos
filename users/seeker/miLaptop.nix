@@ -227,6 +227,7 @@ in
           ".vscode"
           ".config/Code"
           ".local/share/keyrings"
+          ".local/share/task"
           ".local/share/zed"
           ".config/zen"
           ".zotero"

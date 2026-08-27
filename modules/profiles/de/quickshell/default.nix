@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   osConfig,
   pkgs,
@@ -23,8 +24,8 @@ let
     exec ${pkgs.kitty}/bin/kitty --class RTG ${pkgs.btop}/bin/btop
   '';
 
-  todoScript = pkgs.writeShellScriptBin "niri-shell-todo" ''
-    exec ${pkgs.kitty}/bin/kitty --class RTG ${pkgs.neovim}/bin/nvim "$HOME/Documents/todo.md"
+  taskTerminalScript = pkgs.writeShellScriptBin "niri-shell-taskwarrior" ''
+    exec ${pkgs.kitty}/bin/kitty --class RTG ${pkgs.fish}/bin/fish -C '${lib.getExe pkgs.taskwarrior3} next'
   '';
 
   cavaConfig = pkgs.writeText "niri-shell-cava.conf" ''
@@ -54,7 +55,8 @@ let
       --subst-var-by niri ${lib.getExe pkgs.niri} \
       --subst-var-by focusWorkspace ${lib.getExe focusWorkspaceScript} \
       --subst-var-by btop ${lib.getExe btopScript} \
-      --subst-var-by todo ${lib.getExe todoScript} \
+      --subst-var-by task ${lib.getExe pkgs.taskwarrior3} \
+      --subst-var-by taskTerminal ${lib.getExe taskTerminalScript} \
       --subst-var-by python ${lib.getExe pkgs.python3} \
       --subst-var-by sampler "$out/sampler.py" \
       --subst-var-by pwDump ${pkgs.pipewire}/bin/pw-dump \
@@ -78,6 +80,13 @@ in
 {
   config = lib.mkIf enabled {
     xdg.configFile."quickshell/niri-shell".source = commands;
+
+    programs.taskwarrior = {
+      enable = true;
+      package = pkgs.taskwarrior3;
+      dataLocation = "${config.xdg.dataHome}/task";
+      config.weekstart = "monday";
+    };
 
     home.packages = with pkgs; [
       quickshell

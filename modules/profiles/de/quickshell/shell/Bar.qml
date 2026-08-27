@@ -299,12 +299,24 @@ Item {
         }
 
         StatusPill {
+            icon: "󰄬"
+            value: TaskState.ready ? String(TaskState.totalCount) : "..."
+            tooltip: TaskState.errorMessage.length > 0
+                ? TaskState.errorMessage
+                : TaskState.totalCount + " pending" + (TaskState.overdueCount > 0 ? "\n" + TaskState.overdueCount + " overdue" : "")
+            accent: TaskState.overdueCount > 0 ? Theme.danger : Theme.muted
+            highlighted: TaskState.overdueCount > 0
+            onClicked: ShellState.togglePopup("tasks", root.screen)
+            onRightClicked: ShellState.run([Commands.taskTerminal])
+        }
+
+        StatusPill {
             icon: "󰔛"
             value: ShellState.clockAlternate ? Qt.formatDate(ShellState.now, "yyyy-MM-dd") : Qt.formatTime(ShellState.now, "HH:mm")
             tooltip: Qt.formatDate(ShellState.now, "dddd, MMMM d, yyyy")
             accent: Theme.muted
             onClicked: ShellState.togglePopup("calendar", root.screen)
-            onRightClicked: ShellState.run([Commands.todo])
+            onRightClicked: ShellState.run([Commands.taskTerminal])
             onMiddleClicked: ShellState.toggleClockFormat()
         }
 
