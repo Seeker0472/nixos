@@ -12,6 +12,7 @@ in
 {
   imports = [
     ./netbird.nix
+    ./taskchampion.nix
     inputs.nixvim.nixosModules.nixvim
     ../../modules/profiles/programs/nixvim/default.nix
   ];

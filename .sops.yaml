@@ -86,6 +86,15 @@ creation_rules:
           - *gpu01_age
           - *diagonal_alley_age
 
+  - path_regex: users/seeker/taskwarrior\.secrets\.yaml$
+    unencrypted_suffix: _unencrypted
+    key_groups:
+      - age:
+          - *admin_seeker_age
+          - *recovery_age
+          - *kings_cross_age
+          - *diagonal_alley_age
+
   - path_regex: .*secrets\.(yaml|json)$
     unencrypted_suffix: _unencrypted
     key_groups:

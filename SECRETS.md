@@ -39,6 +39,18 @@ private key. SOPS still remains the single source for each key pair.
 `miLaptop`, `DiagonAlley`, `devVM`, `nixos-wsl`, and `gpu01`. The keyless
 development container deliberately does not import this secret module.
 
+## Taskwarrior synchronization
+
+`users/seeker/taskwarrior.secrets.yaml` contains the shared TaskChampion
+client ID and client-side encryption secret. Home Manager renders them into a
+mode `0400` Taskwarrior configuration fragment on `miLaptop` and
+`DiagonAlley`. King'sCross reads only the client ID to restrict the sync
+server; the encryption secret is not passed to the server process.
+
+`miLaptop` is the primary replica for recurring tasks. `DiagonAlley` disables
+recurrence generation to avoid duplicate recurring tasks while retaining full
+sync and task editing support.
+
 ## Bootstrap
 
 Install the admin identity at

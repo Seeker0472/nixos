@@ -21,6 +21,7 @@ in
   imports = [
     ./desktop.nix
     ./ssh-secrets.nix
+    ./taskwarrior-sync.nix
   ];
 
   config = lib.mkMerge [
