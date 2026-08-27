@@ -102,7 +102,8 @@ let
     '';
   };
 
-  lockCommand = "${pkgs.procps}/bin/pidof swaylock || ${pkgs.swaylock}/bin/swaylock -f";
+  swaylockPackage = pkgs.swaylock-effects;
+  lockCommand = "${pkgs.procps}/bin/pidof swaylock || ${lib.getExe swaylockPackage} -f";
   onBattery = "${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q off-line";
 
   niriConfig = pkgs.replaceVars ./config.kdl {
@@ -153,10 +154,53 @@ in
 
     programs.swaylock = {
       enable = true;
+      package = swaylockPackage;
       settings = {
-        color = "1e1e2e";
+        image = ../wallpaper/nix-wallpaper-moonscape.png;
+        scaling = "fill";
+        color = "303446ff";
+
+        indicator = true;
+        indicator-caps-lock = true;
+        indicator-radius = 220;
+        indicator-thickness = 13;
+
+        clock = true;
+        timestr = "%H:%M  ·  %m-%d";
+        datestr = "󰌾  %A";
         font = "Maple Mono NF CN";
-        indicator-radius = 100;
+        font-size = 36;
+
+        inside-color = "303446e6";
+        inside-clear-color = "303446e6";
+        inside-caps-lock-color = "303446e6";
+        inside-ver-color = "303446e6";
+        inside-wrong-color = "303446e6";
+        ring-color = "ca9ee6ff";
+        ring-clear-color = "e5c890ff";
+        ring-caps-lock-color = "e5c890ff";
+        ring-ver-color = "a6d189ff";
+        ring-wrong-color = "e78284ff";
+        line-color = "00000000";
+        line-clear-color = "00000000";
+        line-caps-lock-color = "00000000";
+        line-ver-color = "00000000";
+        line-wrong-color = "00000000";
+        separator-color = "00000000";
+        key-hl-color = "f4b8e4ff";
+        bs-hl-color = "e78284ff";
+
+        text-color = "c6d0f5ff";
+        text-clear = "Enter password";
+        text-clear-color = "c6d0f5ff";
+        text-caps-lock = "Caps Lock";
+        text-caps-lock-color = "e5c890ff";
+        text-ver = "Authenticating...";
+        text-ver-color = "a6d189ff";
+        text-wrong = "Wrong password";
+        text-wrong-color = "e78284ff";
+
+        show-keyboard-layout = true;
         show-failed-attempts = true;
       };
     };

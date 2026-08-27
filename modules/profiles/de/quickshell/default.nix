@@ -7,6 +7,8 @@
 let
   deCfg = lib.attrByPath [ "machine" "de" ] { } osConfig;
   enabled = deCfg.quickshell.enable or false;
+  swaylockCommand =
+    if (deCfg.niri.enable or false) then lib.getExe pkgs.swaylock-effects else lib.getExe pkgs.swaylock;
 
   focusWorkspaceScript = pkgs.writeShellScriptBin "niri-shell-focus-workspace" ''
     output="''${1:-}"
@@ -258,7 +260,7 @@ let
       --subst-var-by wpctl ${pkgs.wireplumber}/bin/wpctl \
       --subst-var-by systemctl ${pkgs.systemd}/bin/systemctl \
       --subst-var-by loginctl ${pkgs.systemd}/bin/loginctl \
-      --subst-var-by swaylock ${lib.getExe pkgs.swaylock} \
+      --subst-var-by swaylock ${swaylockCommand} \
       --subst-var-by pavucontrol ${lib.getExe pkgs.pavucontrol} \
       --subst-var-by nmEditor ${pkgs.networkmanagerapplet}/bin/nm-connection-editor \
       --subst-var-by blueman ${pkgs.blueman}/bin/blueman-manager \

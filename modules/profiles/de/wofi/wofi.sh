@@ -41,7 +41,7 @@ declare -A power_options
 power_options['  Shutdown']='poweroff'
 power_options['  Reboot']='reboot'
 power_options[' 󰒲 Hibernate']='systemctl hibernate'
-power_options['  Lock']='hyprlock'
+power_options['  Lock']='loginctl lock-session'
 
 
 # --- 函数 ---
