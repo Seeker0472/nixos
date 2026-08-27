@@ -209,6 +209,14 @@ in
           "Documents"
           "Pictures"
           "Videos"
+          {
+            directory = ".codex";
+            mode = "0700";
+          }
+          {
+            directory = ".docker";
+            mode = "0700";
+          }
           ".ssh"
           ".gnupg"
           ".factorio"
@@ -217,12 +225,16 @@ in
           ".local/share/fcitx5"
           # Zellij stores plugin permission grants in this cache.
           ".cache/zellij"
+          ".cache/cliphist"
           ".config/fcitx5"
           ".config/dconf"
           ".config/hypr"
           ".config/niri"
           ".local/share/hyprland"
           ".local/state/nvim"
+          ".local/state/wireplumber"
+          ".local/state/yazi"
+          ".local/state/aloha"
           ".config/kdeconnect"
           ".config/obsidian"
           ".vscode"
@@ -231,6 +243,7 @@ in
           ".local/share/task"
           ".local/share/zed"
           ".config/zen"
+          "VirtualBox VMs"
           ".zotero"
           "Zotero"
         ];

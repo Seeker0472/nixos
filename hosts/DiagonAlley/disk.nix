@@ -45,6 +45,8 @@ in
         "/var/lib/bluetooth"
         "/var/lib/nixos"
         "/var/lib/systemd/coredump"
+        "/var/lib/NetworkManager"
+        "/var/lib/cups"
         "/etc/NetworkManager/system-connections"
         "/var/lib/docker"
         "/var/lib/private/mihomo"
