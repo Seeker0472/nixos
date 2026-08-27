@@ -16,11 +16,8 @@ input {
     focus-follows-mouse max-scroll-amount="0%"
 }
 
-output "eDP-1" {
-    mode "2560x1600"
-    scale 1.333333
-    position x=0 y=0
-}
+// Writable output configuration maintained by nwg-displays.
+include "monitor.kdl"
 
 layout {
     gaps 8
@@ -204,6 +201,7 @@ binds {
     Mod+Return repeat=false hotkey-overlay-title="Open Terminal" { spawn "@kitty@"; }
     Mod+Space repeat=false hotkey-overlay-title="Open Floating Terminal" { spawn "@kitty@" "--class" "FG"; }
     Mod+E repeat=false hotkey-overlay-title="Open File Manager" { spawn "@thunar@"; }
+    Mod+Ctrl+D repeat=false hotkey-overlay-title="Configure Displays" { spawn "@nwgDisplays@"; }
 
     Mod+Shift+Q repeat=false hotkey-overlay-title="Close Window" { close-window; }
     Mod+Ctrl+Shift+Q repeat=false hotkey-overlay-title="Force Kill Window" { spawn "@forceKill@"; }
@@ -313,6 +311,7 @@ binds {
     Mod+Shift+O repeat=false hotkey-overlay-title="Toggle Overview" { toggle-overview; }
 
     Mod+Ctrl+C repeat=false { spawn-sh "@wlPaste@ --primary --no-newline | @wlCopy@"; }
+    Mod+Ctrl+Shift+P repeat=false hotkey-overlay-title="Clipboard History" { spawn "@clipboardPicker@"; }
 
     Print repeat=false hotkey-overlay-title="Interactive Screenshot" { screenshot; }
     Mod+Shift+A repeat=false hotkey-overlay-title="Interactive Screenshot" { screenshot; }

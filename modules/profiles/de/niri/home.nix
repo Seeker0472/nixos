@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   osConfig,
   pkgs,
@@ -60,6 +61,36 @@ let
     '';
   };
 
+  clipboardPicker = pkgs.writeShellApplication {
+    name = "niri-clipboard-picker";
+    runtimeInputs = [
+      pkgs.cliphist
+      pkgs.fzf
+      pkgs.wl-clipboard
+    ];
+    text = ''
+      selection="$(
+        cliphist list | fzf \
+          --layout=reverse \
+          --border=rounded \
+          --info=inline \
+          --no-multi \
+          --prompt='Clipboard> '
+      )" || exit 0
+
+      [[ -n "$selection" ]] || exit 0
+      printf '%s' "$selection" | cliphist decode | wl-copy
+    '';
+  };
+
+  clipboardPickerTerminal = pkgs.writeShellApplication {
+    name = "niri-clipboard-picker-terminal";
+    runtimeInputs = [ pkgs.kitty ];
+    text = ''
+      exec kitty --class FG --title "Clipboard History" -e ${lib.getExe clipboardPicker}
+    '';
+  };
+
   mediaControl = pkgs.writeShellApplication {
     name = "niri-media-control";
     runtimeInputs = [ pkgs.wireplumber ];
@@ -99,6 +130,16 @@ let
     '';
   };
 
+  initialMonitorConfig = pkgs.writeText "niri-monitor.kdl" (
+    lib.optionalString (osConfig.machine.type == "laptop") ''
+      output "eDP-1" {
+          mode "2560x1600"
+          scale 1.333333
+          position x=0 y=0
+      }
+    ''
+  );
+
   swaylockPackage = pkgs.swaylock-effects;
   lockCommand = "${pkgs.procps}/bin/pidof swaylock || ${lib.getExe swaylockPackage} -f";
   onBattery = "${pkgs.acpi}/bin/acpi -a | ${pkgs.gnugrep}/bin/grep -q off-line";
@@ -106,7 +147,9 @@ let
   niriConfig = pkgs.replaceVars ./config.kdl {
     focusOrSpawn = lib.getExe focusOrSpawn;
     forceKill = lib.getExe forceKill;
+    clipboardPicker = lib.getExe clipboardPickerTerminal;
     mediaControl = lib.getExe mediaControl;
+    nwgDisplays = lib.getExe pkgs.nwg-displays;
     resizeAndCenter = lib.getExe resizeAndCenter;
     wallpaperQuote = lib.getExe wallpaperQuote;
     aloha = "aloha";
@@ -141,8 +184,18 @@ in
   config = lib.mkIf niriEnabled {
     xdg.configFile."niri/config.kdl".source = niriConfig;
 
+    # nwg-displays owns this writable include. Seed it only once so applying
+    # Home Manager never overwrites a layout created from the GUI.
+    home.activation.ensureNiriMonitorConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      monitor_config=${lib.escapeShellArg "${config.xdg.configHome}/niri/monitor.kdl"}
+      if [[ ! -e "$monitor_config" && ! -L "$monitor_config" ]]; then
+        run ${pkgs.coreutils}/bin/install -D -m 0644 ${initialMonitorConfig} "$monitor_config"
+      fi
+    '';
+
     home.packages = [
       pkgs.cliphist
+      pkgs.nwg-displays
       pkgs.wl-clipboard
     ];
 
