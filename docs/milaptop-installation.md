@@ -252,10 +252,31 @@ sudo systemd-cryptenroll \
 登记过程会要求输入现有 LUKS 密码。不要删除密码 keyslot；它是 TPM 或固件
 状态异常时的恢复入口。登记后重启一次，验证无需输入密码即可解锁。
 
-## 恢复休眠
+## 休眠
 
-首次安装时 `resumeDevice` 和 `resumeOffset` 被设为 `null`，避免使用旧硬盘的
-swapfile 偏移。进入新系统后计算新偏移：
+miLaptop 以 UEFI 启动，并使用 systemd initrd。当前 systemd 会在休眠时自动
+选择 swapfile，将设备和当时的 Btrfs offset 写入 `HibernateLocation` EFI
+变量，并在下次启动的 initrd 中恢复。因此配置显式允许 `hibernate` 和
+`suspend-then-hibernate`，同时有意将 `resumeDevice` 与 `resumeOffset` 保持为
+`null`，避免 Disko 重新创建 swapfile 后留下失效的静态 offset。
+
+进入新系统后先确认休眠可用：
+
+```bash
+swapon --show
+busctl call \
+  org.freedesktop.login1 \
+  /org/freedesktop/login1 \
+  org.freedesktop.login1.Manager \
+  CanHibernate
+```
+
+预期 swap 列表包含 `/.swapvol/swapfile`，且 `CanHibernate` 返回 `yes`。首次测试
+使用 `systemctl hibernate`，恢复后检查本次启动日志中是否同时出现
+`hibernation entry` 与 `hibernation exit`。
+
+只有系统不是以 UEFI 启动，或自动 `HibernateLocation` 路径无法工作时，才使用
+手工 fallback。先计算当前 swapfile 的 offset：
 
 ```bash
 sudo btrfs inspect-internal map-swapfile -r /.swapvol/swapfile
@@ -275,9 +296,18 @@ cd /home/seeker/nixos-config
 sudo nixos-rebuild dry-build --flake "path:$PWD#miLaptop"
 sudo nixos-rebuild test --flake "path:$PWD#miLaptop"
 sudo nixos-rebuild switch --flake "path:$PWD#miLaptop"
+sudo systemctl reboot
 ```
 
-swapfile 被删除或重新创建后，必须重新计算 `resumeOffset`。
+重启进入新 generation 后，必须先确认两个参数都已生效，才能测试休眠：
+
+```bash
+grep -oE 'resume=[^ ]+|resume_offset=[^ ]+' /proc/cmdline
+```
+
+`nixos-rebuild switch` 无法改变正在运行内核的命令行，因此不能省略这次重启。
+swapfile 被删除或重新创建后，必须重新计算 `resumeOffset`；不能复用安装前或
+其他 swapfile 的数值。
 
 ## 延后放置 age identity
 
