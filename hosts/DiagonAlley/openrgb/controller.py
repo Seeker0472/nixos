@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Session-scoped OpenRGB scene controller for DiagonAlley."""
 
 from __future__ import annotations
@@ -9,15 +8,14 @@ import fcntl
 import json
 import math
 import os
-from pathlib import Path
 import socket
 import struct
 import subprocess
 import sys
 import tempfile
 import time
-from typing import Any
-
+from pathlib import Path
+from typing import Any, Self
 
 PROFILE_NAME = "quickshell.json"
 EFFECTS_PLUGIN_NAME = "OpenRGB Effects Plugin"
@@ -25,6 +23,8 @@ HEADER = struct.Struct("<4sIII")
 PLUGIN_LIST_PACKET = 200
 PLUGIN_SPECIFIC_PACKET = 201
 LOAD_EFFECTS_PROFILE_PACKET = 23
+MEMORY_CONTROLLER_NAME = "ENE DRAM"
+MEMORY_ONLY_SCENES = frozenset({"audioPulse", "audioSpectrum", "lightning"})
 
 
 def slider(key: str, label: str, minimum: int, maximum: int, step: int = 1, unit: str = "%") -> dict[str, Any]:
@@ -148,7 +148,7 @@ SCENES: dict[str, dict[str, Any]] = {
     },
     "lightning": {
         "name": "Lightning",
-        "description": "Sharp flashes with a controlled decay",
+        "description": "Memory-only flashes with controlled decay",
         "category": "Flow",
         "icon": "lightning",
         "preview": ["#07101F", "#C7DCFF"],
@@ -162,7 +162,7 @@ SCENES: dict[str, dict[str, Any]] = {
     },
     "audioPulse": {
         "name": "Audio Pulse",
-        "description": "A shared color driven by the music",
+        "description": "Memory-only color pulses; other lights stay dark",
         "category": "Audio",
         "icon": "audio",
         "preview": ["#89DCEB", "#F5C2E7", "#F9E2AF"],
@@ -185,7 +185,7 @@ SCENES: dict[str, dict[str, Any]] = {
     },
     "audioSpectrum": {
         "name": "Audio Spectrum",
-        "description": "A frequency palette spread across each zone",
+        "description": "A frequency meter across the memory bars",
         "category": "Audio",
         "icon": "equalizer",
         "preview": ["#89DCEB", "#A6E3A1", "#F9E2AF", "#F38BA8"],
@@ -263,7 +263,7 @@ def atomic_json(path: Path, value: Any) -> None:
 
 def normalize_color(value: Any) -> str:
     if not isinstance(value, str):
-        raise ValueError("color must be a string")
+        raise ValueError("color must be a string")  # noqa: TRY004 - CLI input errors use one exception type.
     value = value.upper()
     if len(value) != 7 or value[0] != "#" or any(char not in "0123456789ABCDEF" for char in value[1:]):
         raise ValueError(f"invalid color: {value}")
@@ -344,7 +344,7 @@ def load_state() -> dict[str, Any]:
 
 def apply_patch(state: dict[str, Any], patch: Any) -> dict[str, Any]:
     if not isinstance(patch, dict):
-        raise ValueError("patch must be a JSON object")
+        raise ValueError("patch must be a JSON object")  # noqa: TRY004 - CLI input errors use one exception type.
     allowed = {"scene", "power", "brightness", "settings", "scenes", "resetScene"}
     unknown = set(patch) - allowed
     if unknown:
@@ -369,7 +369,9 @@ def apply_patch(state: dict[str, Any], patch: Any) -> dict[str, Any]:
             raise ValueError(f"unknown scenes: {', '.join(sorted(unknown_scenes))}")
         for scene_id, settings in patch["scenes"].items():
             if not isinstance(settings, dict):
-                raise ValueError(f"{scene_id} settings must be a JSON object")
+                raise ValueError(  # noqa: TRY004 - CLI input errors use one exception type.
+                    f"{scene_id} settings must be a JSON object"
+                )
             for key, value in settings.items():
                 result["scenes"][scene_id][key] = validate_setting(scene_id, key, value)
     scene = result["scene"]
@@ -400,13 +402,32 @@ def scaled_hex(color: str, brightness: int) -> str:
     return "".join(f"{channel:02X}" for channel in channels)
 
 
-def template_zones(reverse: bool = False) -> list[dict[str, Any]]:
+def zone_role(zone: dict[str, Any]) -> str:
+    if zone["name"] == MEMORY_CONTROLLER_NAME:
+        return "memory"
+    if zone["zone_idx"] in (0, 1):
+        return "addressable"
+    return "accent"
+
+
+def template_zones(target: str = "all", reverse: bool = False) -> list[dict[str, Any]]:
+    roles = {
+        "all": {"memory", "addressable", "accent"},
+        "memory": {"memory"},
+        "peripheral": {"addressable", "accent"},
+    }
+    if target not in roles:
+        raise ValueError(f"unknown zone target: {target}")
     template = os.environ.get("OPENRGB_CONTROL_TEMPLATE")
     if not template:
         raise RuntimeError("OPENRGB_CONTROL_TEMPLATE is not set")
     with Path(template).open(encoding="utf-8") as handle:
         profile = json.load(handle)
-    zones = copy.deepcopy(profile["Effects"][0]["ControllerZones"])
+    zones = [
+        copy.deepcopy(zone)
+        for zone in profile["Effects"][0]["ControllerZones"]
+        if zone_role(zone) in roles[target]
+    ]
     for zone in zones:
         zone["reverse"] = reverse
         zone["self_brightness"] = 100
@@ -439,6 +460,7 @@ def effect(
     custom: dict[str, Any] | None = None,
     random_colors: bool = False,
     reverse: bool = False,
+    target: str = "all",
 ) -> dict[str, Any]:
     return {
         "EffectClassName": class_name,
@@ -454,7 +476,7 @@ def effect(
         "UserColors": [rgb_int(color) for color in (colors or [])],
         "CustomSettings": custom or {},
         "AutoStart": True,
-        "ControllerZones": template_zones(reverse),
+        "ControllerZones": template_zones(target, reverse),
     }
 
 
@@ -545,6 +567,7 @@ def build_profile(state: dict[str, Any]) -> dict[str, Any]:
             slider2=settings["decay"],
             colors=[settings["color"]],
             custom={"lightning_mode": 1},
+            target="memory",
         )
     elif scene == "audioPulse":
         selected = effect(
@@ -562,6 +585,7 @@ def build_profile(state: dict[str, Any]) -> dict[str, Any]:
                 "silent_color_value": 0,
                 "audio_settings": audio_settings(settings["sensitivity"]),
             },
+            target="memory",
         )
     elif scene == "audioSpectrum":
         selected = effect(
@@ -576,6 +600,7 @@ def build_profile(state: dict[str, Any]) -> dict[str, Any]:
                 "invert_hue": False,
                 "audio_settings": audio_settings(settings["sensitivity"]),
             },
+            target="memory",
         )
     else:
         raise ValueError(f"unsupported scene: {scene}")
@@ -712,6 +737,37 @@ def apply_static(state: dict[str, Any]) -> None:
     )
 
 
+def topology_overrides(state: dict[str, Any]) -> list[tuple[str, int | None, str]]:
+    scene = state["scene"]
+    if scene in MEMORY_ONLY_SCENES:
+        controllers = {zone["name"] for zone in template_zones("peripheral")}
+        return [(controller, None, "000000") for controller in sorted(controllers)]
+    return []
+
+
+def apply_topology_overrides(state: dict[str, Any]) -> None:
+    executable = os.environ.get("OPENRGB_CONTROL_OPENRGB", "openrgb")
+    for controller, zone, color in topology_overrides(state):
+        command = [
+            executable,
+            "--client",
+            "127.0.0.1:6742",
+            "--nodetect",
+            "--device",
+            controller,
+        ]
+        if zone is not None:
+            command.extend(["--zone", str(zone)])
+        command.extend(["--mode", "direct", "--color", color])
+        subprocess.run(
+            command,
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=8,
+        )
+
+
 def is_static(state: dict[str, Any]) -> bool:
     return not state["power"] or state["brightness"] == 0 or state["scene"] == "solid"
 
@@ -721,6 +777,8 @@ def apply_runtime(state: dict[str, Any], *, fallback: bool) -> None:
         load_effects_profile()
         if is_static(state):
             apply_static(state)
+        else:
+            apply_topology_overrides(state)
     except (OSError, ValueError, RuntimeError, subprocess.SubprocessError):
         if not fallback:
             raise
@@ -780,14 +838,14 @@ def public_state(state: dict[str, Any]) -> dict[str, Any]:
 
 
 class StateLock:
-    def __enter__(self) -> "StateLock":
+    def __enter__(self) -> Self:
         root = runtime_root()
         root.mkdir(parents=True, exist_ok=True)
         self.handle = (root / "lock").open("a+")
         fcntl.flock(self.handle, fcntl.LOCK_EX)
         return self
 
-    def __exit__(self, *_args: Any) -> None:
+    def __exit__(self, *_args: object) -> None:
         fcntl.flock(self.handle, fcntl.LOCK_UN)
         self.handle.close()
 
@@ -836,6 +894,8 @@ def command_restore(_args: argparse.Namespace) -> None:
         wait_for_runtime()
         if is_static(state):
             apply_static(state)
+        else:
+            apply_topology_overrides(state)
 
 
 def parser() -> argparse.ArgumentParser:
