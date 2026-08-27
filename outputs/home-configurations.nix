@@ -1,13 +1,7 @@
 { inputs, ... }:
 let
   system = "x86_64-linux";
-  nixpkgsConfig = import ./common/nixpkgs-config.nix { inherit inputs; };
-  pkgs = import inputs.nixpkgs (
-    {
-      inherit system;
-    }
-    // nixpkgsConfig
-  );
+  pkgs = import ./common/mk-pkgs.nix { inherit inputs system; };
 in
 {
   flake.homeConfigurations."seeker4721@gpu01" = inputs.home-manager.lib.homeManagerConfiguration {

@@ -4,7 +4,6 @@ with pkgs;
   nodejs_22
   cargo
   zulu17
-  nixpkgs-fmt
   nixd
   coursier
   jdt-language-server

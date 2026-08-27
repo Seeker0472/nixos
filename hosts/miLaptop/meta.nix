@@ -31,14 +31,17 @@
       };
       netbird.enable = true;
       nixvim.development.enable = true;
+      zed.enable = true;
+      gpg.enable = true;
       thunar.enable = true;
       steam.enable = true;
       tailscale.enable = false;
     };
 
     secrets = {
+      deploy = true;
+      nixConfig.enable = true;
       ageKeyPath = "/persist/home/seeker/.config/sops/age/keys.txt";
-      webdav.enable = false;
     };
 
     services.openssh = {

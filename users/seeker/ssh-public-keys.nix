@@ -8,25 +8,28 @@ let
     github = ./ssh/github.secrets.json;
   };
   readPublicKey = file: (builtins.fromJSON (builtins.readFile file)).public_key_unencrypted;
-in
-{
-  inherit files;
-
-  admin = readPublicKey files.admin;
-  external = readPublicKey files.external;
-
-  clients = {
+  adminKey = readPublicKey files.admin;
+  clientKeys = {
     miLaptop = readPublicKey files.miLaptop;
     devVM = readPublicKey files.devVM;
     nixos-wsl = readPublicKey files.nixos-wsl;
   };
+  githubKey = readPublicKey files.github;
+in
+{
+  inherit files;
 
-  github = readPublicKey files.github;
+  admin = adminKey;
+  external = readPublicKey files.external;
+
+  clients = clientKeys;
+
+  github = githubKey;
 
   authorizedKeys = [
-    (readPublicKey files.admin)
-    (readPublicKey files.miLaptop)
-    (readPublicKey files.devVM)
-    (readPublicKey files.nixos-wsl)
+    adminKey
+    clientKeys.miLaptop
+    clientKeys.devVM
+    clientKeys.nixos-wsl
   ];
 }

@@ -10,10 +10,6 @@ let
         builtins.filter (name: enabledUsers.${name}.${field} == null) enabledUserNames
       );
   };
-  missingUidUsers = builtins.filter (name: enabledUsers.${name}.uid == null) enabledUserNames;
-  missingPasswordUsers = builtins.filter (
-    name: enabledUsers.${name}.hashedPassword == null
-  ) enabledUserNames;
   enabledUids = map (name: enabledUsers.${name}.uid) enabledUserNames;
 in
 {
@@ -32,10 +28,12 @@ in
     }
     // lib.mapAttrs (_: userCfg: {
       isNormalUser = true;
-      description = userCfg.description;
-      uid = userCfg.uid;
-      extraGroups = userCfg.extraGroups;
-      hashedPassword = userCfg.hashedPassword;
+      inherit (userCfg)
+        description
+        uid
+        extraGroups
+        hashedPassword
+        ;
       openssh.authorizedKeys.keys = userCfg.authorizedKeys;
     }) enabledUsers;
   };

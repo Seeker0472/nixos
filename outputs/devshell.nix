@@ -12,15 +12,11 @@ in
     }:
     {
       pre-commit.settings.hooks.nixfmt.enable = true;
+      formatter = pkgs.nixfmt-tree;
       packages = lib.optionalAttrs (system == "x86_64-linux") {
         devContainerImage =
           let
-            imagePkgs = import inputs.nixpkgs (
-              {
-                inherit system;
-              }
-              // (import ./common/nixpkgs-config.nix { inherit inputs; })
-            );
+            imagePkgs = import ./common/mk-pkgs.nix { inherit inputs system; };
           in
           import ./dev-container-image.nix {
             inherit inputs;

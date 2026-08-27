@@ -19,7 +19,6 @@
 
   programs = {
     kitty.enable = true;
-    zed-editor.enable = true;
     zen-browser.enable = true;
   };
 }

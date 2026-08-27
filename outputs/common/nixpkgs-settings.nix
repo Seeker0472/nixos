@@ -1,4 +1,3 @@
-{ inputs, ... }:
-{
-  nixpkgs = import ./nixpkgs-config.nix { inherit inputs; };
+_: {
+  nixpkgs.config.allowUnfree = true;
 }

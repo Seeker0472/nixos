@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
+{ lib, config, ... }:
 {
   options.machine.programs.tailscale.enable = lib.mkEnableOption "Tailscale";
   config = lib.mkMerge [

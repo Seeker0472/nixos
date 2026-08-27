@@ -2,9 +2,10 @@
 
 `devVM` is the singleton development VM defined by
 `nixosConfigurations.devVM`. The QEMU app keeps its disk at
-`${XDG_STATE_HOME:-$HOME/.local/state}/dev-container-qemu/devVM.qcow2` unless
-`NIX_DISK_IMAGE` is set explicitly. Do not start two instances against the
-same image.
+`${XDG_STATE_HOME:-$HOME/.local/state}/dev-vm-qemu/devVM.qcow2` unless
+`NIX_DISK_IMAGE` is set explicitly. Existing disks in the former
+`dev-container-qemu` directory are reused automatically. Do not start two
+instances against the same image.
 
 ## Build and Start
 
@@ -18,7 +19,7 @@ nix build --no-link --no-write-lock-file \
 # Creates the singleton qcow2 image on first use and reuses it afterwards.
 # SSH is exposed only on the host loopback interface.
 QEMU_NET_OPTS="hostfwd=tcp:127.0.0.1:2222-:22" \
-  nix run --no-write-lock-file "path:$PWD#devContainerQemu"
+  nix run --no-write-lock-file "path:$PWD#devVMQemu"
 ```
 
 Stop QEMU cleanly before copying or backing up the qcow2 image. Removing that

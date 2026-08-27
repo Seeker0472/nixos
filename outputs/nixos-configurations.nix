@@ -3,17 +3,13 @@ let
   lib = inputs.nixpkgs.lib;
   miLaptop = import ../hosts/miLaptop/meta.nix;
   devVM = import ../hosts/devVM/meta.nix;
-  gringotts = import ../hosts/GringottsVault713/meta.nix;
   kingsCross = import ../hosts/KingsCross/meta.nix;
 
   mkNixos =
     {
       system,
       modules,
-      baseModules ? [
-        ./common
-        ../modules
-      ],
+      baseModules,
     }:
     lib.nixosSystem {
       inherit system;
@@ -21,18 +17,24 @@ let
       modules = baseModules ++ modules;
     };
 
-  mkProxmoxLXC =
-    {
-      system,
-      modules,
-    }:
-    (mkNixos {
-      inherit system;
-      modules = modules ++ [ "${inputs.nixpkgs}/nixos/modules/virtualisation/proxmox-lxc.nix" ];
-    }).config.system.build.image;
+  miLaptopConfiguration = mkNixos {
+    inherit (miLaptop) system;
+    baseModules = [
+      ./common/nixpkgs-settings.nix
+      ../modules/bundles/desktop.nix
+    ];
+    modules = [
+      ../hosts/miLaptop
+      ../users/seeker
+    ];
+  };
 
   devVMConfiguration = mkNixos {
-    system = devVM.system;
+    inherit (devVM) system;
+    baseModules = [
+      ./common/nixpkgs-settings.nix
+      ../modules/bundles/development.nix
+    ];
     modules = [
       ../hosts/devVM
       ../users/seeker/headless.nix
@@ -44,14 +46,7 @@ let
     baseModules = [
       ./common/nixpkgs-settings.nix
       inputs.nixos-wsl.nixosModules.default
-      inputs.home-manager.nixosModules.home-manager
-      inputs.sops-nix.nixosModules.sops
-      ../users/home-manager.nix
-      ../modules/profiles/secrets/sops.nix
-      ../modules/profiles/secrets/nix_githubtoken.nix
-      ../modules/profiles/system/core/common.nix
-      ../modules/profiles/system/core/openssh.nix
-      ../modules/profiles/system/dev/default.nix
+      ../modules/bundles/wsl.nix
     ];
     modules = [
       ../hosts/nixos-wsl
@@ -60,28 +55,19 @@ let
   };
 
   kingsCrossConfiguration = mkNixos {
-    system = kingsCross.system;
+    inherit (kingsCross) system;
     baseModules = [
       ./common/nixpkgs-settings.nix
-      inputs.disko.nixosModules.disko
-      inputs.sops-nix.nixosModules.sops
-      ../modules/profiles/system/storage/single-disk.nix
+      ../modules/bundles/server.nix
     ];
     modules = [ ../hosts/KingsCross ];
   };
 
-  devContainerQemu = devVMConfiguration.config.system.build.vmWithBootLoader;
+  devVMQemu = devVMConfiguration.config.system.build.vmWithBootLoader;
 in
 {
   flake.nixosConfigurations = {
-    miLaptop = mkNixos {
-      system = miLaptop.system;
-      modules = [
-        ../hosts/miLaptop
-        ../users/seeker
-      ];
-    };
-
+    miLaptop = miLaptopConfiguration;
     devVM = devVMConfiguration;
     nixos-wsl = wslConfiguration;
     "King'sCross" = kingsCrossConfiguration;
@@ -94,31 +80,26 @@ in
       ...
     }:
     let
-      runDevContainerQemu = pkgs.writeShellScript "run-dev-container-qemu" ''
-        state_dir="''${XDG_STATE_HOME:-$HOME/.local/state}/dev-container-qemu"
+      runDevVmQemu = pkgs.writeShellScript "run-dev-vm-qemu" ''
+        state_root="''${XDG_STATE_HOME:-$HOME/.local/state}"
+        state_dir="$state_root/dev-vm-qemu"
+        legacy_state_dir="$state_root/dev-container-qemu"
+        if [ ! -e "$state_dir/devVM.qcow2" ] && [ -e "$legacy_state_dir/devVM.qcow2" ]; then
+          state_dir="$legacy_state_dir"
+        fi
         ${pkgs.coreutils}/bin/mkdir -p "$state_dir"
         export NIX_DISK_IMAGE="''${NIX_DISK_IMAGE:-$state_dir/devVM.qcow2}"
-        exec ${devContainerQemu}/bin/run-${devVM.hostName}-vm "$@"
+        exec ${devVMQemu}/bin/run-${devVM.hostName}-vm "$@"
       '';
     in
     {
-      packages =
-        lib.optionalAttrs (system == gringotts.system) {
-          GringottsVault713 = mkProxmoxLXC {
-            inherit system;
-            modules = [
-              ../hosts/GringottsVault713
-              ../users/hagrid
-            ];
-          };
-        }
-        // lib.optionalAttrs (system == devVM.system) {
-          inherit devContainerQemu;
-        };
+      packages = lib.optionalAttrs (system == devVM.system) {
+        inherit devVMQemu;
+      };
       apps = lib.optionalAttrs (system == devVM.system) {
-        devContainerQemu = {
+        devVMQemu = {
           type = "app";
-          program = "${runDevContainerQemu}";
+          program = "${runDevVmQemu}";
           meta.description = "Build and start the development NixOS VM with QEMU";
         };
       };

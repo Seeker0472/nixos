@@ -1,19 +1,14 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 {
   options.machine.secrets = {
     deploy = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = "Enable secret deployment via sops-nix";
     };
     ageKeyPath = lib.mkOption {
       type = lib.types.path;
-      default = "/home/${config.machine.mainUser}/age/keys";
+      default = "/home/${config.machine.mainUser}/.config/sops/age/keys.txt";
       description = "Path to the age key file";
     };
   };

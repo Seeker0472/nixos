@@ -2,13 +2,15 @@
   config,
   lib,
   pkgs,
-  modulesPath,
   ...
 }:
 {
-  # TODO: manage by nix and persist it
-  programs.gnupg.agent = {
-    enable = lib.mkDefault true;
-    pinentryPackage = pkgs.pinentry-qt;
+  options.machine.programs.gpg.enable = lib.mkEnableOption "GnuPG agent";
+
+  config = lib.mkIf config.machine.programs.gpg.enable {
+    programs.gnupg.agent = {
+      enable = true;
+      pinentryPackage = pkgs.pinentry-qt;
+    };
   };
 }

@@ -4,17 +4,15 @@
   stateVersion = "24.05";
 
   machine = {
-    type = "others";
-    mainUser = "seeker";
-
     users = {
       seeker.enable = true;
-      hagrid.enable = false;
     };
 
     programs.nixvim.development.enable = true;
 
     secrets = {
+      deploy = true;
+      nixConfig.enable = true;
       ageKeyPath = "/home/seeker/.config/sops/age/keys.txt";
       webdav.enable = true;
     };

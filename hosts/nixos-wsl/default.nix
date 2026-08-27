@@ -19,7 +19,11 @@ in
   };
 
   machine = {
-    secrets.ageKeyPath = "/home/seeker/.config/sops/age/keys.txt";
+    secrets = {
+      deploy = true;
+      nixConfig.enable = true;
+      ageKeyPath = "/home/seeker/.config/sops/age/keys.txt";
+    };
     services.openssh = {
       enable = true;
       passwordAuthentication = false;

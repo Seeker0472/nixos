@@ -1,22 +1,22 @@
+{ lib, pkgs, ... }:
 {
-  config,
-  lib,
-  pkgs,
-  modulesPath,
-  ...
-}:
-{
-  nix.settings = {
-    substituters = [
-      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
-      "https://mirrors.ustc.edu.cn/nix-channels/store"
-    ];
-    auto-optimise-store = true;
-  };
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
+  nix = {
+    settings = {
+      substituters = [
+        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+        "https://mirrors.ustc.edu.cn/nix-channels/store"
+      ];
+      auto-optimise-store = true;
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
   };
   # Select internationalisation properties.
   i18n.defaultLocale = "en_HK.UTF-8";
@@ -26,8 +26,7 @@
   # A better way is to let windows use UTC time
   # time.hardwareClockInLocalTime = true;
 
-  # time zone.
-  time.timeZone = "Asia/Hong_Kong";
+  time.timeZone = lib.mkDefault "Asia/Hong_Kong";
 
   environment.variables.EDITOR = lib.mkOverride 950 "vim";
 
@@ -41,8 +40,4 @@
     rclone
   ];
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
 }

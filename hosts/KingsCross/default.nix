@@ -6,9 +6,8 @@
 }:
 let
   host = import ./meta.nix;
-  adminSshKeys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJP3Gwb41Q44iCJpzrUIyNdD38rB2fgedJat1nNfPqZ2 seeker@KingsCross-sops"
-  ];
+  sshKeys = import ../../users/seeker/ssh-public-keys.nix;
+  adminSshKeys = [ sshKeys.admin ];
 in
 {
   imports = [
@@ -17,11 +16,12 @@ in
     ../../modules/profiles/programs/nixvim/default.nix
   ];
 
+  machine.programs.nixvim.enable = true;
+
   networking = {
-    hostName = host.hostName;
+    inherit (host) hostName;
     useDHCP = lib.mkDefault true;
     dhcpcd.extraConfig = "noarp";
-    firewall.enable = true;
   };
   system.stateVersion = host.stateVersion;
 
@@ -83,10 +83,8 @@ in
   environment.defaultPackages = lib.mkForce [ ];
   environment.systemPackages = with pkgs; [
     btop
-    curl
     fd
     file
-    git
     htop
     jq
     less
@@ -97,7 +95,6 @@ in
     tmux
     tree
     unzip
-    wget
     zip
   ];
   documentation.enable = false;
@@ -105,18 +102,8 @@ in
 
   nix = {
     channel.enable = false;
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
     settings = {
-      auto-optimise-store = true;
       connect-timeout = 10;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
       fallback = true;
       substituters = lib.mkForce [
         "https://mirrors.ustc.edu.cn/nix-channels/store"

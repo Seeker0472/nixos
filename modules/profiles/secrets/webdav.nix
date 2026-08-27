@@ -7,21 +7,20 @@
 let
   cfg = config.machine.secrets.webdav;
 in
-with lib;
 {
   options.machine.secrets.webdav = {
     enable = lib.mkOption {
-      type = types.bool;
-      default = true;
+      type = lib.types.bool;
+      default = false;
       description = "Enable WebDAV(123PAN)";
     };
     extraArgs = lib.mkOption {
-      type = types.listOf types.str;
+      type = lib.types.listOf lib.types.str;
       default = [ ];
       description = "Extra arguments for rclone mount";
     };
     mountPoint = lib.mkOption {
-      type = types.path;
+      type = lib.types.path;
       default = "/mnt/123PAN";
       description = "Mount point for WebDAV";
     };
@@ -33,6 +32,7 @@ with lib;
       owner = "root";
       group = "root";
       mode = "600";
+      restartUnits = [ "rclone-webdav.service" ];
       # this is the path where the secret will be mounted
       path = "/etc/rclone/rclone.conf";
     };
@@ -40,7 +40,11 @@ with lib;
     systemd.services.rclone-webdav = {
       description = "Rclone Mount for WebDAV ( 123PAN )";
       wantedBy = [ "multi-user.target" ];
-      after = [ "network-online.target" ];
+      after = [
+        "network-online.target"
+        "sops-nix.service"
+      ];
+      requires = [ "sops-nix.service" ];
       wants = [ "network-online.target" ];
 
       serviceConfig = {

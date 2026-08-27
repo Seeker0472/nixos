@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -206,14 +205,10 @@ in
       allowedUDPPorts = [ 7891 ];
     };
 
-    sops.secrets.airport_mojie_url = {
-      sopsFile = ./mihomo.secrets.yaml;
-    };
-    sops.secrets.airport_ikuuu_url = {
-      sopsFile = ./mihomo.secrets.yaml;
-    };
-    sops.secrets.mihomo_secret = {
-      sopsFile = ./mihomo.secrets.yaml;
+    sops.secrets = {
+      airport_mojie_url.sopsFile = ./mihomo.secrets.yaml;
+      airport_ikuuu_url.sopsFile = ./mihomo.secrets.yaml;
+      mihomo_secret.sopsFile = ./mihomo.secrets.yaml;
     };
 
     sops.templates."mihomo-config.yaml" = {

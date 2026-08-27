@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 {
@@ -12,9 +11,12 @@
   ####################################################
 
   # 用户名与用户目录
-  home.username = lib.mkDefault "seeker";
-  home.homeDirectory = lib.mkDefault "/home/${config.home.username}";
-  home.sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
+  home = {
+    username = lib.mkDefault "seeker";
+    homeDirectory = lib.mkDefault "/home/${config.home.username}";
+    sessionPath = [ "${config.home.homeDirectory}/.local/bin" ];
+    stateVersion = "24.05";
+  };
 
   imports = [
     ../../modules/home/base.nix
@@ -23,16 +25,6 @@
     ./config.nix
     ./ssh.nix
   ];
-
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
-  home.stateVersion = "24.05";
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

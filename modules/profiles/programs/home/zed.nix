@@ -1,12 +1,16 @@
 {
   lib,
-  config,
+  osConfig,
   pkgs,
   ...
 }:
+let
+  zedEnabled = lib.attrByPath [ "machine" "programs" "zed" "enable" ] false osConfig;
+in
 {
-  config = lib.mkIf config.programs.zed-editor.enable {
+  config = lib.mkIf zedEnabled {
     programs.zed-editor = {
+      enable = true;
       extensions = [
         "one-dark-pro"
         "nix"

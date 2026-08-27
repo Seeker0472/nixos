@@ -11,50 +11,16 @@ let
   );
 in
 {
-  home.username = "seeker4721";
-  home.homeDirectory = "/home/seeker4721";
+  imports = [ ../../users/seeker/ssh-client-secrets.nix ];
+
+  home = {
+    username = "seeker4721";
+    homeDirectory = "/home/seeker4721";
+  };
 
   machine.programs.nixvim.development.enable = true;
 
-  programs.ssh.settings."*" = {
-    IdentityFile = [ config.sops.secrets."ssh-external-private".path ];
-    IdentitiesOnly = true;
-  };
-
-  programs.ssh.settings."github.com" = {
-    IdentityFile = [ config.sops.secrets."ssh-github-private".path ];
-    IdentitiesOnly = true;
-  };
-
-  sops = {
-    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    secrets = {
-      "ssh-external-private" = {
-        sopsFile = sshKeys.files.external;
-        key = "private_key";
-        path = "${config.home.homeDirectory}/.ssh/id_external";
-        mode = "0600";
-      };
-      "ssh-external-public" = {
-        sopsFile = sshKeys.files.external;
-        key = "public_key_unencrypted";
-        path = "${config.home.homeDirectory}/.ssh/id_external.pub";
-        mode = "0644";
-      };
-      "ssh-github-private" = {
-        sopsFile = sshKeys.files.github;
-        key = "private_key";
-        path = "${config.home.homeDirectory}/.ssh/id_github";
-        mode = "0600";
-      };
-      "ssh-github-public" = {
-        sopsFile = sshKeys.files.github;
-        key = "public_key_unencrypted";
-        path = "${config.home.homeDirectory}/.ssh/id_github.pub";
-        mode = "0644";
-      };
-    };
-  };
+  sops.age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
 
   # OpenSSH StrictModes rejects symlinks into this cluster's shared Nix store,
   # whose paths are not owned by seeker4721 or root. Install a user-owned file.
