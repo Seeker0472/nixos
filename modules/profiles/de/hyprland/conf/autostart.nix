@@ -31,8 +31,7 @@ in
         # TODO: fix these two services
         "systemctl --user restart xdg-desktop-portal.service"
         "systemctl --user restart xdg-desktop-portal-hyprland.service"
-
-        "fcitx5 --replace -d" # if run binary directly,pinyin cannot be activated
+        # Fcitx5 starts through its XDG autostart entry.
       ]
       ++ lib.lists.optional wpaperdEnabled "${pkgs.wpaperd}/bin/wpaperd"
       ++ [

@@ -7,9 +7,6 @@
 let
   deCfg = lib.attrByPath [ "machine" "de" ] { } osConfig;
   niriEnabled = deCfg.niri.enable or false;
-  fcitx5Enabled =
-    (lib.attrByPath [ "i18n" "inputMethod" "enable" ] false osConfig)
-    && (lib.attrByPath [ "i18n" "inputMethod" "type" ] null osConfig) == "fcitx5";
 
   focusOrSpawn = pkgs.writeShellApplication {
     name = "niri-focus-or-spawn";
@@ -137,9 +134,6 @@ let
     '';
     wpaperdStartup = lib.optionalString (deCfg.wpaperd.enable or false) ''
       spawn-at-startup "${lib.getExe pkgs.wpaperd}"
-    '';
-    fcitx5Startup = lib.optionalString fcitx5Enabled ''
-      spawn-at-startup "fcitx5" "--replace" "-d"
     '';
   };
 in

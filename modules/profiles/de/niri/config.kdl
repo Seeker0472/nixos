@@ -120,7 +120,7 @@ prefer-no-csd
 @quickshellStartup@
 @waybarStartup@
 @wpaperdStartup@
-@fcitx5Startup@
+// Fcitx5 starts through its XDG autostart entry.
 spawn-at-startup "@wlPaste@" "--type" "text" "--watch" "@cliphist@" "store"
 spawn-at-startup "@wlPaste@" "--type" "image" "--watch" "@cliphist@" "store"
 

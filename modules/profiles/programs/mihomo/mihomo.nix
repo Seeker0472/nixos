@@ -9,6 +9,7 @@ with lib;
 let
   cfg = config.machine.programs.mihomo;
   deploySecrets = config.machine.secrets.deploy;
+  tunInterface = "Meta";
 
   inboundConfig =
     if cfg.share.enable then
@@ -115,6 +116,7 @@ let
   tunConfig = ''
     tun:
       enable: true
+      device: ${tunInterface}
       stack: system
       dns-hijack:
         - any:53
@@ -203,13 +205,18 @@ in
       noProxy = "127.0.0.1,localhost,::1,.lan,.local";
     };
 
-    networking.firewall = mkIf cfg.share.enable {
-      allowedTCPPorts = [
-        7890
-        7891
-      ];
-      allowedUDPPorts = [ 7891 ];
-    };
+    networking.firewall = mkMerge [
+      (mkIf cfg.tun.enable {
+        trustedInterfaces = [ tunInterface ];
+      })
+      (mkIf cfg.share.enable {
+        allowedTCPPorts = [
+          7890
+          7891
+        ];
+        allowedUDPPorts = [ 7891 ];
+      })
+    ];
 
     sops.secrets = {
       airport_mojie_url.sopsFile = ./mihomo.secrets.yaml;
