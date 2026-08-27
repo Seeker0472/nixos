@@ -5,6 +5,8 @@ keys:
   - &gpu01_age age10fuvaphy9qmn8csm6vz5v2mzec8pjasz78ed9us7yq5y54hvv4jqjfn6qk
   - &kings_cross_age age14j7f9xqvauh32wknv9tug4wgaxjp5wyexxk0fd96ju2d9h4f0uxspnalww
   - &diagonal_alley_age age17wfs54f8c6a3f02gv70l0yz5p6q80cjuvpx46c89e3tz6v5dtauq9jwsfu
+  - &mi15_age age10mpqu7qyk22ny6ayy7yn36qq0y70tmr2475rzn6qxycx3jlgqyzs8plm8a
+  - &mi_pad_age age1mz6cjamtwnqulrzazmm8aatyzx9e9f4g5xurq5yqavn58p5prghqn2xhkk
 
 creation_rules:
   - path_regex: hosts/KingsCross/.*secrets\.yaml$
@@ -22,6 +24,8 @@ creation_rules:
           - *admin_seeker_age
           - *recovery_age
           - *diagonal_alley_age
+          - *mi15_age
+          - *mi_pad_age
 
   - path_regex: users/seeker/ssh/github\.secrets\.json$
     unencrypted_suffix: _unencrypted
@@ -32,6 +36,8 @@ creation_rules:
           - *dev_vm_age
           - *gpu01_age
           - *diagonal_alley_age
+          - *mi15_age
+          - *mi_pad_age
 
   - path_regex: users/seeker/ssh/external\.secrets\.json$
     unencrypted_suffix: _unencrypted
@@ -42,6 +48,8 @@ creation_rules:
           - *dev_vm_age
           - *gpu01_age
           - *diagonal_alley_age
+          - *mi15_age
+          - *mi_pad_age
 
   - path_regex: users/seeker/ssh/devVM\.secrets\.json$
     unencrypted_suffix: _unencrypted
@@ -58,6 +66,15 @@ creation_rules:
           - *admin_seeker_age
           - *recovery_age
           - *diagonal_alley_age
+
+  - path_regex: users/seeker/ssh/miLaptop\.secrets\.json$
+    unencrypted_suffix: _unencrypted
+    key_groups:
+      - age:
+          - *admin_seeker_age
+          - *recovery_age
+          - *mi15_age
+          - *mi_pad_age
 
   - path_regex: modules/profiles/secrets/sys\.secrets\.yaml$
     unencrypted_suffix: _unencrypted
@@ -85,6 +102,8 @@ creation_rules:
           - *dev_vm_age
           - *gpu01_age
           - *diagonal_alley_age
+          - *mi15_age
+          - *mi_pad_age
 
   - path_regex: users/seeker/taskwarrior\.secrets\.yaml$
     unencrypted_suffix: _unencrypted

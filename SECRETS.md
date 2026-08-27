@@ -10,6 +10,10 @@ own SSH client key and the shared secrets consumed by that host. `DiagonAlley`
 also receives the administrator SSH key so it retains VPS maintenance access.
 `gpu01` has a separate runtime identity, scoped to the shared external and
 GitHub keys plus the shared Codex authentication file.
+The `mi15` and `miPad` nix-on-droid environments each have a dedicated runtime
+identity. They can decrypt the same SSH and Codex secrets as `miLaptop`, but
+their age private keys are kept separately so either Android device can be
+revoked without changing the other one.
 The bootstrap identities live under the git-ignored `.secrets/age/` directory.
 The SOPS identity itself must be installed out of band because it cannot decrypt
 itself.
@@ -22,7 +26,7 @@ itself.
 - `users/seeker/ssh/github.secrets.json` contains the single GitHub key shared by
   the four managed development clients.
 - `users/seeker/ssh/admin.secrets.json` retains the existing administrator key and is
-  deployed only to `DiagonAlley`, `miLaptop`, and `nixos-wsl`.
+  deployed to `DiagonAlley`, `miLaptop`, `nixos-wsl`, `mi15`, and `miPad`.
 - `gpu01` receives the four development public keys in `authorized_keys` and
   the shared external and GitHub private keys, but no mesh or administrator
   private key.
@@ -36,8 +40,9 @@ private key. SOPS still remains the single source for each key pair.
 
 `users/seeker/codex-auth.secrets.json` contains the complete Codex
 `auth.json`. Home Manager deploys it through sops-nix with mode `0600` on
-`miLaptop`, `DiagonAlley`, `devVM`, `nixos-wsl`, and `gpu01`. The keyless
-development container deliberately does not import this secret module.
+`miLaptop`, `DiagonAlley`, `devVM`, `nixos-wsl`, `gpu01`, `mi15`, and `miPad`.
+The keyless development container deliberately does not import this secret
+module.
 
 ## Taskwarrior synchronization
 
@@ -66,6 +71,22 @@ repository.
 Install the dedicated DiagonAlley identity from
 `.secrets/age/DiagonAlley.txt` out of band at
 `/persist/home/seeker/.config/sops/age/keys.txt` before its first activation.
+
+For nix-on-droid, install `.secrets/age/mi15.txt` at
+`~/.config/sops/age/keys.txt` on MI15 and `.secrets/age/miPad.txt` at the same
+path on MiPad before the first `nix-on-droid switch`. The flake outputs are
+`nixOnDroidConfigurations.mi15` and `nixOnDroidConfigurations.miPad`, so the
+device commands are:
+
+```bash
+nix-on-droid switch --flake path:/path/to/nixos-config#mi15
+nix-on-droid switch --flake path:/path/to/nixos-config#miPad
+```
+
+The nix-on-droid environment is configured with the `seeker` username; the
+underlying Android app UID remains managed by Android. It does not provide a
+system OpenSSH daemon, so these configurations manage outbound SSH client
+access only.
 
 Before the first activation on an existing `miLaptop`, copy the old
 `/persist/home/seeker/age/keys` identity to
