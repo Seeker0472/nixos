@@ -12,5 +12,17 @@ import ../lib/mk-host-module.nix {
         '';
       }
     )
+    (
+      { pkgs, ... }:
+      {
+        services.smartd = {
+          enable = true;
+          autodetect = true;
+          notifications.systembus-notify.enable = true;
+        };
+
+        environment.systemPackages = [ pkgs.smartmontools ];
+      }
+    )
   ];
 }
