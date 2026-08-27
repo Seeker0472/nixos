@@ -51,7 +51,8 @@ activating a configuration that consumes secrets. Install
 `.secrets/age/recovery.txt` offline after confirming that it decrypts the
 repository.
 
-Install the dedicated DiagonAlley identity out of band at
+Install the dedicated DiagonAlley identity from
+`.secrets/age/DiagonAlley.txt` out of band at
 `/persist/home/seeker/.config/sops/age/keys.txt` before its first activation.
 
 Before the first activation on an existing `miLaptop`, copy the old

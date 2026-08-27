@@ -7,9 +7,7 @@ in
 {
   config = {
     machine.btrfs.impermanence = {
-      # PLACEHOLDER: replace this with the exact target NVMe by-id path from
-      # the NixOS Live ISO before running any Disko destroy/format operation.
-      device = "/dev/disk/by-id/REPLACE_WITH_DIAGONALLEY_TARGET_NVME";
+      device = "/dev/disk/by-id/nvme-SAMSUNG_MZVL21T0HCLR-00B00_S676NU0W123827";
       luksName = "crypted";
       retentionDays = 30;
       allowDiscards = true;

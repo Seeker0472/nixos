@@ -8,15 +8,16 @@
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  # WSL/Windows inspection: Gigabyte B650M AORUS ELITE AX ICE, Ryzen 9 9950X,
-  # RTX 5070, Intel AX210 Wi-Fi, Realtek 2.5GbE, and three Samsung NVMe disks.
-  # A Live ISO should regenerate this file before installation.
+  # Verified from the NixOS Live ISO: Gigabyte B650M AORUS ELITE AX ICE,
+  # Ryzen 9 9950X, RTX 5070, Intel AX210 Wi-Fi, Realtek 2.5GbE, two internal
+  # Samsung NVMe disks, and one Samsung NVMe in a USB enclosure.
   boot.initrd.availableKernelModules = [
     "nvme"
     "xhci_pci"
     "ahci"
-    "usbhid"
     "usb_storage"
+    "uas"
+    "usbhid"
     "sd_mod"
   ];
   boot.kernelModules = [ "kvm-amd" ];
@@ -28,8 +29,7 @@
   hardware.enableAllFirmware = true;
 
   # Root, /nix, /persist, swap and /boot are declared by disk.nix through the
-  # shared Btrfs impermanence/Disko module. The target disk there is a
-  # deliberate placeholder until the Live ISO exposes stable by-id paths.
+  # shared Btrfs impermanence/Disko module.
 
   hardware.graphics.enable = true;
   hardware.nvidia = {
@@ -50,6 +50,41 @@
 
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+  hardware.i2c.enable = true;
+
+  services.printing.enable = true;
+  services.keyd = {
+    enable = true;
+    keyboards.default = {
+      ids = [ "*" ];
+      settings.main = {
+        capslock = "esc";
+        esc = "esc";
+      };
+    };
+  };
+
+  nixpkgs.config.joypixels.acceptLicense = true;
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      wqy_microhei
+      sarasa-gothic
+      maple-mono.NF-CN
+      joypixels
+    ];
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        sansSerif = [ "Noto Sans CJK SC" ];
+        serif = [ "Noto Serif CJK SC" ];
+        monospace = [ "Maple Mono NF CN" ];
+        emoji = [ "JoyPixels" ];
+      };
+    };
+  };
 
   i18n.inputMethod = {
     enable = true;

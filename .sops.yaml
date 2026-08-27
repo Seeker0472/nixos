@@ -4,7 +4,7 @@ keys:
   - &dev_vm_age age1jj0p70p8jtg2vmfmnyrq0fxpwepmqk0dqlnwr0vnucnv08y9fsfq7a5yjr
   - &gpu01_age age10fuvaphy9qmn8csm6vz5v2mzec8pjasz78ed9us7yq5y54hvv4jqjfn6qk
   - &kings_cross_age age14j7f9xqvauh32wknv9tug4wgaxjp5wyexxk0fd96ju2d9h4f0uxspnalww
-  - &diagonal_alley_age age1q90fneddr9vx43h0lsdrrqc7puw0nxekxe9mlxce9uwpmm3uzeas6fqfhp
+  - &diagonal_alley_age age17wfs54f8c6a3f02gv70l0yz5p6q80cjuvpx46c89e3tz6v5dtauq9jwsfu
 
 creation_rules:
   - path_regex: hosts/KingsCross/.*secrets\.yaml$
