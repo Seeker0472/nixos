@@ -21,7 +21,7 @@ _: {
         User = "git";
       };
       ecos = {
-        HostName = "10.19.20.2";
+        HostName = "10.19.20.1";
         User = "seeker4721";
       };
     };

@@ -8,6 +8,8 @@ let
 
   # TODO: Remove this override after the it87 update is merged into Nixpkgs
   # and flake.lock points to a Nixpkgs revision containing that update.
+  # TODO: Add hardware.fancontrol for noise control after mapping and safely
+  # testing the connected SYS_FAN channels; keep CPU_FAN/CPU_OPT on BIOS control.
   it87 = config.boot.kernelPackages.it87.overrideAttrs {
     inherit version;
     name = "it87-${version}-${config.boot.kernelPackages.kernel.version}";
