@@ -76,13 +76,61 @@ blankwindow,
     border: none;
     border-radius: 8px;
     color: @text;
-    padding: 6px;
+    padding: 3px;
     transition: background 220ms ease-in-out, color 220ms ease-in-out;
 }
 
-.notification-default-action:hover,
-.notification-action:hover {
+.notification-default-action button,
+.notification-action button {
     background: @surface;
+    background-color: @surface;
+    background-image: none;
+    border: 1px solid @surface-strong;
+    border-radius: 8px;
+    box-shadow: none;
+    color: @text;
+    font-size: 18px;
+    padding: 6px 10px;
+    text-shadow: none;
+    transition: background 220ms ease-in-out, background-color 220ms ease-in-out,
+        border-color 220ms ease-in-out, color 220ms ease-in-out;
+}
+
+.notification-default-action button label,
+.notification-action button label {
+    color: @text;
+}
+
+.notification-default-action:hover button,
+.notification-action:hover button,
+.notification-default-action button:hover,
+.notification-action button:hover {
+    background: @surface;
+    background-color: @surface-strong;
+    border-color: @accent;
+    color: @text;
+}
+
+.notification-default-action button:hover label,
+.notification-action button:hover label {
+    color: @text;
+}
+
+.notification-default-action button:active,
+.notification-action button:active,
+.notification-default-action button:checked,
+.notification-action button:checked {
+    background: @accent;
+    background-color: @accent;
+    border-color: @accent;
+    color: @background;
+}
+
+.notification-default-action button:active label,
+.notification-action button:active label,
+.notification-default-action button:checked label,
+.notification-action button:checked label {
+    color: @background;
 }
 
 .close-button {
