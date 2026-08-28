@@ -7,6 +7,7 @@ keys:
   - &diagonal_alley_age age17wfs54f8c6a3f02gv70l0yz5p6q80cjuvpx46c89e3tz6v5dtauq9jwsfu
   - &mi15_age age10mpqu7qyk22ny6ayy7yn36qq0y70tmr2475rzn6qxycx3jlgqyzs8plm8a
   - &mi_pad_age age1mz6cjamtwnqulrzazmm8aatyzx9e9f4g5xurq5yqavn58p5prghqn2xhkk
+  - &burrow_age age1p729spl3nrd6lk5h7czchwlvys4m2vzg35rc3me56kjytawh2v0q62yj7f
 
 creation_rules:
   - path_regex: hosts/KingsCross/.*secrets\.yaml$
@@ -26,6 +27,7 @@ creation_rules:
           - *diagonal_alley_age
           - *mi15_age
           - *mi_pad_age
+          - *burrow_age
 
   - path_regex: users/seeker/ssh/github\.secrets\.json$
     unencrypted_suffix: _unencrypted
@@ -92,6 +94,7 @@ creation_rules:
           - *admin_seeker_age
           - *recovery_age
           - *diagonal_alley_age
+          - *burrow_age
 
   - path_regex: users/seeker/codex-auth\.secrets\.json$
     unencrypted_suffix: _unencrypted

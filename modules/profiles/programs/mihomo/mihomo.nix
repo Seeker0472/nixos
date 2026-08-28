@@ -13,20 +13,16 @@ let
 
   inboundConfig =
     if cfg.share.enable then
-      ''
-        port: 7890
-        socks-port: 7891
-        allow-lan: true
-        bind-address: "*"
-        lan-allowed-ips:
-          - 127.0.0.0/8
-          - ::1/128
-          - 10.0.0.0/8
-          - 172.16.0.0/12
-          - 192.168.0.0/16
-          - 100.64.0.0/10
-          - fc00::/7
-      ''
+      concatStringsSep "\n" (
+        [
+          "port: 7890"
+          "socks-port: 7891"
+          "allow-lan: true"
+          ''bind-address: "*"''
+          "lan-allowed-ips:"
+        ]
+        ++ map (cidr: "  - ${cidr}") cfg.share.allowedCIDRs
+      )
     else
       ''
         port: 7890
@@ -194,7 +190,27 @@ in
   options.machine.programs = {
     mihomo = {
       enable = lib.mkEnableOption "mihomo";
-      share.enable = lib.mkEnableOption "Mihomo proxy sharing";
+      share = {
+        enable = lib.mkEnableOption "Mihomo proxy sharing";
+        openFirewall = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Whether to open Mihomo proxy ports on every interface.";
+        };
+        allowedCIDRs = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [
+            "127.0.0.0/8"
+            "::1/128"
+            "10.0.0.0/8"
+            "172.16.0.0/12"
+            "192.168.0.0/16"
+            "100.64.0.0/10"
+            "fc00::/7"
+          ];
+          description = "Source CIDRs accepted by Mihomo's LAN listeners.";
+        };
+      };
       tun.enable = lib.mkEnableOption "mihomo tun";
       web.enable = lib.mkEnableOption "Mihomo web dashboard";
     };
@@ -209,7 +225,7 @@ in
       (mkIf cfg.tun.enable {
         trustedInterfaces = [ tunInterface ];
       })
-      (mkIf cfg.share.enable {
+      (mkIf (cfg.share.enable && cfg.share.openFirewall) {
         allowedTCPPorts = [
           7890
           7891

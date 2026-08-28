@@ -62,6 +62,11 @@ in
       default = "nixos";
       description = "Filesystem label for the ext4 root partition.";
     };
+    efiCanTouchVariables = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Whether the UEFI boot loader may create a firmware boot entry.";
+    };
     mountOptions = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [
@@ -86,10 +91,10 @@ in
           enable = true;
           devices = lib.mkIf (cfg.bootMode == "uefi") [ "nodev" ];
           efiSupport = cfg.bootMode == "uefi";
-          efiInstallAsRemovable = cfg.bootMode == "uefi";
+          efiInstallAsRemovable = cfg.bootMode == "uefi" && !cfg.efiCanTouchVariables;
         };
         boot.loader.efi = lib.mkIf (cfg.bootMode == "uefi") {
-          canTouchEfiVariables = false;
+          canTouchEfiVariables = cfg.efiCanTouchVariables;
         };
       }
 

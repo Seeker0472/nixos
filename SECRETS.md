@@ -5,9 +5,11 @@ SOPS uses two human-managed age identities:
 - `admin_seeker_age` is installed on `miLaptop` and `nixos-wsl` for daily editing.
 - `recovery_age` is kept offline and is a recipient for every encrypted file.
 
-`devVM` and `DiagonAlley` have separate runtime identities. Each can decrypt its
-own SSH client key and the shared secrets consumed by that host. `DiagonAlley`
-also receives the administrator SSH key so it retains VPS maintenance access.
+`devVM`, `DiagonAlley`, and `burrow` have separate runtime identities. `devVM`
+and `DiagonAlley` can decrypt their own SSH client key and the shared secrets
+consumed by that host. `DiagonAlley` and `burrow` also receive the administrator
+SSH key so they retain VPS maintenance access. `burrow` deliberately does not
+receive the shared external, GitHub, or Codex credentials.
 `gpu01` has a separate runtime identity, scoped to the shared external and
 GitHub keys plus the shared Codex authentication file.
 The `mi15` and `miPad` nix-on-droid environments each have a dedicated runtime
@@ -26,7 +28,8 @@ itself.
 - `users/seeker/ssh/github.secrets.json` contains the single GitHub key shared by
   the four managed development clients.
 - `users/seeker/ssh/admin.secrets.json` retains the existing administrator key and is
-  deployed to `DiagonAlley`, `miLaptop`, `nixos-wsl`, `mi15`, and `miPad`.
+  deployed to `DiagonAlley`, `burrow`, `miLaptop`, `nixos-wsl`, `mi15`, and
+  `miPad`.
 - `gpu01` receives the four development public keys in `authorized_keys` and
   the shared external and GitHub private keys, but no mesh or administrator
   private key.
@@ -87,6 +90,12 @@ The nix-on-droid environment is configured with the `seeker` username; the
 underlying Android app UID remains managed by Android. It does not provide a
 system OpenSSH daemon, so these configurations manage outbound SSH client
 access only.
+
+Install the dedicated burrow identity from `.secrets/age/burrow.txt` out of
+band at `/home/seeker/.config/sops/age/keys.txt` before its first activation.
+It decrypts only the shared Mihomo configuration and the administrator SSH key
+selected for VPS maintenance. Wi-Fi credentials remain in NetworkManager's
+local persistent connection profile and are not managed by SOPS.
 
 Before the first activation on an existing `miLaptop`, copy the old
 `/persist/home/seeker/age/keys` identity to

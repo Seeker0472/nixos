@@ -5,6 +5,7 @@ let
   diagonalAlley = import ../hosts/DiagonAlley/meta.nix;
   devVM = import ../hosts/devVM/meta.nix;
   kingsCross = import ../hosts/KingsCross/meta.nix;
+  burrow = import ../hosts/burrow/meta.nix;
 
   mkNixos =
     {
@@ -83,6 +84,17 @@ in
     devVM = devVMConfiguration;
     nixos-wsl = wslConfiguration;
     "King'sCross" = kingsCrossConfiguration;
+    burrow = mkNixos {
+      inherit (burrow) system;
+      baseModules = [
+        ./common/nixpkgs-settings.nix
+        ../modules/bundles/gateway.nix
+      ];
+      modules = [
+        ../hosts/burrow
+        ../users/seeker/burrow.nix
+      ];
+    };
   };
 
   perSystem =
