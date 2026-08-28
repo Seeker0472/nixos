@@ -6,10 +6,10 @@ activate it from the flake repository; routine updates do not use
 
 ## Test and Deploy
 
-Run these commands from `/home/seeker/flakes`:
+Run these commands from `/home/seeker/nixos-config`:
 
 ```bash
-cd /home/seeker/flakes
+cd /home/seeker/nixos-config
 
 export NIX_SSHOPTS="-4 -i /home/seeker/.ssh/id_admin -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=30 -o ConnectionAttempts=3 -o ServerAliveInterval=10 -o ServerAliveCountMax=6"
 FLAKE_REF="path:$PWD#King'sCross"

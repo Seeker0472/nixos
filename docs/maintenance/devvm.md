@@ -9,7 +9,7 @@ instances against the same image.
 
 ## Build and Start
 
-Run these commands from `/home/seeker/flakes`:
+Run these commands from `/home/seeker/nixos-config`:
 
 ```bash
 nix flake check --no-build --no-write-lock-file "path:$PWD"

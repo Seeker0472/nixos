@@ -3,7 +3,7 @@
 ## King'sCross
 
 The VPS configuration is `nixosConfigurations."King'sCross"` and targets
-`root@vps.seekerer.com`. Follow [the maintenance workflow](docs/kings-cross-maintenance.md)
+`root@vps.seekerer.com`. Follow [the maintenance workflow](docs/maintenance/kings-cross.md)
 for changes.
 
 Use `nixos-rebuild test` before `switch` when changing services, networking, SSH,

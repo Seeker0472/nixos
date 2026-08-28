@@ -7,9 +7,9 @@ result
 docs
 !docs/
 docs/*
-!docs/devvm-maintenance.md
-!docs/milaptop-installation.md
-!docs/burrow-installation.md
+!docs/installation.md
+!docs/maintenance/
+!docs/maintenance/**
 .humanize/auto-rlcr-cache/
 .humanize/bitlesson.md
 .humanize/.pending-session-id

@@ -103,7 +103,7 @@ Before the first activation on an existing `miLaptop`, copy the old
 `0600`. The system reads this backing path before regular local filesystems and
 user persistence mounts are available during activation.
 
-See `docs/devvm-maintenance.md` for the devVM bootstrap, update, verification,
+See `docs/maintenance/devvm.md` for the devVM bootstrap, update, verification,
 and rollback workflow.
 
 Register the value of `public_key_unencrypted` from
