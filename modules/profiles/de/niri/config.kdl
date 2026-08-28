@@ -170,9 +170,9 @@ window-rule {
     block-out-from "screencast"
 }
 
-// Keep notification pop-ups out of xdg-desktop-portal screencasts.
+// Keep notification pop-ups and the notification center out of xdg-desktop-portal screencasts.
 layer-rule {
-    match namespace=r#"^notifications$"#
+    match namespace=r#"^(notifications|swaync-notification-window|swaync-control-center)$"#
     block-out-from "screencast"
 }
 
@@ -236,8 +236,8 @@ binds {
     Mod+Shift+C repeat=false hotkey-overlay-title="Center Column" { center-column; }
     Mod+Shift+E repeat=false hotkey-overlay-title="Expand Column to Available Width" { expand-column-to-available-width; }
 
-    Mod+Left { focus-workspace-up; }
-    Mod+Right { focus-workspace-down; }
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
     MouseForward { focus-workspace-down; }
     MouseBack { focus-workspace-up; }
     Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }

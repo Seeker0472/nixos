@@ -14,7 +14,7 @@
       quickshell.enable = true;
       waybar.enable = false;
       wofi.enable = true;
-      mako.enable = true;
+      notificationDaemon = "swaync";
       wpaperd.enable = true;
     };
 

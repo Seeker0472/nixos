@@ -13,10 +13,10 @@ border-radius=12
 margin=12
 padding=12,20
 
-default-timeout=6000
+default-timeout=24000
 ignore-timeout=1
 
-font='Maple Mono NF CN' 14
+font='Maple Mono NF CN' 18
 
 max-icon-size=34
 icon-location=left
@@ -25,15 +25,15 @@ icon-location=left
 border-color=#cccccc
 [urgency=normal]
 border-color=#99c0d0
-default-timeout=6000
+default-timeout=24000
 [urgency=critical]
 border-color=#bf616a
 default-timeout=0
 [category=hitokoto]
 border-color=#d8dee9
-default-timeout=8000
+default-timeout=32000
 [category=screenshoot]
-default-timeout=5000
+default-timeout=20000
 height=800
 width=800
 max-icon-size=1000
@@ -41,5 +41,5 @@ icon-location=bottom
 on-button-left=exec makoctl dismiss -a;xdg-open /tmp/screenshot.png
 
 [desktop-entry=org.kde.kdeconnect.daemon]
-default-timeout=50000
+default-timeout=200000
 border-color=#bbfac1

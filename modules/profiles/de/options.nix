@@ -16,7 +16,14 @@ in
     quickshell.enable = lib.mkEnableOption "Quickshell, the Niri desktop shell and control center";
     waybar.enable = lib.mkEnableOption "Waybar, a highly customizable Wayland bar";
     wofi.enable = lib.mkEnableOption "wofi, a launcher and menu program for Wayland compositors";
-    mako.enable = lib.mkEnableOption "mako, a lightweight notification daemon for Wayland";
+    notificationDaemon = lib.mkOption {
+      type = lib.types.enum [
+        "mako"
+        "swaync"
+      ];
+      default = "swaync";
+      description = "Notification daemon used by the Wayland desktop";
+    };
     wpaperd.enable = lib.mkEnableOption "wpaperd, a modern wallpaper daemon for Wayland";
   };
   config = lib.mkMerge [
@@ -33,7 +40,6 @@ in
         quickshell.enable = lib.mkDefault cfg.niri.enable;
         waybar.enable = lib.mkDefault (!cfg.niri.enable);
         wofi.enable = lib.mkDefault true;
-        mako.enable = lib.mkDefault true;
         wpaperd.enable = lib.mkDefault true;
       };
       environment.systemPackages = with pkgs; [

@@ -125,7 +125,7 @@ let
       response="$(curl -fsSk "$url" || true)"
       message="$(jq -r 'if type == "object" and .hitokoto then .hitokoto + "\n-- " + (.from // "unknown") else empty end' <<< "$response" 2>/dev/null || true)"
       if [[ -n "$message" ]]; then
-        notify-send --category=hitokoto -t 3000 "$message"
+        notify-send --category=hitokoto -t 6000 "$message"
       fi
     '';
   };

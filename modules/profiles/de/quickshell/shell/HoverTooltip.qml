@@ -10,6 +10,7 @@ PopupWindow {
     property int delay: 500
     property int maxTextWidth: 340
     property bool shown: false
+    readonly property bool panelOpen: UiState.popupOpen
 
     anchor.item: root.targetItem
     anchor.edges: Edges.Bottom | Edges.Left
@@ -23,7 +24,7 @@ PopupWindow {
     // A tooltip is informational; it must not take the pointer away from its target.
     mask: Region {}
     grabFocus: false
-    visible: root.shown && root.text.length > 0 && root.targetItem !== null
+    visible: root.shown && root.text.length > 0 && root.targetItem !== null && !root.panelOpen
     implicitWidth: Math.min(root.maxTextWidth + 20, Math.max(104, naturalText.implicitWidth + 20))
     implicitHeight: Math.max(30, tooltipText.implicitHeight + 18)
 
@@ -50,6 +51,12 @@ PopupWindow {
         } else if (root.hovered && !root.shown) {
             showTimer.restart()
         }
+    }
+
+    onPanelOpenChanged: {
+        showTimer.stop()
+        root.shown = false
+        if (!root.panelOpen && root.hovered && root.text.length > 0) showTimer.restart()
     }
 
     onVisibleChanged: {

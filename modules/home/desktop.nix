@@ -12,6 +12,7 @@ let
     size = 32;
   };
   deCfg = lib.attrByPath [ "machine" "de" ] { } osConfig;
+  notificationDaemon = deCfg.notificationDaemon or "swaync";
   compositorEnabled = (deCfg.hyprland.enable or false) || (deCfg.niri.enable or false);
 in
 {
@@ -109,7 +110,35 @@ in
         gtk4.theme = config.gtk.theme;
       };
 
-      services.mako.enable = deCfg.mako.enable or false;
+      services.mako = lib.mkIf (notificationDaemon == "mako") {
+        enable = true;
+      };
+
+      services.swaync = lib.mkIf (notificationDaemon == "swaync") {
+        enable = true;
+        package = pkgs.swaynotificationcenter.overrideAttrs (old: {
+          patches = (old.patches or [ ]) ++ [ ../profiles/de/swaync/long-notifications.patch ];
+        });
+        settings = {
+          positionX = "right";
+          positionY = "top";
+          layer = "overlay";
+          layer-shell = true;
+          layer-shell-cover-screen = true;
+          cssPriority = "user";
+          notification-window-width = 520;
+          notification-window-height = -1;
+          timeout = 24;
+          timeout-low = 24;
+          timeout-critical = 0;
+          notification-grouping = true;
+          image-visibility = "when-available";
+          transition-time = 220;
+          control-center-positionX = "none";
+          control-center-positionY = "none";
+        };
+        style = ../profiles/de/swaync/style.css;
+      };
     })
   ];
 }

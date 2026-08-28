@@ -1,0 +1,14 @@
+diff --git a/src/notification/notification.vala b/src/notification/notification.vala
+--- a/src/notification/notification.vala
++++ b/src/notification/notification.vala
+@@ -127,1 +127,1 @@
+-                    number_of_body_lines: 5
++                    number_of_body_lines: 8
+@@ -267,1 +267,3 @@
+-            this.summary.set_wrap (false);
++            this.summary.set_wrap (true);
++            this.summary.set_wrap_mode (Pango.WrapMode.WORD_CHAR);
++            this.summary.set_natural_wrap_mode (Gtk.NaturalWrapMode.WORD);
+@@ -269,1 +269,1 @@
+-            this.summary.set_ellipsize (Pango.EllipsizeMode.END);
++            this.summary.set_ellipsize (Pango.EllipsizeMode.NONE);

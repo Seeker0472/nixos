@@ -16,7 +16,7 @@ in
       (lib.mkIf (cfg.wofi.enable or false) {
         "wofi".source = ./wofi;
       })
-      (lib.mkIf (cfg.mako.enable or false) {
+      (lib.mkIf ((cfg.notificationDaemon or "swaync") == "mako") {
         "mako".source = ./mako;
       })
       (lib.mkIf (cfg.wpaperd.enable or false) {
