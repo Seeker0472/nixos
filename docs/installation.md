@@ -60,6 +60,91 @@ sudo env GOPROXY=https://goproxy.cn,direct \
   --option fallback true
 ```
 
+## 4. 为 LUKS2 注册 TPM2 自动解锁
+
+此步骤只适用于 `miLaptop` 和 `DiagonAlley`，并且必须在安装完成、从目标盘首次
+启动后分别在对应机器本地执行。不要在 LiveCD 中注册：enrollment 必须使用目标
+机器自己的 TPM。共享 impermanence 模块已经启用 systemd initrd，并为 `crypted`
+设置了 `tpm2-device=auto`，不需要再次修改 NixOS 配置或运行 Disko。
+
+按主机名选择对应的稳定 LUKS 分区路径；未知主机不会继续：
+
+```bash
+case "$(hostname)" in
+  miLaptop)
+    LUKS_DEVICE=/dev/disk/by-id/nvme-SAMSUNG_MZVLB256HAHQ-000L7_S41GNA0K906073-part2
+    ;;
+  DiagonAlley)
+    LUKS_DEVICE=/dev/disk/by-id/nvme-SAMSUNG_MZVL21T0HCLR-00B00_S676NU0W123827-part2
+    ;;
+  *)
+    echo "This host must not enroll a TPM2 key with this procedure." >&2
+    exit 1
+    ;;
+esac
+```
+
+先确认路径指向该机器的 LUKS2 根分区，并检查 TPM2。将 LUKS header 备份到
+外置存储；不要只把备份放在同一块加密磁盘上。
+
+```bash
+readlink -f "$LUKS_DEVICE"
+lsblk -o NAME,PATH,TYPE,FSTYPE,SIZE,UUID "$LUKS_DEVICE"
+sudo cryptsetup luksDump "$LUKS_DEVICE"
+sudo systemd-analyze has-tpm2
+sudo systemd-cryptenroll --tpm2-device=list
+
+# 将路径替换为已挂载的外置存储，并按主机名区分备份文件。
+sudo cryptsetup luksHeaderBackup "$LUKS_DEVICE" \
+  --header-backup-file /mnt/external/HOST-luks2-header.img
+```
+
+确认 `luksDump` 显示 Version 2、TPM 列表中只有本机预期的 TPM 后，输入现有
+LUKS 密码并新增 TPM2 keyslot：
+
+```bash
+sudo systemd-cryptenroll \
+  --tpm2-device=auto \
+  --tpm2-pcrs=7 \
+  "$LUKS_DEVICE"
+```
+
+必须显式指定 `--tpm2-pcrs=7`；不要依赖 systemd 的默认值。此命令只新增 TPM2
+凭据，不会删除原密码槽。保留原密码作为 TPM 清除、主板更换、PCR 变化或自动
+解锁失败时的恢复方式，不要使用 `--wipe-slot=all`。
+
+重启前创建一个不挂载的临时映射，确认仅靠 TPM2 就能解锁，然后立即关闭它：
+
+```bash
+sudo systemd-cryptsetup attach \
+  tpm-test "$LUKS_DEVICE" - 'tpm2-device=auto,headless'
+sudo cryptsetup status tpm-test
+sudo systemd-cryptsetup detach tpm-test
+```
+
+测试成功后重启。若 TPM2 解锁失败，initrd 会回退到现有 LUKS 密码。启动后可
+检查本次解锁日志；需要删除 TPM2 enrollment 时只清除 TPM2 槽：
+
+```bash
+sudo journalctl -b -u systemd-cryptsetup@crypted.service
+sudo systemd-cryptenroll "$LUKS_DEVICE"
+
+# 删除前先输入并确认现有 LUKS 密码仍可用。
+sudo cryptsetup open --test-passphrase "$LUKS_DEVICE"
+sudo systemd-cryptenroll --wipe-slot=tpm2 "$LUKS_DEVICE"
+```
+
+当前仓库没有配置 Secure Boot 或 Lanzaboote。PCR 7 只有在 Secure Boot 已正确
+启用且信任密钥受控时，才能对启动链提供有意义的保护；Secure Boot 关闭时，
+无交互 TPM2 解锁主要是便利功能，不能可靠防御能够从外部介质启动机器的攻击者。
+在部署 Secure Boot 之前，如需更强的本地保护，可在 enrollment 时增加
+`--tpm2-with-pin=yes`，代价是每次启动仍需输入 TPM PIN。启用 Secure Boot 或
+修改其密钥后，先用保留的 LUKS 密码启动，再清除并重新注册 TPM2 槽。
+
+参数和 TPM2/PCR 行为以
+[systemd-cryptenroll(1)](https://www.freedesktop.org/software/systemd/man/latest/systemd-cryptenroll.html)
+为准。
+
 ## King'sCross
 
 `King'sCross` 只在首次安装或确定要清空 VPS 时使用 `nixos-anywhere`；日常更新
