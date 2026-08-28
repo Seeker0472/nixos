@@ -8,6 +8,12 @@
 let
   deCfg = lib.attrByPath [ "machine" "de" ] { } osConfig;
   enabled = deCfg.quickshell.enable or false;
+  fanCfg = config.programs.niri-shell.fanControl;
+  fanCommand =
+    if fanCfg.enable && fanCfg.package != null then
+      lib.getExe fanCfg.package
+    else
+      "${pkgs.coreutils}/bin/false";
   rgbCfg = config.programs.niri-shell.rgbControl;
   rgbCommand =
     if rgbCfg.enable && rgbCfg.package != null then
@@ -81,11 +87,22 @@ let
       --subst-var-by playerctl ${lib.getExe pkgs.playerctl} \
       --subst-var-by cava ${lib.getExe pkgs.cava} \
       --subst-var-by cavaConfig ${cavaConfig} \
+      --subst-var-by fanEnabled ${lib.boolToString fanCfg.enable} \
+      --subst-var-by fanControl ${fanCommand} \
       --subst-var-by rgbEnabled ${lib.boolToString rgbCfg.enable} \
       --subst-var-by rgbControl ${rgbCommand}
   '';
 in
 {
+  options.programs.niri-shell.fanControl = {
+    enable = lib.mkEnableOption "fan controls in the Niri shell";
+    package = lib.mkOption {
+      type = lib.types.nullOr lib.types.package;
+      default = null;
+      description = "Package providing the fan-control executable.";
+    };
+  };
+
   options.programs.niri-shell.rgbControl = {
     enable = lib.mkEnableOption "the OpenRGB controls in the Niri shell";
     package = lib.mkOption {
@@ -97,6 +114,10 @@ in
 
   config = lib.mkIf enabled {
     assertions = [
+      {
+        assertion = !fanCfg.enable || fanCfg.package != null;
+        message = "programs.niri-shell.fanControl.package must be set when fan controls are enabled";
+      }
       {
         assertion = !rgbCfg.enable || rgbCfg.package != null;
         message = "programs.niri-shell.rgbControl.package must be set when RGB controls are enabled";
@@ -119,6 +140,7 @@ in
         blueman
         pavucontrol
       ])
+      ++ lib.optional (fanCfg.enable && fanCfg.package != null) fanCfg.package
       ++ lib.optional (rgbCfg.enable && rgbCfg.package != null) rgbCfg.package;
   };
 }

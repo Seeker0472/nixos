@@ -2,6 +2,7 @@ singleton AudioState 1.0 AudioState.qml
 singleton BluetoothState 1.0 BluetoothState.qml
 singleton CavaState 1.0 CavaState.qml
 singleton Commands 1.0 Commands.qml
+singleton FanState 1.0 FanState.qml
 singleton MediaState 1.0 MediaState.qml
 singleton NetworkState 1.0 NetworkState.qml
 singleton NiriState 1.0 NiriState.qml
@@ -17,6 +18,8 @@ ActionTile 1.0 ActionTile.qml
 Bar 1.0 Bar.qml
 CavaVisualizer 1.0 CavaVisualizer.qml
 ControlPopup 1.0 ControlPopup.qml
+FanCurveControl 1.0 FanCurveControl.qml
+FanPage 1.0 FanPage.qml
 HoverTooltip 1.0 HoverTooltip.qml
 IconButton 1.0 IconButton.qml
 MeterBar 1.0 MeterBar.qml

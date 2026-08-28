@@ -27,6 +27,8 @@ Singleton {
     readonly property string playerctl: "@playerctl@"
     readonly property string cava: "@cava@"
     readonly property string cavaConfig: "@cavaConfig@"
+    readonly property bool fanEnabled: "@fanEnabled@" === "true"
+    readonly property string fanControl: "@fanControl@"
     readonly property bool rgbEnabled: "@rgbEnabled@" === "true"
     readonly property string rgbControl: "@rgbControl@"
 }

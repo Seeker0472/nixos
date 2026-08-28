@@ -229,6 +229,17 @@ Item {
         }
 
         StatusPill {
+            visible: Commands.fanEnabled
+            icon: "󰈐"
+            value: ""
+            tooltip: FanState.summary
+            accent: FanState.accentColor
+            selected: UiState.popupOpen && UiState.popupPage === "fan"
+            highlighted: FanState.errorMessage.length > 0 || FanState.controlMode === "degraded"
+            onClicked: ShellState.togglePopup("fan", root.screen)
+        }
+
+        StatusPill {
             visible: Commands.rgbEnabled
             icon: RgbState.power ? "󰏘" : "󰌶"
             value: ""
