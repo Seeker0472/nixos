@@ -49,6 +49,14 @@ TestCase {
         verify(TooltipLogic.select([dismissed, available]) === available)
     }
 
+    function test_unwindowedRequestIsIgnored() {
+        var unwindowed = request({}, {}, 2, true, false, false)
+        var available = request({}, {}, 1, false, true, false)
+        unwindowed.window = null
+
+        verify(TooltipLogic.select([unwindowed, available]) === available)
+    }
+
     function test_dismissalClearsOnPointerReentry() {
         var target = {}
         var dismissed = request({}, target, 1, false, true, true)

@@ -4,7 +4,11 @@ import Quickshell
 PopupWindow {
     id: root
 
-    anchor.item: TooltipState.targetItem
+    anchor.window: TooltipState.targetWindow
+    anchor.rect.x: TooltipState.anchorX
+    anchor.rect.y: TooltipState.anchorY
+    anchor.rect.width: TooltipState.anchorWidth
+    anchor.rect.height: TooltipState.anchorHeight
     anchor.edges: Edges.Bottom | Edges.Left
     anchor.gravity: Edges.Bottom | Edges.Right
     anchor.adjustment: PopupAdjustment.SlideX | PopupAdjustment.ResizeY
@@ -14,14 +18,12 @@ PopupWindow {
     mask: Region {}
     grabFocus: false
     visible: TooltipState.shown && TooltipState.text.length > 0 &&
-        TooltipState.targetItem !== null && !TooltipState.panelOpen
+        TooltipState.targetWindow !== null && !TooltipState.panelOpen
     implicitWidth: Math.min(360, Math.max(104, naturalText.implicitWidth + 20))
     implicitHeight: Math.max(30, tooltipText.implicitHeight + 18)
 
-    onVisibleChanged: {
-        if (root.visible) root.anchor.updateAnchor()
-        else if (TooltipState.shown && !TooltipState.panelOpen) TooltipState.dismissCurrent()
-    }
+    onVisibleChanged: if (!root.visible && TooltipState.shown && !TooltipState.panelOpen)
+        TooltipState.dismissCurrent()
 
     Rectangle {
         anchors.fill: parent

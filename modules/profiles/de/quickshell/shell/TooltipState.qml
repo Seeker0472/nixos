@@ -10,6 +10,11 @@ Singleton {
     property var requests: []
     property var currentOwner: null
     property Item targetItem: null
+    property var targetWindow: null
+    property real anchorX: 0
+    property real anchorY: 0
+    property real anchorWidth: 0
+    property real anchorHeight: 0
     property string text: ""
     property bool pointerHovered: false
     property bool focused: false
@@ -28,7 +33,8 @@ Singleton {
 
             var request = root.requestFor(root.currentOwner)
             if (!request || request.target !== root.targetItem ||
-                    request.text !== root.text || !TooltipLogic.isEligible(request) || root.panelOpen) {
+                    request.window !== root.targetWindow || request.text !== root.text ||
+                    !TooltipLogic.isEligible(request) || root.panelOpen) {
                 root.reconcile()
                 return
             }
@@ -37,13 +43,19 @@ Singleton {
         }
     }
 
-    onPanelOpenChanged: {
-        root.stopTimer()
-        root.shown = false
-        if (!root.panelOpen) root.reconcile()
+    Timer {
+        id: reconcileTimer
+        interval: 0
+        repeat: false
+        onTriggered: root.reconcile()
     }
 
-    Component.onCompleted: root.reconcile()
+    onPanelOpenChanged: {
+        if (root.panelOpen) root.clearCurrent()
+        else root.queueReconcile()
+    }
+
+    Component.onCompleted: root.queueReconcile()
 
     function requestFor(owner) {
         if (owner === null || owner === undefined) return null
@@ -58,11 +70,20 @@ Singleton {
         showTimer.stop()
     }
 
+    function queueReconcile() {
+        reconcileTimer.restart()
+    }
+
     function clearCurrent() {
         root.stopTimer()
         root.shown = false
         root.currentOwner = null
         root.targetItem = null
+        root.targetWindow = null
+        root.anchorX = 0
+        root.anchorY = 0
+        root.anchorWidth = 0
+        root.anchorHeight = 0
         root.text = ""
         root.pointerHovered = false
         root.focused = false
@@ -90,24 +111,44 @@ Singleton {
             return
         }
 
-        var ownerChanged = root.currentOwner !== candidate.owner || root.targetItem !== candidate.target
+        var candidateWindow = candidate.window || null
+        var ownerChanged = root.currentOwner !== candidate.owner ||
+            root.targetItem !== candidate.target || root.targetWindow !== candidateWindow
+
+        if (ownerChanged) {
+            // Remove the old QQuickItem before assigning a new candidate. Workspace
+            // delegates can be destroyed between hoverLeave and the next event loop.
+            root.stopTimer()
+            root.shown = false
+            root.currentOwner = null
+            root.targetItem = null
+            root.targetWindow = null
+            root.anchorX = 0
+            root.anchorY = 0
+            root.anchorWidth = 0
+            root.anchorHeight = 0
+        }
+
         root.currentOwner = candidate.owner
         root.targetItem = candidate.target
+        root.targetWindow = candidate.window || null
+        root.anchorX = Number(candidate.anchorX) || 0
+        root.anchorY = Number(candidate.anchorY) || 0
+        root.anchorWidth = Number(candidate.anchorWidth) || 0
+        root.anchorHeight = Number(candidate.anchorHeight) || 0
         root.text = candidate.text
         root.pointerHovered = Boolean(candidate.hovered)
         root.focused = Boolean(candidate.focused)
         root.delay = Number(candidate.delay) || 0
 
         if (ownerChanged) {
-            root.stopTimer()
-            root.shown = false
             root.schedule(candidate)
         } else if (!root.shown && !showTimer.running) {
             root.schedule(candidate)
         }
     }
 
-    function update(owner, target, textValue, hoveredValue, focusedValue, delayValue) {
+    function update(owner, target, windowValue, rectValue, textValue, hoveredValue, focusedValue, delayValue) {
         if (owner === null || owner === undefined) return
 
         var normalizedText = textValue === null || textValue === undefined ? "" : String(textValue)
@@ -115,6 +156,7 @@ Singleton {
         var normalizedHovered = Boolean(hoveredValue)
         var normalizedFocused = Boolean(focusedValue)
         var previous = root.requestFor(owner)
+        var snapshot = root.snapshotTarget(windowValue, rectValue)
         var next = []
 
         root.sequence += 1
@@ -125,6 +167,11 @@ Singleton {
         next.push({
             owner: owner,
             target: target,
+            window: snapshot.window,
+            anchorX: snapshot.x,
+            anchorY: snapshot.y,
+            anchorWidth: snapshot.width,
+            anchorHeight: snapshot.height,
             text: normalizedText,
             hovered: normalizedHovered,
             focused: normalizedFocused,
@@ -135,7 +182,24 @@ Singleton {
             )
         })
         root.requests = next
-        root.reconcile()
+
+        if (root.currentOwner === owner && !TooltipLogic.isEligible(next[next.length - 1]))
+            root.clearCurrent()
+
+        root.queueReconcile()
+    }
+
+    function snapshotTarget(windowValue, rectValue) {
+        if (windowValue === null || windowValue === undefined || !rectValue)
+            return { window: null, x: 0, y: 0, width: 0, height: 0 }
+
+        return {
+            window: windowValue,
+            x: Number(rectValue.x) || 0,
+            y: Number(rectValue.y) || 0,
+            width: Math.max(0, Number(rectValue.width) || 0),
+            height: Math.max(0, Number(rectValue.height) || 0)
+        }
     }
 
     function release(owner) {
@@ -146,7 +210,8 @@ Singleton {
             if (root.requests[i].owner !== owner) next.push(root.requests[i])
         }
         root.requests = next
-        root.reconcile()
+        if (root.currentOwner === owner) root.clearCurrent()
+        root.queueReconcile()
     }
 
     function dismiss(owner) {
@@ -159,6 +224,11 @@ Singleton {
                 next.push({
                     owner: request.owner,
                     target: request.target,
+                    window: request.window,
+                    anchorX: request.anchorX,
+                    anchorY: request.anchorY,
+                    anchorWidth: request.anchorWidth,
+                    anchorHeight: request.anchorHeight,
                     text: request.text,
                     hovered: request.hovered,
                     focused: request.focused,
@@ -171,7 +241,8 @@ Singleton {
             }
         }
         root.requests = next
-        root.reconcile()
+        if (root.currentOwner === owner) root.clearCurrent()
+        root.queueReconcile()
     }
 
     function dismissCurrent() {

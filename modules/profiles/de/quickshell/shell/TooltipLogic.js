@@ -1,6 +1,7 @@
 function isEligible(request) {
     return request && request.owner !== null && request.owner !== undefined &&
         request.target !== null && request.target !== undefined &&
+        (request.window === undefined || request.window !== null) &&
         String(request.text || "").length > 0 &&
         (Boolean(request.hovered) || Boolean(request.focused)) &&
         !Boolean(request.dismissed)
