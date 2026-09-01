@@ -24,10 +24,16 @@ Rectangle {
     Keys.onPressed: event => {
         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
             event.accepted = true
+            tooltipAgent.dismiss()
             root.clicked()
         }
     }
-    Accessible.onPressAction: if (root.enabled) root.clicked()
+    Accessible.onPressAction: {
+        if (root.enabled) {
+            tooltipAgent.dismiss()
+            root.clicked()
+        }
+    }
 
     Behavior on color {
         ColorAnimation { duration: Theme.animationFast }
@@ -63,13 +69,18 @@ Rectangle {
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton
         cursorShape: Qt.PointingHandCursor
-        onPressed: root.forceActiveFocus(Qt.MouseFocusReason)
+        onPressed: {
+            tooltipAgent.dismiss()
+            root.forceActiveFocus(Qt.MouseFocusReason)
+        }
         onClicked: if (root.enabled) root.clicked()
     }
 
     HoverTooltip {
+        id: tooltipAgent
         targetItem: root
-        hovered: mouse.containsMouse || root.activeFocus
+        hovered: mouse.containsMouse
+        focused: root.activeFocus
         text: root.tooltip
         delay: 550
     }

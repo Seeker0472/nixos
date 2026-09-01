@@ -57,10 +57,14 @@ Item {
                 Keys.onPressed: event => {
                     if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
                         event.accepted = true
+                        workspaceTooltip.dismiss()
                         ShellState.focusWorkspace(Number(modelData.idx || 1), modelData.output || root.outputName)
                     }
                 }
-                Accessible.onPressAction: ShellState.focusWorkspace(Number(modelData.idx || 1), modelData.output || root.outputName)
+                Accessible.onPressAction: {
+                    workspaceTooltip.dismiss()
+                    ShellState.focusWorkspace(Number(modelData.idx || 1), modelData.output || root.outputName)
+                }
 
                 Behavior on color {
                     ColorAnimation { duration: Theme.animationFast }
@@ -106,13 +110,18 @@ Item {
                     hoverEnabled: true
                     acceptedButtons: Qt.LeftButton
                     cursorShape: Qt.PointingHandCursor
-                    onPressed: workspaceCell.forceActiveFocus(Qt.MouseFocusReason)
+                    onPressed: {
+                        workspaceTooltip.dismiss()
+                        workspaceCell.forceActiveFocus(Qt.MouseFocusReason)
+                    }
                     onClicked: ShellState.focusWorkspace(Number(modelData.idx || 1), modelData.output || root.outputName)
                 }
 
                 HoverTooltip {
+                    id: workspaceTooltip
                     targetItem: workspaceCell
-                    hovered: mouse.containsMouse || workspaceCell.activeFocus
+                    hovered: mouse.containsMouse
+                    focused: workspaceCell.activeFocus
                     delay: 450
                     text: {
                         var state = focused ? "focused" : (activeOnOutput ? "active" : "inactive")

@@ -13,6 +13,7 @@ singleton ShellState 1.0 ShellState.qml
 singleton SystemState 1.0 SystemState.qml
 singleton TaskState 1.0 TaskState.qml
 singleton Theme 1.0 Theme.qml
+singleton TooltipState 1.0 TooltipState.qml
 singleton UiState 1.0 UiState.qml
 ActionTile 1.0 ActionTile.qml
 Bar 1.0 Bar.qml
@@ -32,5 +33,6 @@ RgbToggleControl 1.0 RgbToggleControl.qml
 ShellTextField 1.0 ShellTextField.qml
 StatusPill 1.0 StatusPill.qml
 TaskPage 1.0 TaskPage.qml
+TooltipPopup 1.0 TooltipPopup.qml
 ValueSlider 1.0 ValueSlider.qml
 WorkspaceStrip 1.0 WorkspaceStrip.qml

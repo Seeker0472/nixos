@@ -11,6 +11,8 @@ import Quickshell.Io
 ShellRoot {
     id: root
 
+    TooltipPopup { }
+
     Variants {
         model: Quickshell.screens
 

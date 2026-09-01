@@ -189,10 +189,14 @@ Rectangle {
                             Keys.onPressed: event => {
                                 if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
                                     event.accepted = true
+                                    cpuTooltip.dismiss()
                                     UiState.popupPage = "system"
                                 }
                             }
-                            Accessible.onPressAction: UiState.popupPage = "system"
+                            Accessible.onPressAction: {
+                                cpuTooltip.dismiss()
+                                UiState.popupPage = "system"
+                            }
 
                             ColumnLayout {
                                 anchors.fill: parent
@@ -224,12 +228,17 @@ Rectangle {
                                 anchors.fill: parent
                                 acceptedButtons: Qt.LeftButton
                                 hoverEnabled: true
-                                onPressed: cpuCard.forceActiveFocus(Qt.MouseFocusReason)
+                                onPressed: {
+                                    cpuTooltip.dismiss()
+                                    cpuCard.forceActiveFocus(Qt.MouseFocusReason)
+                                }
                                 onClicked: UiState.popupPage = "system"
                             }
                             HoverTooltip {
+                                id: cpuTooltip
                                 targetItem: cpuCard
-                                hovered: cpuMouse.containsMouse || cpuCard.activeFocus
+                                hovered: cpuMouse.containsMouse
+                                focused: cpuCard.activeFocus
                                 text: "CPU usage: " + ShellState.cpuUsage + "%\n" + root.cpuDetails()
                                 delay: 500
                             }
@@ -252,10 +261,14 @@ Rectangle {
                             Keys.onPressed: event => {
                                 if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
                                     event.accepted = true
+                                    memoryTooltip.dismiss()
                                     UiState.popupPage = "system"
                                 }
                             }
-                            Accessible.onPressAction: UiState.popupPage = "system"
+                            Accessible.onPressAction: {
+                                memoryTooltip.dismiss()
+                                UiState.popupPage = "system"
+                            }
 
                             ColumnLayout {
                                 anchors.fill: parent
@@ -287,10 +300,20 @@ Rectangle {
                                 anchors.fill: parent
                                 acceptedButtons: Qt.LeftButton
                                 hoverEnabled: true
-                                onPressed: memoryCard.forceActiveFocus(Qt.MouseFocusReason)
+                                onPressed: {
+                                    memoryTooltip.dismiss()
+                                    memoryCard.forceActiveFocus(Qt.MouseFocusReason)
+                                }
                                 onClicked: UiState.popupPage = "system"
                             }
-                            HoverTooltip { targetItem: memoryCard; hovered: memoryMouse.containsMouse || memoryCard.activeFocus; text: root.memoryTooltip(); delay: 500 }
+                            HoverTooltip {
+                                id: memoryTooltip
+                                targetItem: memoryCard
+                                hovered: memoryMouse.containsMouse
+                                focused: memoryCard.activeFocus
+                                text: root.memoryTooltip()
+                                delay: 500
+                            }
                         }
                     }
 
@@ -687,10 +710,14 @@ Rectangle {
                             Keys.onPressed: event => {
                                 if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
                                     event.accepted = true
+                                    deviceTooltip.dismiss()
                                     ShellState.run([Commands.blueman])
                                 }
                             }
-                            Accessible.onPressAction: ShellState.run([Commands.blueman])
+                            Accessible.onPressAction: {
+                                deviceTooltip.dismiss()
+                                ShellState.run([Commands.blueman])
+                            }
                             RowLayout {
                                 anchors.fill: parent
                                 anchors.margins: 10
@@ -704,13 +731,23 @@ Rectangle {
                                 }
                                 Text { visible: modelData.battery >= 0; text: Math.round(modelData.battery) + "%"; color: Theme.text; font.family: Theme.fontFamily; font.pixelSize: 11 }
                             }
-                            HoverTooltip { targetItem: deviceCard; hovered: deviceMouse.containsMouse || deviceCard.activeFocus; text: modelData.name + "\n" + (modelData.address || "Address unavailable") + (modelData.battery >= 0 ? "\nBattery: " + Math.round(modelData.battery) + "%" : ""); delay: 450 }
+                            HoverTooltip {
+                                id: deviceTooltip
+                                targetItem: deviceCard
+                                hovered: deviceMouse.containsMouse
+                                focused: deviceCard.activeFocus
+                                text: modelData.name + "\n" + (modelData.address || "Address unavailable") + (modelData.battery >= 0 ? "\nBattery: " + Math.round(modelData.battery) + "%" : "")
+                                delay: 450
+                            }
                             MouseArea {
                                 id: deviceMouse
                                 anchors.fill: parent
                                 acceptedButtons: Qt.LeftButton
                                 hoverEnabled: true
-                                onPressed: deviceCard.forceActiveFocus(Qt.MouseFocusReason)
+                                onPressed: {
+                                    deviceTooltip.dismiss()
+                                    deviceCard.forceActiveFocus(Qt.MouseFocusReason)
+                                }
                                 onClicked: ShellState.run([Commands.blueman])
                             }
                         }

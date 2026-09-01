@@ -42,12 +42,14 @@ Item {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         hoverEnabled: true
+        onPressed: cavaTooltip.dismiss()
         onClicked: event => {
             if (event.button === Qt.RightButton && root.active) CavaState.paused = !CavaState.paused
         }
     }
 
     HoverTooltip {
+        id: cavaTooltip
         targetItem: root
         hovered: mouse.containsMouse
         text: root.paused ? "Audio visualizer paused" : (root.active && CavaState.active ? "Audio visualizer" : "Audio visualizer inactive")

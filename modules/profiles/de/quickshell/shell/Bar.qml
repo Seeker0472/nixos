@@ -372,11 +372,13 @@ Item {
                     Keys.onPressed: event => {
                         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
                             event.accepted = true
+                            trayTooltip.dismiss()
                             if (modelData.onlyMenu && modelData.hasMenu) root.showTrayMenu(modelData, trayItem)
                             else modelData.activate()
                         }
                     }
                     Accessible.onPressAction: {
+                        trayTooltip.dismiss()
                         if (modelData.onlyMenu && modelData.hasMenu) root.showTrayMenu(modelData, trayItem)
                         else modelData.activate()
                     }
@@ -413,7 +415,10 @@ Item {
                         hoverEnabled: true
                         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
                         cursorShape: Qt.PointingHandCursor
-                        onPressed: trayItem.forceActiveFocus(Qt.MouseFocusReason)
+                        onPressed: {
+                            trayTooltip.dismiss()
+                            trayItem.forceActiveFocus(Qt.MouseFocusReason)
+                        }
                         onClicked: event => {
                             if (event.button === Qt.RightButton) {
                                 if (modelData.hasMenu) root.showTrayMenu(modelData, trayMouse)
@@ -434,8 +439,10 @@ Item {
                     }
 
                     HoverTooltip {
+                        id: trayTooltip
                         targetItem: trayItem
-                        hovered: trayMouse.containsMouse || trayItem.activeFocus
+                        hovered: trayMouse.containsMouse
+                        focused: trayItem.activeFocus
                         delay: 450
                         text: modelData.tooltipDescription.length > 0
                             ? modelData.tooltipTitle + "\n" + modelData.tooltipDescription
