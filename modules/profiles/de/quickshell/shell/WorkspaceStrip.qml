@@ -51,7 +51,7 @@ Item {
                 color: urgent
                     ? Theme.tint(Theme.danger, 0.16)
                     : (focused ? Theme.tint(Theme.accent, 0.13) : (mouse.containsMouse ? Theme.surface : "transparent"))
-                border.width: activeFocus ? 1 : 0
+                border.width: 0
                 border.color: Theme.accent
 
                 Keys.onPressed: event => {
